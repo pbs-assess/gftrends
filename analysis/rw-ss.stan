@@ -25,10 +25,19 @@ model {
     vector[s[j]] eps_j;  // residual for stock j, time t
     vector[s[j]] y_j;    // stock j time series
     for (t in 1:s[j]) {
-      eps_j[t] = y[t,j] - (x[t] + alpha[j]);
+      if (y[t,j] != 999) {
+        eps_j[t] = y[t,j] - (x[t] + alpha[j]);
+      }
     }
-    eps_j[1] ~ normal(0, sigma_eps);
-    eps_j[2:s[j]] ~ normal(rho * eps_j[1:(s[j] - 1)], sigma_eps); // AR1 epsilon; sliced
+    if (y[1,j] != 999) {
+      eps_j[1] ~ normal(0, sigma_eps);
+    }
+    for (t in 2:s[j]) {
+      if (y[t,j] != 999 && y[t-1,j] != 999) {
+        eps_j[t] ~ normal(rho * eps_j[t-1], sigma_eps); // AR1 epsilon
+      }
+    }
+    // eps_j[2:s[j]] ~ normal(rho * eps_j[1:(s[j] - 1)], sigma_eps); // AR1 epsilon; sliced
   }
   x_raw ~ std_normal();
   // priors:
