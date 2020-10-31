@@ -67,10 +67,12 @@ dat <- list(
   J = nrow(d$y),
   y = t(d$y),
   s = rep(ncol(d$y), nrow(d$y)))
+system.time({
 m <- stan("analysis/rw-ss.stan",
   data = dat,
-  chains = 4, iter = 500,
+  chains = 4, iter = 1000, seed = 182823,
   pars = c("sigma_eps", "sigma_x", "rho", "x", "alpha"))
+})
 m
 
 p <- extract(m)
