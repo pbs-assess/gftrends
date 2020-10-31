@@ -64,13 +64,14 @@ dat <- list(
   J = ncol(d$y),
   y = d$y,
   tau = d$tau,
+  df = 7,
   s = rep(nrow(d$y), ncol(d$y)))
 
 model <- stan_model("analysis/rw-ss.stan")
 m <- sampling(
   model,
   data = dat,
-  chains = 4, iter = 500, seed = 182823,
+  chains = 4, iter = 1000, seed = 182823,
   control = list(adapt_delta = 0.95),
   pars = c("rho", "sigma_eps", "sigma_x", "x", "alpha")
 )
