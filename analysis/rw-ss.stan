@@ -1,10 +1,9 @@
 data {
   int<lower=0> T;    // # years
-  int<lower=0> N;    // # observations
   int<lower=0> J;    // # of stocks
   matrix[T,J] y;     // observations
   matrix[T,J] tau;   // observation measurement-error SD
-  real<lower=1> df;  // Student-t df for RW
+  // real<lower=1> df;  // Student-t df for RW
 }
 parameters {
   real<lower=0> sigma_x;        // RW process SD
@@ -43,10 +42,12 @@ model {
       }
     }
   }
-  x_raw ~ student_t(df, 0, 1);
+  // x_raw ~ student_t(df, 0, 1);
+  x_raw ~ std_normal();
   to_vector(tau_raw) ~ std_normal();
   // priors:
-  sigma_x ~ std_normal();
-  sigma_eps ~ std_normal();
+  sigma_x ~ student_t(7, 0, 2);
+  sigma_eps ~ student_t(7, 0, 2);
   alpha_raw ~ normal(0, 5);
+  rho ~ normal(0, 2);
 }
