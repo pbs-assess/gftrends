@@ -8,9 +8,23 @@
 * Probability of increase or decline by decade?
 * What to do about coastwide vs split up stocks?
 * Gaussian process on x_t trend?
-* Data coalition side benefit; get into a proper database?
+* Data collation side benefit; get into a proper database eventually?
 * What to do when multiple scenarios per stock? Likely ensemble first?
 * What about when MSE? Use OMs and ensemble first?
 * Could also ensemble within the model, but adds some complexity and maybe doesn’t add much
 * But keep separate and ensembles in dataset?
 * What other metadata needed? Keep minimal. ID (ResDoc/SAR?), species, reference ID, Type of model... look at RAM Legacy for ideas, but keep minimal.
+
+Data/metadata:
+* By scenario/model for all models included in advice: B/Bmsy: mean of B/Bmsy; mean of log(B/Bmsy), SD/SE of log(B/Bmsy)
+* Ensemble of all models included in advice (weighted if was weighted, but I don't think this has happened officially): same as above
+* Same as above for F/Fmsy
+* If available, estimate of mean SSB by year, again by model/scenario and ensembled
+* Catch by year as entered into assessment, again by model/scenario and ensembled
+* Meta-data:
+  - citation
+  - a unique ID (e.g., 'POP-2012')
+  
+Common formatted .csv files for now. Create example.
+
+Or maybe just record ensemble values for now (or 1 if 1 was chosen)
