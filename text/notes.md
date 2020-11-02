@@ -14,6 +14,8 @@
 * Could also ensemble within the model, but adds some complexity and maybe doesn’t add much
 * But keep separate and ensembles in dataset?
 * What other metadata needed? Keep minimal. ID (ResDoc/SAR?), species, reference ID, Type of model... look at RAM Legacy for ideas, but keep minimal.
+* What about when MSY isn't involved in the reference point, e.g. Pcod
+  - Maybe we shoudl record $B/B_\textrm{LRP}$? instead to have a common currency?
 
 Data/metadata:
 * By scenario/model for all models included in advice: B/Bmsy: mean of B/Bmsy; mean of log(B/Bmsy), SD/SE of log(B/Bmsy)
