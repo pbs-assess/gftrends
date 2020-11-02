@@ -27,4 +27,18 @@ Data/metadata:
   
 Common formatted .csv files for now. Create example.
 
-Or maybe just record ensemble values for now (or 1 if 1 was chosen)
+Or, maybe just record ensemble values for now (or 1 if 1 was chosen)
+
+Instead of mean/SD, could save posterior samples of each scenario in `.rds` files so they can be summarized later.
+
+E.g.:
+* Folder: `POP-2012`
+* Files: `bbmsy-1.rds`, `bbmsy-2.rds`, etc., each contains: `year`, `value`
+* Files: `ffmsy-1.rds`, `ffmsy-2.rds`, etc., each contains: `year`, `value`
+* Files: `ssb-1.rds`, `ssb-2.rds`, etc., each contains: `year`, `value`
+* Files: `catch-1.rds`, `catch-2.rds`, etc., each contains: `year`, `value`
+* File:  `citation.bib` BibTeX entry
+
+Then write basic R code to read all into dataset. Can be summarized and input into SQL database from there.
+
+If need to keep simple for now, just do B/Bmsy + basic metadata
