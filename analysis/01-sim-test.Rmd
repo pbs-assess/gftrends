@@ -1,12 +1,36 @@
+---
+title: Simulation testing
+---
+
+```{r packages, message=FALSE, warning=FALSE, results='hide'}
 library(rstan)
 library(ggplot2)
 library(dplyr)
+library(viridisLite)
+library(here)
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 theme_set(ggsidekick::theme_sleek())
+```
 
+$$
+x_t = x_{t-1} + \eta_t, \; 
+      \eta_t \sim \mathrm{Normal} 
+      \left( 0, \sigma_{\eta}^2 \right),
+$$
+$$
+\begin{align}
+\hat{y}_{j,t} &\sim \mathrm{Normal} \left( y_{j,t}, \tau^2\right)\\
+y_{j,t} &= x_{t} + \alpha_j + \epsilon_{j,t}, \; 
+      \epsilon_{j,t} \sim \mathrm{Normal} 
+      \left(\varphi \epsilon_{j,t-1}, \sigma_{\epsilon}^2 \right),
+\end{align}
+$$
+
+```{r}
 sim_dat <- function(sigma_x = 0.3, sigma_eps = 0.8, n_j = 20,
-                    n_t = 40, rho = 0.8, alpha_sd = 0.5) {
+                    n_t = 40, rho = 0.8, alpha_sd = 0.5,
+                    tau = 0.2) {
   a_j <- rnorm(n_j, 0, alpha_sd)
   a_j <- a_j - mean(a_j) # sum to zero
   x_t <- numeric(length = n_t)
@@ -29,16 +53,18 @@ sim_dat <- function(sigma_x = 0.3, sigma_eps = 0.8, n_j = 20,
   list(
     x_t = x_t,
     y_true = y_jt,
-    y = y_jt + rnorm(length(as.numeric(y_jt)), 0, 0.2),
-    tau = matrix(0.2, nrow = nrow(y_jt), ncol = ncol(y_jt)),
+    y = y_jt + rnorm(length(as.numeric(y_jt)), 0, tau),
+    tau = matrix(tau, nrow = nrow(y_jt), ncol = ncol(y_jt)),
     alpha = a_j,
     rho = rho,
     sigma_eps = sigma_eps,
     sigma_x = sigma_x
   )
 }
+```
 
-set.seed(111223)
+```{r}
+set.seed(42)
 d <- sim_dat(
   sigma_x = 0.3,
   sigma_eps = 0.5,
@@ -46,29 +72,38 @@ d <- sim_dat(
   n_t = 50,
   rho = 0.7
 )
+```
 
-d$y[1:20,1:9] <- NA
-d$y[40:50,9:12] <- NA
-d$y_true[1:20,1:9] <- NA
-d$y_true[40:50,9:12] <- NA
-par(mfrow = c(1, 2))
-matplot(d$y, type = "l", lty = 1, col = viridisLite::plasma(ncol(d$y)))
-lines(seq_along(d$x_t), (d$x_t), lwd = 3)
-matplot(d$y_true, type = "l", lty = 1, col = viridisLite::plasma(ncol(d$y)))
-lines(seq_along(d$x_t), (d$x_t), lwd = 3)
+```{r}
+d$y[1:20, 1:9] <- NA
+d$y[40:50, 9:12] <- NA
+d$y_true[1:20, 1:9] <- NA
+d$y_true[40:50, 9:12] <- NA
 d$y_999 <- d$y
 d$y_999[is.na(d$y)] <- 999 # fake NA
-
 dat <- list(
   T = nrow(d$y_999),
   J = ncol(d$y_999),
   y = d$y_999,
   tau = d$tau,
   # df = 7,
-  s = rep(nrow(d$y), ncol(d$y)))
+  s = rep(nrow(d$y), ncol(d$y))
+)
+```
 
-model <- stan_model("analysis/rw-ss.stan")
+```{r}
+par(mfrow = c(1, 2))
+matplot(d$y, type = "l", lty = 1, col = plasma(ncol(d$y)))
+lines(seq_along(d$x_t), (d$x_t), lwd = 3)
+matplot(d$y_true, type = "l", lty = 1, col = plasma(ncol(d$y)))
+lines(seq_along(d$x_t), (d$x_t), lwd = 3)
+```
 
+```{r compile-model, warning=FALSE, message=FALSE, results="hide", cache=TRUE}
+model <- stan_model(here("analysis/rw-ss.stan"))
+```
+
+```{r fit-model, warning=FALSE, message=FALSE, results="hide", cache=TRUE}
 initf <- function() {
   list(
     rho = runif(1, 0.2, 0.7),
@@ -84,25 +119,20 @@ m <- sampling(
   pars = c("rho", "sigma_eps", "sigma_x", "x", "alpha"),
   init = initf
 )
-# pairs(m, pars = c("sigma_eps", "sigma_x", "rho", "x[1]", "alpha[1]"))
+```
+
+```{r basic-plots, cache=TRUE}
+pairs(m, pars = c("sigma_eps", "sigma_x", "rho", "x[1]", "alpha[1]"))
 rstan::check_hmc_diagnostics(m)
-rstan::stan_rhat(m)
+# rstan::stan_rhat(m)
 # rstan::stan_diag(m)
-print(m)
+print(m, pars = c("sigma_eps", "sigma_x", "rho", "alpha"))
 # shinystan::launch_shinystan(m)
+```
 
+```{r}
 p <- extract(m)
-
 # p <- tidybayes::gather_draws(m, alpha[.j], x[.t], sigma_eps, sigma_x, rho)
-# true_alpha <- tibble(
-#   .j = seq_along(d$alpha),
-#   .variable = "alpha",
-#   true_value = d$alpha
-# )
-#
-# filter(p, .variable == "alpha") %>%
-#   left_join(true_alpha) %>%
-#   ggplot(true_value, .value) + geom_point()
 
 par(mfrow = c(2, 3))
 matplot(d$y, type = "l", lty = 1, col = viridisLite::plasma(ncol(d$y)))
@@ -122,14 +152,18 @@ segments(x0 = d$x, y0 = lwr, y1 = upr)
 abline(a = 0, b = 1)
 cat("x_t 90% CI coverage:", mean(lwr < d$x & upr > d$x), "\n")
 
-hist(p$rho);abline(v = d$rho, col = "red")
-hist(p$sigma_eps);abline(v = d$sigma_eps, col = "red")
-hist(p$sigma_x);abline(v = d$sigma_x, col = "red")
+hist(p$rho)
+abline(v = d$rho, col = "red")
+hist(p$sigma_eps)
+abline(v = d$sigma_eps, col = "red")
+hist(p$sigma_x)
+abline(v = d$sigma_x, col = "red")
+```
 
+```{r}
 x_t <- tidybayes::gather_draws(m, x[.t])
-# save_draw <- sample(x_t$.draw, 250)
-# x_t %>% filter(.draw %in% save_draw) %>%
-x_t %>% group_by(.t) %>%
+x_t %>%
+  group_by(.t) %>%
   summarize(
     lwr2 = quantile(.value, 0.975),
     upr2 = quantile(.value, 0.025),
@@ -137,12 +171,15 @@ x_t %>% group_by(.t) %>%
     upr1 = quantile(.value, 0.75),
     lwr = quantile(.value, 0.1),
     upr = quantile(.value, 0.9),
-    med = median(.value), .groups = "drop") %>%
+    med = median(.value), .groups = "drop"
+  ) %>%
   ggplot(aes(.t, med)) +
   geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.25) +
   geom_ribbon(aes(ymin = lwr1, ymax = upr1), alpha = 0.25) +
   geom_ribbon(aes(ymin = lwr2, ymax = upr2), alpha = 0.25) +
   geom_line() +
-  geom_line(data =
-      data.frame(.t = seq_along(d$x), med = d$x), colour = "red", lwd = 1)
-
+  geom_line(
+    data =
+      data.frame(.t = seq_along(d$x), med = d$x), colour = "red", lwd = 1
+  )
+```
