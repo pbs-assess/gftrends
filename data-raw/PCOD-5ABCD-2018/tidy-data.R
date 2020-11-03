@@ -23,8 +23,7 @@ tidy_bratio_dat <- function(ratio, catch) {
       bref_log_sd = sd(log(value)),
       .groups = "drop"
     ) %>%
-    mutate(year = as.numeric(as.character(year))) %>%
-    mutate(across(-1, round, digits = 4L))
+    mutate(year = as.numeric(as.character(year)))
 }
 
 x <- avg.model.5abcd[[1]]$mcmccalcs$sbt.dat
@@ -36,10 +35,11 @@ dat <- catch.5 %>%
   summarize(usa_catch = sum(usa_catch),
     canada_catch = sum(canada_catch)) %>%
   mutate(catch = usa_catch + canada_catch) %>%
-  select(year, catch)
+  select(year, catch) %>%
+  mutate(across(-1, round, digits = 4L))
 
 out <- tidy_bratio_dat(x) %>%
   left_join(dat)
 
-readr::write_csv(out, "data-raw/PCOD-5ABCD-2018/ts.csv")
+readr::write_csv(out, "../gftrends/data-raw/PCOD-5ABCD-2018/ts.csv")
 
