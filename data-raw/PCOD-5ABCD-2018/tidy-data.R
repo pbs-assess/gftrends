@@ -35,11 +35,11 @@ dat <- catch.5 %>%
   summarize(usa_catch = sum(usa_catch),
     canada_catch = sum(canada_catch)) %>%
   mutate(catch = usa_catch + canada_catch) %>%
-  select(year, catch) %>%
-  mutate(across(-1, round, digits = 4L))
+  select(year, catch)
 
 out <- tidy_bratio_dat(x) %>%
-  left_join(dat)
+  left_join(dat) %>%
+  mutate(across(-1, round, digits = 4L))
 
 readr::write_csv(out, "../gftrends/data-raw/PCOD-5ABCD-2018/ts.csv")
 
