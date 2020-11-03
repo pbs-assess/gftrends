@@ -13,11 +13,21 @@ options(mc.cores = parallel::detectCores())
 theme_set(ggsidekick::theme_sleek())
 ```
 
+# The model
+
+Building on the model from the appendix section *Estimating regional trends in abundance, fishing pressure and catch* of the paper [*Effective fisheries management instrumental in improving fish stock status*](https://doi.org/10.1073/pnas.1909726116)...
+
+The model is currently:
+
 $$
 x_t = x_{t-1} + \eta_t, \; 
       \eta_t \sim \mathrm{Normal} 
       \left( 0, \sigma_{\eta}^2 \right),
 $$
+where $x_t$ is the underlying overall *log* stock status state/process at time $t$ and $\eta_t$ is a random walk deviation with standard deviation $\sigma_\eta$.
+
+We use the auto-regressive observation model:
+
 $$
 \begin{align}
 \hat{y}_{j,t} &\sim \mathrm{Normal} \left( y_{j,t}, \tau^2\right)\\
@@ -26,6 +36,14 @@ y_{j,t} &= x_{t} + \alpha_j + \epsilon_{j,t}, \;
       \left(\varphi \epsilon_{j,t-1}, \sigma_{\epsilon}^2 \right),
 \end{align}
 $$
+where $\hat{y}_{j,t}$ is the mean log stock status (e.g., biomass divided by biomass at the Limit Reference Point) for stock $j$ and time $t$, $y_{j,t}$ is the true unobserved stock-specific status, and $\tau$ is the standard error on the mean log stock-specific status from the assessment (i.e., this is a measurement error component).
+The symbol $\alpha_j$ represents a stock specific intercept that is constrained such that the sum of all $\alpha_j$ is zero to make the model identifiable (i.e., a "random intercept" with infinite variance). This could instead be constrained to vary taxonomically. The symbol $\epsilon_{j,t}$ represents an AR1 deviation with correlation $\varphi$ and standard deviation $\sigma_\epsilon$.
+
+We place priors on all parameters, including on the initial state and observation (not shown yet).
+
+# Simulating data
+
+The following is a function to simulate some data from our model:
 
 ```{r}
 sim_dat <- function(sigma_x = 0.3, sigma_eps = 0.8, n_j = 20,
@@ -63,6 +81,8 @@ sim_dat <- function(sigma_x = 0.3, sigma_eps = 0.8, n_j = 20,
 }
 ```
 
+Apply our simulation function:
+
 ```{r}
 set.seed(42)
 d <- sim_dat(
@@ -73,6 +93,10 @@ d <- sim_dat(
   rho = 0.7
 )
 ```
+
+Artificially remove some data to reflect assessments on some stocks not starting in the first year an some assessments being old.
+
+Note that we use a trick of `999` being a "magic" number in Stan since Stan can't work with NAs itself. There are other options that would be slightly faster, but this makes for simple code.
 
 ```{r}
 d$y[1:20, 1:9] <- NA
@@ -91,6 +115,8 @@ dat <- list(
 )
 ```
 
+A plot of our simulated data. The first panel reflects the observed mean stock status and the second panel reflects the underlying "true" stock status. We need to think of a better term, since it's not really the "true" stock status but the latent stock status underlying the estimated mean and SD. The black line is the overall trend status.
+
 ```{r}
 par(mfrow = c(1, 2))
 matplot(d$y, type = "l", lty = 1, col = plasma(ncol(d$y)))
@@ -99,9 +125,21 @@ matplot(d$y_true, type = "l", lty = 1, col = plasma(ncol(d$y)))
 lines(seq_along(d$x_t), (d$x_t), lwd = 3)
 ```
 
+The Stan model:
+
+```{r}
+writeLines(readLines(here("analysis/rw-ss.stan")))
+```
+
+There are a number of "tricks" built into the model to enable efficient sampling including "non-centered parameterizations" of various variance terms.
+
+Compile the model:
+
 ```{r compile-model, warning=FALSE, message=FALSE, results="hide", cache=TRUE}
 model <- stan_model(here("analysis/rw-ss.stan"))
 ```
+
+Set up a custom initialization function and sample from the model:
 
 ```{r fit-model, warning=FALSE, message=FALSE, results="hide", cache=TRUE}
 initf <- function() {
@@ -121,6 +159,8 @@ m <- sampling(
 )
 ```
 
+Inspect the model:
+
 ```{r basic-plots, cache=TRUE}
 pairs(m, pars = c("sigma_eps", "sigma_x", "rho", "x[1]", "alpha[1]"))
 rstan::check_hmc_diagnostics(m)
@@ -129,6 +169,8 @@ rstan::check_hmc_diagnostics(m)
 print(m, pars = c("sigma_eps", "sigma_x", "rho", "alpha"))
 # shinystan::launch_shinystan(m)
 ```
+
+Look at the posterior distributions:
 
 ```{r}
 p <- extract(m)
@@ -159,6 +201,8 @@ abline(v = d$sigma_eps, col = "red")
 hist(p$sigma_x)
 abline(v = d$sigma_x, col = "red")
 ```
+
+Look at the estimated overall trend (grey/black) and the true overall trend (red):
 
 ```{r}
 x_t <- tidybayes::gather_draws(m, x[.t])
