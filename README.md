@@ -8,4 +8,6 @@ The model extends the one described in the appendix section *Estimating regional
 * may ultimately allow for a hierarchy of stocks with correlated random walks
 
 So far, this repo contains:
+* the model in Stan
 * a simulation test of the model
+* example data in a 'strawman' format for Pacific Cod stocks
