@@ -7,3 +7,4 @@
 *.html
 *_cache/
 *_files/
+data-raw/model-output/

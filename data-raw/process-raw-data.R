@@ -2,7 +2,6 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-
 # arrowtooth base model -----------------------------------------------------
 
 base_model <- readRDS("data-raw/model-output/arrowtooth-2015.rds")
@@ -86,4 +85,22 @@ group_by(d, year) %>%
   select(species, region, everything()) %>%
   saveRDS("data-raw/yelloweye-4b.rds")
 
+# POP 5ABC 2017 -----------------------------------------------------------
 
+d1 <- readxl::read_xls("data-raw/model-output/POP.5ABC.2017.MCMC.forSean.xls", sheet = 1)
+d2 <- readxl::read_xls("data-raw/model-output/POP.5ABC.2017.MCMC.forSean.xls", sheet = 2)
+b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
+d <- dplyr::left_join(b, d2) %>%
+  mutate(year = as.character(year))
+# ggplot(d, aes(year, B / Bmsy, group = sample)) + geom_line()
+d <- mutate(d, species = "pacific-ocean-perch", region = "5ABC") %>%
+  select(species, region, everything()) %>%
+  group_by(year) %>%
+  summarise(
+    species = species[1],
+    region = region[1],
+    log_blrp = mean(log(B/(Bmsy*0.4))),
+    sd_log_blrp = sd(log(B/(Bmsy*0.4))),
+    .groups = "drop"
+  )
+d %>% saveRDS("data-raw/pop-5abcd.rds")
