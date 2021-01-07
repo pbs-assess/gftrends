@@ -82,7 +82,7 @@ pcod5abcd %>% saveRDS("data-raw/pcod-5abcd.rds")
 
 d <- readRDS("data-raw/model-output/ye-inside-b-lrp.rds")
 group_by(d, year) %>%
-  summarise(species = "yelloweye", region = "4B", log_brlp = mean(log(b_lrp)), sd_log_brlp = sd(log(b_lrp))) %>%
+  summarise(species = "yelloweye", region = "4B", log_blrp = mean(log(b_lrp)), sd_log_blrp = sd(log(b_lrp))) %>%
   select(species, region, everything()) %>%
   saveRDS("data-raw/yelloweye-4b.rds")
 
