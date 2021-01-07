@@ -10,4 +10,5 @@ The model extends the one described in the appendix section *Estimating regional
 So far, this repo contains:
 * the model in Stan
 * a simulation test of the model
-* example data in a 'strawman' format for Pacific Cod stocks
+* notes on data to gather
+* the beginning of raw data formatting
