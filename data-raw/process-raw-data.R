@@ -87,20 +87,73 @@ group_by(d, year) %>%
 
 # POP 5ABC 2017 -----------------------------------------------------------
 
+format_rowan_raw_data <- function(sheet1, sheet2) {
+  b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
+  d <- dplyr::left_join(b, d2) %>%
+    mutate(year = as.character(year))
+  # ggplot(d, aes(year, B / Bmsy, group = sample)) + geom_line()
+  mutate(d, species = "pacific-ocean-perch", region = "5ABC") %>%
+    select(species, region, everything()) %>%
+    group_by(year) %>%
+    summarise(
+      species = species[1],
+      region = region[1],
+      log_blrp = mean(log(B/(Bmsy*0.4))),
+      sd_log_blrp = sd(log(B/(Bmsy*0.4))),
+      .groups = "drop"
+    )
+}
+
 d1 <- readxl::read_xls("data-raw/model-output/POP.5ABC.2017.MCMC.forSean.xls", sheet = 1)
 d2 <- readxl::read_xls("data-raw/model-output/POP.5ABC.2017.MCMC.forSean.xls", sheet = 2)
-b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
-d <- dplyr::left_join(b, d2) %>%
-  mutate(year = as.character(year))
-# ggplot(d, aes(year, B / Bmsy, group = sample)) + geom_line()
-d <- mutate(d, species = "pacific-ocean-perch", region = "5ABC") %>%
-  select(species, region, everything()) %>%
-  group_by(year) %>%
-  summarise(
-    species = species[1],
-    region = region[1],
-    log_blrp = mean(log(B/(Bmsy*0.4))),
-    sd_log_blrp = sd(log(B/(Bmsy*0.4))),
-    .groups = "drop"
-  )
+d <- format_rowan_raw_data(d1, d2)
 d %>% saveRDS("data-raw/pop-5abcd.rds")
+
+# Bocaccio ------------------------------------------------------------------
+
+format_rowan_raw_data2 <- function(sheet1, sheet2, .species, .region) {
+  b <- tidyr::pivot_longer(d1, cols = -c(1, 2), names_to = "year", values_to = "B")
+  d <- dplyr::left_join(b, d2) %>%
+    mutate(year = as.character(year))
+  # ggplot(d, aes(year, B / Bmsy, group = sample)) + geom_line()
+  mutate(d, species = .species, region = .region) %>%
+    select(species, region, everything()) %>%
+    group_by(year) %>%
+    summarise(
+      species = species[1],
+      region = region[1],
+      log_blrp = mean(log(B/(Bmsy*0.4))),
+      sd_log_blrp = sd(log(B/(Bmsy*0.4))),
+      .groups = "drop"
+    )
+}
+
+d1 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 2)
+d <- format_rowan_raw_data2(d1, d2, "bocaccio", "5ABCD")
+d %>% saveRDS("data-raw/bocaccio-5abcd.rds")
+
+# walleye -----------------------------------------------------------------
+
+d1 <- readxl::read_xlsx("data-raw/model-output/WWR.CST.2019.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/WWR.CST.2019.MCMC.forSean.xlsx", sheet = 2)
+d <- format_rowan_raw_data2(d1, d2, "walleye-pollock", "BC")
+d %>% saveRDS("data-raw/walleye-bc.rds")
+
+# REBS --------------------------------------------------------------------
+
+d1 <- readxl::read_xlsx("data-raw/model-output/REBS.BCN.2020.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/REBS.BCN.2020.MCMC.forSean.xlsx", sheet = 2)
+d <- format_rowan_raw_data2(d1, d2, "rougheye/blackspotted", "BC North")
+d %>% saveRDS("data-raw/rebs-bc-north.rds")
+
+d1 <- readxl::read_xlsx("data-raw/model-output/REBS.BCS.2020.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/REBS.BCS.2020.MCMC.forSean.xlsx", sheet = 2)
+d <- format_rowan_raw_data2(d1, d2, "rougheye/blackspotted", "BC South")
+d %>% saveRDS("data-raw/rebs-bc-south.rds")
+
+# sable -------------------------------------------------------------------
+
+d <- readRDS("data-raw/model-output/sable.rds")
+d <- mutate(d, region = "BC") %>% as_tibble()
+d %>% saveRDS("data-raw/sable-bc.rds")
