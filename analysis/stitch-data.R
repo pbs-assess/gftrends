@@ -1,5 +1,6 @@
 f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
 
+# dl <- purrr::map(f, readRDS)
 d <- purrr::map_dfr(f, readRDS)
 
 library(tidyverse)

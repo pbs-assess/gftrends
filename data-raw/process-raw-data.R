@@ -101,7 +101,8 @@ format_rowan_raw_data <- function(sheet1, sheet2) {
       log_blrp = mean(log(B/(Bmsy*0.4))),
       sd_log_blrp = sd(log(B/(Bmsy*0.4))),
       .groups = "drop"
-    )
+    ) %>%
+    mutate(year = as.integer(as.character(year)))
 }
 
 d1 <- readxl::read_xls("data-raw/model-output/POP.5ABC.2017.MCMC.forSean.xls", sheet = 1)
@@ -111,6 +112,7 @@ d %>% saveRDS("data-raw/pop-5abcd.rds")
 
 # Bocaccio ------------------------------------------------------------------
 
+# multiple 'Runs':
 format_rowan_raw_data2 <- function(sheet1, sheet2, .species, .region) {
   b <- tidyr::pivot_longer(d1, cols = -c(1, 2), names_to = "year", values_to = "B")
   d <- dplyr::left_join(b, d2) %>%
@@ -125,7 +127,8 @@ format_rowan_raw_data2 <- function(sheet1, sheet2, .species, .region) {
       log_blrp = mean(log(B/(Bmsy*0.4))),
       sd_log_blrp = sd(log(B/(Bmsy*0.4))),
       .groups = "drop"
-    )
+    ) %>%
+    mutate(year = as.integer(as.character(year)))
 }
 
 d1 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 1)
