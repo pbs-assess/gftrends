@@ -160,3 +160,8 @@ d %>% saveRDS("data-raw/rebs-bc-south.rds")
 d <- readRDS("data-raw/model-output/sable.rds")
 d <- mutate(d, region = "BC") %>% as_tibble()
 d %>% saveRDS("data-raw/sable-bc.rds")
+
+# quillback ---------------------------------------------------------------
+
+d <- readr::read_csv("data-raw/model-output/quill-ins.csv")
+
