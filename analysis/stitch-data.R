@@ -1,9 +1,11 @@
+library(tidyverse)
+
 f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
 
 # dl <- purrr::map(f, readRDS)
 d <- purrr::map_dfr(f, readRDS)
 
-library(tidyverse)
+d <- select(d, year, species, region, log_blrp, sd_log_blrp)
 
 d %>% mutate(stock = paste(species, region)) %>%
   ggplot(aes(

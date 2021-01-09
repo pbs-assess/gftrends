@@ -157,11 +157,93 @@ d %>% saveRDS("data-raw/rebs-bc-south.rds")
 
 # sable -------------------------------------------------------------------
 
-d <- readRDS("data-raw/model-output/sable.rds")
-d <- mutate(d, region = "BC") %>% as_tibble()
-d %>% saveRDS("data-raw/sable-bc.rds")
+d <- readr::read_csv("data-raw/model-output/sable-mcOutMSY.csv")
+d <- select(d, starts_with("spawnB"), Bmsy)
+d2 <- pivot_longer(d, -Bmsy) %>%
+  mutate(year_i = gsub("spawnB", "", name)) %>%
+  mutate(year = as.integer(year_i) + 1964L) %>%
+  mutate(species = "sablefish", region = "BC") %>%
+  select(species, region, year, SSB = value, Bmsy) %>%
+  group_by(species, region, year) %>%
+  summarise(
+    log_blrp = mean(log(SSB/(Bmsy*0.4))),
+    sd_log_blrp = sd(log(SSB/(Bmsy*0.4))),
+    log_bbmsy = mean(log(SSB/Bmsy)),
+    sd_log_bbmsy = sd(log(SSB/Bmsy)),
+    p_lrp = mean(SSB < (Bmsy * 0.4)),
+    .groups = "drop"
+  ) %>%
+  filter(is.finite(log_blrp))
+d2 %>% saveRDS("data-raw/sable-bc.rds")
+
+# d <- readRDS("data-raw/model-output/sable.rds")
+# d <- mutate(d, region = "BC") %>% as_tibble()
+# d %>% saveRDS("data-raw/sable-bc.rds")
+#
+# ggplot(d2, aes(year, log_blrp)) + geom_line() +
+#   geom_line(data = d)
+# ggplot(d2, aes(year, sd_log_blrp)) + geom_line() +
+#   geom_line(data = d, colour = "grey")
 
 # quillback ---------------------------------------------------------------
 
 d <- readr::read_csv("data-raw/model-output/quill-ins.csv")
+plot(d$x, d$med)
 
+d_ins_med <- as.data.frame(approx(d$x, d$med, xout = seq(1921, 2009))) %>%
+  rename(year = x, med = y)
+d_ins_upr <- as.data.frame(approx(d$x, d$upr, xout = seq(1921, 2009))) %>%
+  rename(year = x, upr = y)
+d_ins_lwr <- as.data.frame(approx(d$x, d$lwr, xout = seq(1921, 2009))) %>%
+  rename(year = x, lwr = y)
+d <- left_join(d_ins_med, d_ins_lwr) %>% left_join(d_ins_upr) %>%
+  as_tibble()
+d$log_B <- log(d$med)
+d$log_B_lwr <- log(d$lwr)
+d$log_B_upr <- log(d$upr)
+d <- mutate(d, sd_log_B = (log_B_upr - log_B_lwr) / (qnorm(0.975) * 2))
+
+ggplot(d, aes(year, exp(log_B), ymin = exp(log_B + 1.96 * sd_log_B), ymax = exp(log_B - 1.96 * sd_log_B))) +
+  geom_line(lwd = 2) +
+  geom_ribbon(alpha = 0.2) +
+  geom_line(aes(year, med), colour = "red") +
+  geom_ribbon(aes(year, med, ymin = lwr, ymax = upr), alpha = 0.2, colour = "red")
+
+# Bmsy is 5742 in Table 5
+bmsy <- 5742
+lrp <- bmsy * 0.4
+
+out <- d %>% transmute(species = "Quillback", region = "WCVI Inside", year = year, log_blrp = log(med / lrp), sd_log_blrp = sd_log_B, log_bbmsy = log(med/bmsy), sd_log_bbmsy = sd_log_blrp, p_lrp = NA)
+out %>% saveRDS("data-raw/quillback-inside.rds")
+
+# outside:
+
+d <- readr::read_csv("data-raw/model-output/quill-out.csv")
+plot(d$x, d$med)
+
+d_out_med <- as.data.frame(approx(d$x, d$med, xout = seq(1921, 2009))) %>%
+  rename(year = x, med = y)
+d_out_upr <- as.data.frame(approx(d$x, d$upr, xout = seq(1921, 2009))) %>%
+  rename(year = x, upr = y)
+d_out_lwr <- as.data.frame(approx(d$x, d$lwr, xout = seq(1921, 2009))) %>%
+  rename(year = x, lwr = y)
+d <- left_join(d_out_med, d_out_lwr) %>% left_join(d_out_upr) %>%
+  as_tibble()
+d$log_B <- log(d$med)
+d$log_B_lwr <- log(d$lwr)
+d$log_B_upr <- log(d$upr)
+d <- mutate(d, sd_log_B = (log_B_upr - log_B_lwr) / (qnorm(0.975) * 2))
+
+ggplot(d, aes(year, exp(log_B), ymin = exp(log_B + 1.96 * sd_log_B), ymax = exp(log_B - 1.96 * sd_log_B))) +
+  geom_line(lwd = 2) +
+  geom_ribbon(alpha = 0.2) +
+  geom_line(aes(year, med), colour = "red") +
+  geom_ribbon(aes(year, med, ymin = lwr, ymax = upr), alpha = 0.2, colour = "red")
+
+# Bmsy is 11718 in Table 4
+bmsy <- 11718
+lrp <- bmsy * 0.4
+
+out <- d %>% transmute(species = "Quillback", region = "BC Outside", year = year, log_blrp = log(med / lrp), sd_log_blrp = sd_log_B, log_bbmsy = log(med/bmsy), sd_log_bbmsy = sd_log_blrp, p_lrp = NA)
+
+out %>% saveRDS("data-raw/quillback-outside.rds")
