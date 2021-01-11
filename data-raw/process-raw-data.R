@@ -113,7 +113,7 @@ d %>% saveRDS("data-raw/pop-5abcd.rds")
 # Bocaccio ------------------------------------------------------------------
 
 # multiple 'Runs':
-format_rowan_raw_data2 <- function(sheet1, sheet2, .species, .region) {
+format_rowan_raw_data2 <- function(sheet1, sheet2, .species, .region, lrp = Bmsy) {
   b <- tidyr::pivot_longer(d1, cols = -c(1, 2), names_to = "year", values_to = "B")
   d <- dplyr::left_join(b, d2) %>%
     mutate(year = as.character(year))
@@ -124,8 +124,8 @@ format_rowan_raw_data2 <- function(sheet1, sheet2, .species, .region) {
     summarise(
       species = species[1],
       region = region[1],
-      log_blrp = mean(log(B/(Bmsy*0.4))),
-      sd_log_blrp = sd(log(B/(Bmsy*0.4))),
+      log_blrp = mean(log(B/({{lrp}}*0.4))),
+      sd_log_blrp = sd(log(B/({{lrp}}*0.4))),
       .groups = "drop"
     ) %>%
     mutate(year = as.integer(as.character(year)))
@@ -136,12 +136,12 @@ d2 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", 
 d <- format_rowan_raw_data2(d1, d2, "bocaccio", "5ABCD")
 d %>% saveRDS("data-raw/bocaccio-5abcd.rds")
 
-# walleye -----------------------------------------------------------------
+# widow ---------------------------------------------------------------------
 
 d1 <- readxl::read_xlsx("data-raw/model-output/WWR.CST.2019.MCMC.forSean.xlsx", sheet = 1)
 d2 <- readxl::read_xlsx("data-raw/model-output/WWR.CST.2019.MCMC.forSean.xlsx", sheet = 2)
-d <- format_rowan_raw_data2(d1, d2, "walleye-pollock", "BC")
-d %>% saveRDS("data-raw/walleye-bc.rds")
+d <- format_rowan_raw_data2(d1, d2, "widow-rockfish", "BC")
+d %>% saveRDS("data-raw/widow-bc.rds")
 
 # REBS --------------------------------------------------------------------
 
@@ -154,6 +154,25 @@ d1 <- readxl::read_xlsx("data-raw/model-output/REBS.BCS.2020.MCMC.forSean.xlsx",
 d2 <- readxl::read_xlsx("data-raw/model-output/REBS.BCS.2020.MCMC.forSean.xlsx", sheet = 2)
 d <- format_rowan_raw_data2(d1, d2, "rougheye/blackspotted", "BC South")
 d %>% saveRDS("data-raw/rebs-bc-south.rds")
+
+# walleye -----------------------------------------------------------------
+
+d1 <- readxl::read_xlsx("data-raw/model-output/WAP.BCN.2017.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/WAP.BCN.2017.MCMC.forSean.xlsx", sheet = 2)
+d <- format_rowan_raw_data2(d1, d2, "walleye-pollock", "BC North", lrp = Bmin)
+d %>% saveRDS("data-raw/walleye-bc-north.rds")
+
+d1 <- readxl::read_xlsx("data-raw/model-output/WAP.BCS.2017.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/WAP.BCS.2017.MCMC.forSean.xlsx", sheet = 2)
+d <- format_rowan_raw_data2(d1, d2, "walleye-pollock", "BC South", lrp = Bmin)
+d %>% saveRDS("data-raw/walleye-bc-south.rds")
+
+# yellowtail --------------------------------------------------------------
+
+d1 <- readxl::read_xlsx("data-raw/model-output/YTR.CST.2014.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/YTR.CST.2014.MCMC.forSean.xlsx", sheet = 2)
+d <- format_rowan_raw_data2(d1, d2, "yellowtail", "BC", lrp = Bmsy)
+d %>% saveRDS("data-raw/yellowtail-bc.rds")
 
 # sable -------------------------------------------------------------------
 
