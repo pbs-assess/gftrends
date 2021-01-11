@@ -5,6 +5,7 @@ data {
   matrix[T,J] tau;   // observation measurement-error SD
   // real<lower=1> df;  // Student-t df for RW
   real<lower=0> rho_sd;
+  int<lower=1> first_obs[J]; // first observation
 }
 parameters {
   real<lower=0> sigma_x;        // RW process SD
@@ -36,12 +37,16 @@ transformed parameters {
 }
 model {
   for (j in 1:J) {
-    if (y[1,j] != 999) {
-      eps[1,j] ~ normal(0, sigma_eps);
-    }
-    for (t in 2:T) {
+    // if (y[1,first_obs[j]] != 999) {
+    //   eps[1,j] ~ normal(0, sigma_eps);
+    // }
+    for (t in 1:T) {
+      if (t == first_obs[j]) {
+        eps[t,j] ~ normal(0, sigma_eps);
+      }
+      if (t > first_obs[j] && y[t,j] != 999) {
       // if (y[t,j] != 999 && y[t-1,j] != 999) {
-      if (y[t,j] != 999) {
+      // if (y[t,j] != 999) {
         eps[t,j] ~ normal(rho * eps[t-1,j], sigma_eps); // AR1 epsilon
       }
     }

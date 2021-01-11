@@ -1,6 +1,9 @@
 # library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(rstan)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
 
 f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
 d <- purrr::map_dfr(f, readRDS)
@@ -41,17 +44,18 @@ dat_wide_tau <- tidyr::pivot_wider(d,
   arrange(year) %>%
   filter(year >= 1950, year <= 2020)
 
+dd <- as.matrix(t(dat_wide[,-1]))
+first_obs <- apply(dd, 1, function(x) which(!(x == 999))[1])
+stopifnot(first_obs >= 1)
 dat <- list(
   T = nrow(dat_wide),
   J = ncol(dat_wide) - 1,
   y = as.matrix(dat_wide[, -1]),
   tau = as.matrix(dat_wide_tau[, -1]),
+  first_obs = first_obs,
   rho_sd = 1
 )
 
-library(rstan)
-rstan_options(auto_write = TRUE)
-options(mc.cores = parallel::detectCores())
 model <- stan_model("analysis/rw-ss.stan")
 initf <- function() {
   list(
