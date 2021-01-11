@@ -8,3 +8,6 @@
 *_cache/
 *_files/
 data-raw/model-output/
+*.o
+*.so
+dlm_ar1.cpp
