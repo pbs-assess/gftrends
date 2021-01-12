@@ -29,7 +29,7 @@ arrowtooth_sum %>% saveRDS("data-raw/arrowtooth-3cd.rds")
 # pcod average model ------------------------------------------------------
 
 d3cd <- readRDS("data-raw/model-output/pcod-avg-3cd.rds")
-d5abcd <- readRDS("data-raw/model-output/pcod-avg-3cd.rds")
+d5abcd <- readRDS("data-raw/model-output/pcod-avg-5abcd.rds")
 
 tidy_bratio_dat <- function(ratio) {
   ratio %>% reshape2::melt() %>% rename(year = variable) %>%
