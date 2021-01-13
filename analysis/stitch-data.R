@@ -6,6 +6,12 @@ rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 
 f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
+f <- f[!grepl("-mcmc", f)]
+d <- purrr::map_dfr(f, readRDS)
+d <- select(d, year, species, region, log_blrp, sd_log_blrp)
+
+f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
+f <- f[grepl("-mcmc", f)]
 d <- purrr::map_dfr(f, readRDS)
 d <- select(d, year, species, region, log_blrp, sd_log_blrp)
 
@@ -139,7 +145,7 @@ x_t %>%
   geom_line() +
   # theme_light() +
   ggsidekick::theme_sleek() +
-  geom_line(aes(x = year, y = m), data = basic, colour = "grey30", inherit.aes = FALSE, lty = 2) +
+  # geom_line(aes(x = year, y = m), data = basic, colour = "grey30", inherit.aes = FALSE, lty = 2) +
   coord_cartesian(xlim = c(1950, 2020), ylim = c(.4, 15), expand = FALSE) +
   geom_hline(yintercept = 1, lty = 3) +
   scale_y_log10() +
@@ -151,3 +157,4 @@ x_t %>%
     axis.title.x = element_blank(), panel.grid.major = element_line(colour = "grey92"),
     panel.grid.minor = element_line(colour = "grey98")
   )
+

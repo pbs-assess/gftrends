@@ -26,7 +26,9 @@ arrowtooth_sum <- arrowtooth %>%
     log_blrp = mean(log(blrp)), sd_log_blrp = sd(log(blrp)))
 
 arrowtooth_sum %>% saveRDS("data-raw/arrowtooth-3cd.rds")
-arrowtooth %>% rename(b = ssb) %>% saveRDS("data-raw/arrowtooth-3cd-mcmc.rds")
+arrowtooth %>% rename(b = ssb) %>%
+  mutate(species = "arrowtooth", region = "3CD") %>%
+  saveRDS("data-raw/arrowtooth-3cd-mcmc.rds")
 
 # pcod average model ------------------------------------------------------
 
@@ -76,8 +78,7 @@ head(pcod5abcd)
 pcod3cd %>% saveRDS("data-raw/pcod-3cd.rds")
 pcod5abcd %>% saveRDS("data-raw/pcod-5abcd.rds")
 
-  # left_join(dat) %>%
-  # mutate(across(-1, round, digits = 4L))
+# TODO! pcod USR and MCMC
 
 # inside yelloweye --------------------------------------------------------
 
@@ -87,15 +88,17 @@ group_by(d, year) %>%
   select(species, region, everything()) %>%
   saveRDS("data-raw/yelloweye-4b.rds")
 
+# TODO! ins. yelloweye MCMC and USR and MSY
+
 # POP 5ABC 2017 -----------------------------------------------------------
 
 # one 'Run':
-format_rowan_raw_data <- function(sheet1, sheet2) {
+format_rowan_raw_data <- function(sheet1, sheet2, .species, .region) {
   b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
   d <- dplyr::left_join(b, d2) %>%
     mutate(year = as.character(year))
   # ggplot(d, aes(year, B / Bmsy, group = sample)) + geom_line()
-  mutate(d, species = "pacific-ocean-perch", region = "5ABC") %>%
+  mutate(d, species = .species, region = .region) %>%
     select(species, region, everything()) %>%
     group_by(year) %>%
     summarise(
@@ -110,7 +113,7 @@ format_rowan_raw_data <- function(sheet1, sheet2) {
 
 d1 <- readxl::read_xls("data-raw/model-output/POP.5ABC.2017.MCMC.forSean.xls", sheet = 1)
 d2 <- readxl::read_xls("data-raw/model-output/POP.5ABC.2017.MCMC.forSean.xls", sheet = 2)
-d <- format_rowan_raw_data(d1, d2)
+d <- format_rowan_raw_data(d1, d2, .species = "pacific-ocean-perch", .region = "5ABC")
 d %>% saveRDS("data-raw/pop-5abcd.rds")
 
 b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
@@ -118,7 +121,8 @@ d <- dplyr::left_join(b, d2) %>%
   mutate(year = as.integer(as.character(year))) %>%
   rename(b = B, bmsy = Bmsy) %>%
   mutate(run = 1) %>%
-  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy)
+  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
+  mutate(species = "pacific-ocean-perch", region = "5ABC")
 d %>% saveRDS("data-raw/pop-5abcd-mcmc.rds")
 
 # Bocaccio ------------------------------------------------------------------
@@ -146,7 +150,9 @@ format_rowan_raw_data2_mcmc <- function(sheet1, sheet2, .species, .region) {
   dplyr::left_join(b, d2) %>%
     mutate(year = as.integer(as.character(year))) %>%
     rename(b = B, bmsy = Bmsy) %>%
-    mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy)
+    mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
+    rename(run = Run) %>%
+    mutate(species = .species, region = .region)
 }
 
 d1 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 1)
@@ -199,7 +205,7 @@ d %>% saveRDS("data-raw/walleye-bc-south.rds")
 
 d1 <- readxl::read_xlsx("data-raw/model-output/YTR.CST.2014.MCMC.forSean.xlsx", sheet = 1)
 d2 <- readxl::read_xlsx("data-raw/model-output/YTR.CST.2014.MCMC.forSean.xlsx", sheet = 2)
-d <- format_rowan_raw_data2(d1, d2, "yellowtail", "BC")
+d <- format_rowan_raw_data(d1, d2, "yellowtail", "BC")
 d %>% saveRDS("data-raw/yellowtail-bc.rds")
 
 b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
@@ -207,7 +213,8 @@ d <- dplyr::left_join(b, d2) %>%
   mutate(year = as.integer(as.character(year))) %>%
   rename(b = B, bmsy = Bmsy) %>%
   mutate(run = 1) %>%
-  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy)
+  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
+  mutate(species = "yellowtail", region = "BC")
 d %>% saveRDS("data-raw/yellowtail-bc-mcmc.rds")
 
 # sable -------------------------------------------------------------------
