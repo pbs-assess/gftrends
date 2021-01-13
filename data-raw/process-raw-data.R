@@ -117,6 +117,7 @@ group_by(d, year) %>%
 
 d <- readRDS("data-raw/model-output/ye-inside-b-mcmc.rds")
 d <- mutate(d, species = "yelloweye", region = "4B")
+d <- mutate(d, lrp = bmsy * 0.4, usr = bmsy * 0.8)
 d %>% saveRDS("data-raw/yelloweye-4b-mcmc.rds")
 
 # POP 5ABC 2017 -----------------------------------------------------------
@@ -185,6 +186,15 @@ format_rowan_raw_data2_mcmc <- function(sheet1, sheet2, .species, .region) {
     mutate(species = .species, region = .region) %>%
     rename(iter = sample)
 }
+format_rowan_raw_data2_mcmc_lrp <- function(sheet1, sheet2, .species, .region) {
+  b <- tidyr::pivot_longer(d1, cols = -c(1, 2), names_to = "year", values_to = "B")
+  dplyr::left_join(b, d2) %>%
+    mutate(year = as.integer(as.character(year))) %>%
+    rename(b = B, lrp = Bmin) %>%
+    rename(run = Run) %>%
+    mutate(species = .species, region = .region) %>%
+    rename(iter = sample)
+}
 
 d1 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 1)
 d2 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 2)
@@ -220,17 +230,15 @@ d1 <- readxl::read_xlsx("data-raw/model-output/WAP.BCN.2017.MCMC.forSean.xlsx", 
 d2 <- readxl::read_xlsx("data-raw/model-output/WAP.BCN.2017.MCMC.forSean.xlsx", sheet = 2)
 d <- format_rowan_raw_data2(d1, d2, "walleye-pollock", "BC North", lrp = Bmin)
 d %>% saveRDS("data-raw/walleye-bc-north.rds")
-# format_rowan_raw_data2_mcmc(d1, d2, "walleye-pollock", "BC North", lrp = Bmin) %>%
-#   saveRDS("data-raw/walleye-bc-north-mcmc.rds")
-# TODO!
+format_rowan_raw_data2_mcmc_lrp(d1, d2, "walleye-pollock", "BC North") %>%
+  saveRDS("data-raw/walleye-bc-north-mcmc.rds")
 
 d1 <- readxl::read_xlsx("data-raw/model-output/WAP.BCS.2017.MCMC.forSean.xlsx", sheet = 1)
 d2 <- readxl::read_xlsx("data-raw/model-output/WAP.BCS.2017.MCMC.forSean.xlsx", sheet = 2)
 d <- format_rowan_raw_data2(d1, d2, "walleye-pollock", "BC South", lrp = Bmin)
 d %>% saveRDS("data-raw/walleye-bc-south.rds")
-# format_rowan_raw_data2_mcmc(d1, d2, "walleye-pollock", "BC South", lrp = Bmin) %>%
-#   saveRDS("data-raw/walleye-bc-south-mcmc.rds")
-# TODO!
+format_rowan_raw_data2_mcmc_lrp(d1, d2, "walleye-pollock", "BC South") %>%
+  saveRDS("data-raw/walleye-bc-south-mcmc.rds")
 
 # yellowtail --------------------------------------------------------------
 
@@ -249,7 +257,7 @@ d <- dplyr::left_join(b, d2) %>%
   rename(iter = sample)
 d %>% saveRDS("data-raw/yellowtail-bc-mcmc.rds")
 
-# sable -------------------------------------------------------------------
+# sablefish -----------------------------------------------------------------
 
 d <- readr::read_csv("data-raw/model-output/sable-mcOutMSY.csv")
 d <- select(d, starts_with("spawnB"), Bmsy)
@@ -273,6 +281,7 @@ d3 %>% saveRDS("data-raw/sable-bc.rds")
 
 d2 %>% rename(b = SSB, bmsy = Bmsy) %>%
   mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy, run = 1) %>%
+  filter(b > 0) %>%
   saveRDS("data-raw/sable-bc-mcmc.rds")
 
 # d <- readRDS("data-raw/model-output/sable.rds")
@@ -317,7 +326,11 @@ out <- d %>% transmute(species = "Quillback", region = "WCVI Inside", year = yea
   log_blrp = log(med / lrp), sd_log_blrp = sd_log_B,
   log_busr = log(med / usr), sd_log_busr = sd_log_B,
   log_bbmsy = log(med / bmsy), sd_log_bbmsy = sd_log_B,
-  q0.025 = lwr, q0.975 = upr, p_lrp = NA)
+  q0.05_blrp = lwr / lrp, q0.95_blrp = upr / lrp,
+  q0.05_busr = lwr / usr, q0.95_busr = upr / usr,
+  q0.05_bmsy = lwr / bmsy, q0.95_bmsy = upr / bmsy,
+  p_lrp = NA, p_usr = NA
+)
 out %>% saveRDS("data-raw/quillback-inside.rds")
 
 # outside:
@@ -353,6 +366,10 @@ out <- d %>% transmute(species = "Quillback", region = "BC Outside", year = year
   log_blrp = log(med / lrp), sd_log_blrp = sd_log_B,
   log_busr = log(med / usr), sd_log_busr = sd_log_B,
   log_bbmsy = log(med / bmsy), sd_log_bbmsy = sd_log_B,
-  q0.025 = lwr, q0.975 = upr, p_lrp = NA)
+  q0.05_blrp = lwr / lrp, q0.95_blrp = upr / lrp,
+  q0.05_busr = lwr / usr, q0.95_busr = upr / usr,
+  q0.05_bmsy = lwr / bmsy, q0.95_bmsy = upr / bmsy,
+  p_lrp = NA, p_usr = NA
+  )
 
 out %>% saveRDS("data-raw/quillback-outside.rds")

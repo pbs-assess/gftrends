@@ -5,36 +5,78 @@ library(rstan)
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 
-f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
-f <- f[!grepl("-mcmc", f)]
-d <- purrr::map_dfr(f, readRDS)
-d <- select(d, year, species, region, log_blrp, sd_log_blrp)
+# f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
+# f <- f[!grepl("-mcmc", f)]
+# d <- purrr::map_dfr(f, readRDS)
+# d <- select(d, year, species, region, log_blrp, sd_log_blrp)
+#
+# d %>% mutate(stock = paste(species, region)) %>%
+#   ggplot(aes(
+#     x = year,
+#     y = exp(log_blrp),
+#     ymin = exp(log_blrp - 2 * sd_log_blrp),
+#     ymax = exp(log_blrp + 2 * sd_log_blrp)
+#   )) +
+#   geom_ribbon(colour = NA, fill = "grey50", alpha = 0.4) +
+#   geom_line() +
+#   facet_wrap(~stock) +
+#   scale_y_log10() +
+#   geom_hline(yintercept = 1, lty = 2) +
+#   coord_cartesian(xlim = c(1950, 2020)) +
+#   ylab("B/LRP") +
+#   theme(axis.title.x = element_blank())
 
 f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
 f <- f[grepl("-mcmc", f)]
-d <- purrr::map_dfr(f, readRDS)
-d <- select(d, year, species, region, log_blrp, sd_log_blrp)
+.readRDS <- function(x) {
+  res <- readRDS(x)
+  res$run <- as.character(res$run)
+  res
+}
 
-d %>%
-  mutate(stock = paste(species, region)) %>%
+quant <- function(x, probs, ...) {
+  as.numeric(quantile(x = x, probs = probs, na.rm = TRUE, ...))
+}
+d <- purrr::map_dfr(f, .readRDS)
+out <- d %>% group_by(species, region, year) %>%
+  summarise(
+    log_blrp = mean(log(b / lrp)), sd_log_blrp = sd(log(b / lrp)),
+    q0.05_blrp = quant(b / lrp, probs = 0.05), q0.95_blrp = quant(b / lrp, probs = 0.95),
+    log_busr = mean(log(b / usr)), sd_log_busr = sd(log(b / usr)),
+    q0.05_busr = quant(b / usr, probs = 0.05),q0.95_busr = quant(b / usr, probs = 0.95),
+    log_bbmsy = mean(log(b / bmsy)), sd_log_bbmsy = sd(log(b / bmsy)),
+    q0.05_bmsy = quant(b / bmsy, probs = 0.05),q0.95_bmsy = quant(b / bmsy, probs = 0.95),
+    p_lrp = mean(b < lrp), p_usr = mean(b < usr),
+    .groups = "drop"
+  )
+out <- bind_rows(out, readRDS("data-raw/quillback-inside.rds"))
+out <- bind_rows(out, readRDS("data-raw/quillback-outside.rds"))
+out <- mutate(out, stock = paste(species, region)) %>%
+  mutate(stock = gsub(" ", "_", stock)) %>%
+  mutate(stock = gsub("-", "_", stock)) %>%
+  select(species, region, stock, year, everything())
+
+out %>%
   ggplot(aes(
     x = year,
     y = exp(log_blrp),
     ymin = exp(log_blrp - 2 * sd_log_blrp),
     ymax = exp(log_blrp + 2 * sd_log_blrp)
   )) +
-  geom_ribbon(colour = NA, fill = "grey50", alpha = 0.4) +
-  geom_line() +
+  # geom_ribbon(colour = NA, fill = "grey50", alpha = 0.4) +
+  geom_ribbon(colour = NA, fill = "red", alpha = 0.2, mapping = aes(ymin = q0.05_blrp, ymax = q0.95_blrp)) +
+  geom_ribbon(colour = NA, fill = "blue", alpha = 0.2, mapping = aes(ymin = q0.05_busr, ymax = q0.95_busr)) +
+  geom_ribbon(colour = NA, fill = "green", alpha = 0.2, mapping = aes(ymin = q0.05_bmsy, ymax = q0.95_bmsy)) +
+  geom_line(aes(y = exp(log_blrp)), col = "red") +
+  geom_line(aes(y = exp(log_busr)), col = "blue") +
+  geom_line(aes(y = exp(log_bbmsy)), col = "green") +
+      # geom_line() +
   facet_wrap(~stock) +
   scale_y_log10() +
   geom_hline(yintercept = 1, lty = 2) +
   coord_cartesian(xlim = c(1950, 2020)) +
   ylab("B/LRP") +
   theme(axis.title.x = element_blank())
-
-d <- mutate(d, stock = paste(species, region)) %>%
-  mutate(stock = gsub(" ", "_", stock)) %>%
-  mutate(stock = gsub("-", "_", stock))
 
 dat_wide <- tidyr::pivot_wider(d,
   id_cols = year,
