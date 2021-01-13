@@ -122,7 +122,8 @@ d <- dplyr::left_join(b, d2) %>%
   rename(b = B, bmsy = Bmsy) %>%
   mutate(run = 1) %>%
   mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
-  mutate(species = "pacific-ocean-perch", region = "5ABC")
+  mutate(species = "pacific-ocean-perch", region = "5ABC") %>%
+  rename(iter = sample)
 d %>% saveRDS("data-raw/pop-5abcd-mcmc.rds")
 
 # Bocaccio ------------------------------------------------------------------
@@ -152,7 +153,8 @@ format_rowan_raw_data2_mcmc <- function(sheet1, sheet2, .species, .region) {
     rename(b = B, bmsy = Bmsy) %>%
     mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
     rename(run = Run) %>%
-    mutate(species = .species, region = .region)
+    mutate(species = .species, region = .region) %>%
+    rename(iter = sample)
 }
 
 d1 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 1)
@@ -214,7 +216,8 @@ d <- dplyr::left_join(b, d2) %>%
   rename(b = B, bmsy = Bmsy) %>%
   mutate(run = 1) %>%
   mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
-  mutate(species = "yellowtail", region = "BC")
+  mutate(species = "yellowtail", region = "BC") %>%
+  rename(iter = sample)
 d %>% saveRDS("data-raw/yellowtail-bc-mcmc.rds")
 
 # sable -------------------------------------------------------------------
