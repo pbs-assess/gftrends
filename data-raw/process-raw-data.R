@@ -78,7 +78,34 @@ head(pcod5abcd)
 pcod3cd %>% saveRDS("data-raw/pcod-3cd.rds")
 pcod5abcd %>% saveRDS("data-raw/pcod-5abcd.rds")
 
-# TODO! pcod USR and MCMC
+# MCMC:
+x <- d3cd[[1]]$mcmccalcs$sbt.dat
+x <- as.data.frame(x)
+x$iter <- seq_len(nrow(x))
+x <- tidyr::pivot_longer(x, cols = -iter, names_to = "year", values_to = "b") %>%
+  mutate(year = as.integer(year))
+lrp <- filter(x, year == 1986L) %>% rename(lrp = b) %>% select(-year)
+x <- left_join(x, lrp)
+usr <- filter(x, year %in% seq(1956, 2004)) %>%
+  group_by(iter) %>%
+  summarise(usr = mean(b))
+x <- left_join(x, usr) %>%
+  mutate(species = "pcod", region = "3CD", run = 1)
+x %>% saveRDS("data-raw/pcod-3cd-mcmc.rds")
+
+x <- d5abcd[[1]]$mcmccalcs$sbt.dat
+x <- as.data.frame(x)
+x$iter <- seq_len(nrow(x))
+x <- tidyr::pivot_longer(x, cols = -iter, names_to = "year", values_to = "b") %>%
+  mutate(year = as.integer(year))
+lrp <- filter(x, year == 2000L) %>% rename(lrp = b) %>% select(-year)
+x <- left_join(x, lrp)
+usr <- filter(x, year %in% seq(1956, 2004)) %>%
+  group_by(iter) %>%
+  summarise(usr = mean(b))
+x <- left_join(x, usr) %>%
+  mutate(species = "pcod", region = "5abcd", run = 1)
+x %>% saveRDS("data-raw/pcod-5abcd-mcmc.rds")
 
 # inside yelloweye --------------------------------------------------------
 
@@ -88,7 +115,9 @@ group_by(d, year) %>%
   select(species, region, everything()) %>%
   saveRDS("data-raw/yelloweye-4b.rds")
 
-# TODO! ins. yelloweye MCMC and USR and MSY
+d <- readRDS("data-raw/model-output/ye-inside-b-mcmc.rds")
+d <- mutate(d, species = "yelloweye", region = "4B")
+d %>% saveRDS("data-raw/yelloweye-4b-mcmc.rds")
 
 # POP 5ABC 2017 -----------------------------------------------------------
 
