@@ -9,13 +9,14 @@ lrp <- base_model$mcmc$params.est %>%
   as_tibble() %>%
   select("bmsy") %>%
   mutate(iter = seq_len(n())) %>%
-  mutate(lrp = 0.4 * bmsy)
+  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy)
 arrowtooth <- base_model$mcmc$sbt[[1]] %>%
   pivot_longer(everything(), names_to = "year", values_to = "ssb") %>%
   mutate(iter = rep(seq_len(2000), each = length(unique(year)))) %>%
   arrange(year) %>%
   mutate(year = as.numeric(year)) %>%
-  left_join(lrp)
+  left_join(lrp) %>%
+  mutate(run = 1)
 arrowtooth %>% ggplot(aes(year, ssb / lrp, group = iter)) + geom_line(alpha = 0.05)
 
 arrowtooth_sum <- arrowtooth %>%
@@ -25,6 +26,7 @@ arrowtooth_sum <- arrowtooth %>%
     log_blrp = mean(log(blrp)), sd_log_blrp = sd(log(blrp)))
 
 arrowtooth_sum %>% saveRDS("data-raw/arrowtooth-3cd.rds")
+arrowtooth %>% rename(b = ssb) %>% saveRDS("data-raw/arrowtooth-3cd-mcmc.rds")
 
 # pcod average model ------------------------------------------------------
 
@@ -87,6 +89,7 @@ group_by(d, year) %>%
 
 # POP 5ABC 2017 -----------------------------------------------------------
 
+# one 'Run':
 format_rowan_raw_data <- function(sheet1, sheet2) {
   b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
   d <- dplyr::left_join(b, d2) %>%
@@ -110,6 +113,14 @@ d2 <- readxl::read_xls("data-raw/model-output/POP.5ABC.2017.MCMC.forSean.xls", s
 d <- format_rowan_raw_data(d1, d2)
 d %>% saveRDS("data-raw/pop-5abcd.rds")
 
+b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
+d <- dplyr::left_join(b, d2) %>%
+  mutate(year = as.integer(as.character(year))) %>%
+  rename(b = B, bmsy = Bmsy) %>%
+  mutate(run = 1) %>%
+  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy)
+d %>% saveRDS("data-raw/pop-5abcd-mcmc.rds")
+
 # Bocaccio ------------------------------------------------------------------
 
 # multiple 'Runs':
@@ -130,11 +141,19 @@ format_rowan_raw_data2 <- function(sheet1, sheet2, .species, .region, lrp = Bmsy
     ) %>%
     mutate(year = as.integer(as.character(year)))
 }
+format_rowan_raw_data2_mcmc <- function(sheet1, sheet2, .species, .region) {
+  b <- tidyr::pivot_longer(d1, cols = -c(1, 2), names_to = "year", values_to = "B")
+  dplyr::left_join(b, d2) %>%
+    mutate(year = as.integer(as.character(year))) %>%
+    rename(b = B, bmsy = Bmsy) %>%
+    mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy)
+}
 
 d1 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 1)
 d2 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 2)
 d <- format_rowan_raw_data2(d1, d2, "bocaccio", "5ABCD")
 d %>% saveRDS("data-raw/bocaccio-5abcd.rds")
+format_rowan_raw_data2_mcmc(d1, d2, "bocaccio", "5ABCD") %>% saveRDS("data-raw/bocaccio-5abcd-mcmc.rds")
 
 # widow ---------------------------------------------------------------------
 
@@ -142,6 +161,7 @@ d1 <- readxl::read_xlsx("data-raw/model-output/WWR.CST.2019.MCMC.forSean.xlsx", 
 d2 <- readxl::read_xlsx("data-raw/model-output/WWR.CST.2019.MCMC.forSean.xlsx", sheet = 2)
 d <- format_rowan_raw_data2(d1, d2, "widow-rockfish", "BC")
 d %>% saveRDS("data-raw/widow-bc.rds")
+format_rowan_raw_data2_mcmc(d1, d2, "widow-rockfish", "BC") %>% saveRDS("data-raw/widow-bc-mcmc.rds")
 
 # REBS --------------------------------------------------------------------
 
@@ -149,11 +169,13 @@ d1 <- readxl::read_xlsx("data-raw/model-output/REBS.BCN.2020.MCMC.forSean.xlsx",
 d2 <- readxl::read_xlsx("data-raw/model-output/REBS.BCN.2020.MCMC.forSean.xlsx", sheet = 2)
 d <- format_rowan_raw_data2(d1, d2, "rougheye/blackspotted", "BC North")
 d %>% saveRDS("data-raw/rebs-bc-north.rds")
+format_rowan_raw_data2_mcmc(d1, d2, "rougheye/blackspotted", "BC North") %>% saveRDS("data-raw/rebs-bc-north-mcmc.rds")
 
 d1 <- readxl::read_xlsx("data-raw/model-output/REBS.BCS.2020.MCMC.forSean.xlsx", sheet = 1)
 d2 <- readxl::read_xlsx("data-raw/model-output/REBS.BCS.2020.MCMC.forSean.xlsx", sheet = 2)
 d <- format_rowan_raw_data2(d1, d2, "rougheye/blackspotted", "BC South")
 d %>% saveRDS("data-raw/rebs-bc-south.rds")
+format_rowan_raw_data2_mcmc(d1, d2, "rougheye/blackspotted", "BC South") %>% saveRDS("data-raw/rebs-bc-south-mcmc.rds")
 
 # walleye -----------------------------------------------------------------
 
@@ -161,18 +183,32 @@ d1 <- readxl::read_xlsx("data-raw/model-output/WAP.BCN.2017.MCMC.forSean.xlsx", 
 d2 <- readxl::read_xlsx("data-raw/model-output/WAP.BCN.2017.MCMC.forSean.xlsx", sheet = 2)
 d <- format_rowan_raw_data2(d1, d2, "walleye-pollock", "BC North", lrp = Bmin)
 d %>% saveRDS("data-raw/walleye-bc-north.rds")
+# format_rowan_raw_data2_mcmc(d1, d2, "walleye-pollock", "BC North", lrp = Bmin) %>%
+#   saveRDS("data-raw/walleye-bc-north-mcmc.rds")
+# TODO!
 
 d1 <- readxl::read_xlsx("data-raw/model-output/WAP.BCS.2017.MCMC.forSean.xlsx", sheet = 1)
 d2 <- readxl::read_xlsx("data-raw/model-output/WAP.BCS.2017.MCMC.forSean.xlsx", sheet = 2)
 d <- format_rowan_raw_data2(d1, d2, "walleye-pollock", "BC South", lrp = Bmin)
 d %>% saveRDS("data-raw/walleye-bc-south.rds")
+# format_rowan_raw_data2_mcmc(d1, d2, "walleye-pollock", "BC South", lrp = Bmin) %>%
+#   saveRDS("data-raw/walleye-bc-south-mcmc.rds")
+# TODO!
 
 # yellowtail --------------------------------------------------------------
 
 d1 <- readxl::read_xlsx("data-raw/model-output/YTR.CST.2014.MCMC.forSean.xlsx", sheet = 1)
 d2 <- readxl::read_xlsx("data-raw/model-output/YTR.CST.2014.MCMC.forSean.xlsx", sheet = 2)
-d <- format_rowan_raw_data2(d1, d2, "yellowtail", "BC", lrp = Bmsy)
+d <- format_rowan_raw_data2(d1, d2, "yellowtail", "BC")
 d %>% saveRDS("data-raw/yellowtail-bc.rds")
+
+b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
+d <- dplyr::left_join(b, d2) %>%
+  mutate(year = as.integer(as.character(year))) %>%
+  rename(b = B, bmsy = Bmsy) %>%
+  mutate(run = 1) %>%
+  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy)
+d %>% saveRDS("data-raw/yellowtail-bc-mcmc.rds")
 
 # sable -------------------------------------------------------------------
 
@@ -182,8 +218,9 @@ d2 <- pivot_longer(d, -Bmsy) %>%
   mutate(year_i = gsub("spawnB", "", name)) %>%
   mutate(year = as.integer(year_i) + 1964L) %>%
   mutate(species = "sablefish", region = "BC") %>%
-  select(species, region, year, SSB = value, Bmsy) %>%
-  group_by(species, region, year) %>%
+  select(species, region, year, SSB = value, Bmsy)
+
+d3 <- d2 %>% group_by(species, region, year) %>%
   summarise(
     log_blrp = mean(log(SSB/(Bmsy*0.4))),
     sd_log_blrp = sd(log(SSB/(Bmsy*0.4))),
@@ -193,7 +230,11 @@ d2 <- pivot_longer(d, -Bmsy) %>%
     .groups = "drop"
   ) %>%
   filter(is.finite(log_blrp))
-d2 %>% saveRDS("data-raw/sable-bc.rds")
+d3 %>% saveRDS("data-raw/sable-bc.rds")
+
+d2 %>% rename(b = SSB, bmsy = Bmsy) %>%
+  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy, run = 1) %>%
+  saveRDS("data-raw/sable-bc-mcmc.rds")
 
 # d <- readRDS("data-raw/model-output/sable.rds")
 # d <- mutate(d, region = "BC") %>% as_tibble()
@@ -231,8 +272,13 @@ ggplot(d, aes(year, exp(log_B), ymin = exp(log_B + 1.96 * sd_log_B), ymax = exp(
 # Bmsy is 5742 in Table 5
 bmsy <- 5742
 lrp <- bmsy * 0.4
+usr <- bmsy * 0.8
 
-out <- d %>% transmute(species = "Quillback", region = "WCVI Inside", year = year, log_blrp = log(med / lrp), sd_log_blrp = sd_log_B, log_bbmsy = log(med/bmsy), sd_log_bbmsy = sd_log_blrp, p_lrp = NA)
+out <- d %>% transmute(species = "Quillback", region = "WCVI Inside", year = year,
+  log_blrp = log(med / lrp), sd_log_blrp = sd_log_B,
+  log_busr = log(med / usr), sd_log_busr = sd_log_B,
+  log_bbmsy = log(med / bmsy), sd_log_bbmsy = sd_log_B,
+  q0.025 = lwr, q0.975 = upr, p_lrp = NA)
 out %>% saveRDS("data-raw/quillback-inside.rds")
 
 # outside:
@@ -262,7 +308,12 @@ ggplot(d, aes(year, exp(log_B), ymin = exp(log_B + 1.96 * sd_log_B), ymax = exp(
 # Bmsy is 11718 in Table 4
 bmsy <- 11718
 lrp <- bmsy * 0.4
+usr <- bmsy * 0.8
 
-out <- d %>% transmute(species = "Quillback", region = "BC Outside", year = year, log_blrp = log(med / lrp), sd_log_blrp = sd_log_B, log_bbmsy = log(med/bmsy), sd_log_bbmsy = sd_log_blrp, p_lrp = NA)
+out <- d %>% transmute(species = "Quillback", region = "BC Outside", year = year,
+  log_blrp = log(med / lrp), sd_log_blrp = sd_log_B,
+  log_busr = log(med / usr), sd_log_busr = sd_log_B,
+  log_bbmsy = log(med / bmsy), sd_log_bbmsy = sd_log_B,
+  q0.025 = lwr, q0.975 = upr, p_lrp = NA)
 
 out %>% saveRDS("data-raw/quillback-outside.rds")
