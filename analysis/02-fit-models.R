@@ -24,7 +24,7 @@ m <- purrr::map(d, function(.d) {
     model,
     data = .d$stan_dat,
     chains = 6, iter = 600,
-    init = initf,
+    # init = initf,
     pars = pars
   )
 })

@@ -19,7 +19,10 @@ format_stan_data <- function(dat, column_mean, column_sd) {
     first <- which(!(x == 999))[1]
     sum(x[seq(first, length(x))] == 999)
   })
-  num_missing = sum(num_missing)
+  num_missing <- sum(num_missing)
+
+  ar_coef_id <- as.integer(grepl("pcod", names(dat_wide[-1])) |
+      grepl("walleye", names(dat_wide[-1]))) + 1L
   stan_dat <- list(
     T = nrow(dat_wide),
     J = ncol(dat_wide) - 1,
@@ -27,6 +30,7 @@ format_stan_data <- function(dat, column_mean, column_sd) {
     tau = as.matrix(dat_wide_tau[, -1]),
     first_obs = first_obs,
     rho_sd = 1,
+    ar_coef_id = ar_coef_id,
     N_miss = num_missing
   )
   list(stan_dat = stan_dat, filtered_dat = dat)

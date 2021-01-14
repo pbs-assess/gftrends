@@ -1,6 +1,5 @@
 library(dplyr)
 library(ggplot2)
-library(rstan)
 source("analysis/utils.R")
 dir.create("figs", showWarnings = FALSE)
 
@@ -66,15 +65,15 @@ plot_x_t <- function(x_t, col_log_mean, col_q0.05, col_q0.95, ylab = "", ylim = 
 x_t <- lapply(m, function(.x) tidybayes::gather_draws(.x, x[.t]))
 g <- plot_x_t(x_t[["blrp"]], log_blrp, q0.05_blrp, q0.95_blrp,
   ylab = expression(B/LRP), ylim = c(0, 10))
-ggsave("figs/blrp-x-t.png", width = 10, height = 7)
+ggsave("figs/blrp-x-t.pdf", width = 10, height = 7)
 
 g <- plot_x_t(x_t[["busr"]], log_busr, q0.05_busr, q0.95_busr,
   ylab = expression(B/USR), ylim = c(0, 5))
-ggsave("figs/busr-x-t.png", width = 10, height = 7)
+ggsave("figs/busr-x-t.pdf", width = 10, height = 7)
 
 g <- plot_x_t(x_t[["bbmsy"]], log_bbmsy, q0.05_bmsy, q0.95_bmsy,
   ylab = expression(B/B[MSY]), ylim = c(0, 3.5))
-ggsave("figs/bbmsy-x-t.png", width = 10, height = 7)
+ggsave("figs/bbmsy-x-t.pdf", width = 10, height = 7)
 
 y_true <- tidybayes::gather_draws(m[[1]], y_true[.t, j], n = 30)
 y_true <- filter(y_true, .value != 0) # fake

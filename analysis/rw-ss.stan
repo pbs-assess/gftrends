@@ -6,11 +6,12 @@ data {
   real<lower=0> rho_sd;
   int<lower=1> first_obs[J]; // first observation
   int<lower=0> N_miss;
+  int<lower=1,upper=2> ar_coef_id[J]; // which AR1 coefs to use
 }
 parameters {
   real<lower=0> sigma_x;        // RW process SD
-  real<lower=0> sigma_eps;      // stock-level AR1 SD
-  real<lower=-1, upper=1> rho;  // stock-level AR1 correlation
+  real<lower=0> sigma_eps[2];      // stock-level AR1 SD
+  real<lower=-1, upper=1> rho[2];  // stock-level AR1 correlation
   vector[T] x_raw;              // RW mean value
   matrix[T,J] tau_raw;
   vector[J-1] alpha_raw;        // stock-level deviation (without J-th element)
@@ -51,10 +52,10 @@ model {
   for (j in 1:J) {
     for (t in 1:T) {
       if (t == first_obs[j]) {
-        eps[t,j] ~ normal(0, sigma_eps);
+        eps[t,j] ~ normal(0, sigma_eps[ar_coef_id[j]]);
       }
       if (t > first_obs[j]) {
-        eps[t,j] ~ normal(rho * eps[t-1,j], sigma_eps); // AR1 epsilon
+        eps[t,j] ~ normal(rho[ar_coef_id[j]] * eps[t-1,j], sigma_eps[ar_coef_id[j]]); // AR1 epsilon
       }
     }
   }
