@@ -8,8 +8,12 @@ source("analysis/utils.R")
 
 dat <- readRDS("data-generated/b-status-dat.rds")
 dat[dat$species == "sablefish","sd_log_bbmsy"] <- dat[dat$species == "sablefish","sd_log_bbmsy"] * 2
+dat[dat$species == "sablefish","sd_log_blrp"] <- dat[dat$species == "sablefish","sd_log_blrp"] * 2
+dat[dat$species == "sablefish","sd_log_busr"] <- dat[dat$species == "sablefish","sd_log_busr"] * 2
 
+d <- format_stan_data(dat, log_blrp, sd_log_blrp)
 d <- format_stan_data(dat, log_bbmsy, sd_log_bbmsy)
+d <- format_stan_data(dat, log_busr, sd_log_busr)
 
 initf <- function() {
   list(

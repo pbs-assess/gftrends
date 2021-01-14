@@ -61,6 +61,11 @@ x_t %>%
     panel.grid.minor = element_line(colour = "grey98")
   )
 
+
+dat <- dat %>% group_by(stock) %>%
+  mutate(last_status = exp(log_blrp)[n()]) %>%
+  ungroup()
+
 x_t %>%
   mutate(.value = exp(.value)) %>%
   mutate(year = .t + 1950) %>%
@@ -80,31 +85,32 @@ x_t %>%
     y = exp(log_blrp),
     ymin = q0.05_blrp,
     ymax = q0.95_blrp,
-    fill = stock
+    fill = last_status
   ),
-    colour = NA, alpha = 0.05, data = dat
+    colour = NA, alpha = 0.25, data = dat
   ) +
   geom_line(aes(
     x = year,
-    y = exp(log_blrp), colour = stock,
+    y = exp(log_blrp), colour = last_status,
   ), alpha = 0.6, data = dat) +
-  scale_colour_viridis_d() +
-  scale_fill_viridis_d() +
-  geom_ribbon(aes(ymin = lwr2, ymax = upr2), fill = "grey70", alpha = 0.8) +
-  geom_ribbon(aes(ymin = lwr1, ymax = upr1), fill = "grey60", alpha = 0.8) +
-  geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey50", alpha = 0.8) +
-  geom_line(lwd = 1) +
+  scale_colour_viridis_c(direction = -1, option = "C", end = 0.9) +
+  scale_fill_viridis_c(direction = -1, option = "C", end = 0.9) +
+  geom_ribbon(aes(ymin = lwr2, ymax = upr2), fill = "grey70", alpha = 0.7) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey55", alpha = 0.7) +
+  geom_ribbon(aes(ymin = lwr1, ymax = upr1), fill = "grey40", alpha = 0.7) +
+  geom_line(lwd = 0.8) +
   ggsidekick::theme_sleek() +
   coord_cartesian(xlim = c(1951, 2020), ylim = c(0, 8), expand = FALSE) +
-  geom_hline(yintercept = 1, lty = 3) +
+  geom_hline(yintercept = 1, lty = 2) +
   # scale_y_log10() +
-  # facet_wrap(~stock) +
+  facet_wrap(~stock) +
   # ylab(expression(B/B[MSY])) +
   ylab(expression(B/LRP)) +
   theme(
     axis.title.x = element_blank(), panel.grid.major = element_line(colour = "grey92"),
     panel.grid.minor = element_line(colour = "grey98")
   )
+  # theme(legend.position = "none")
 
 y_true <- tidybayes::gather_draws(m, y_true[.t,j], n = 30)
 
