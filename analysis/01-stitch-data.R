@@ -1,9 +1,6 @@
 # library(tidyverse)
 library(dplyr)
 library(ggplot2)
-library(rstan)
-rstan_options(auto_write = TRUE)
-options(mc.cores = parallel::detectCores())
 
 # f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
 # f <- f[!grepl("-mcmc", f)]
@@ -38,15 +35,35 @@ quant <- function(x, probs, ...) {
   as.numeric(quantile(x = x, probs = probs, na.rm = TRUE, ...))
 }
 d <- purrr::map_dfr(f, .readRDS)
+
+d <- d %>% group_by(species, region, year) %>%
+  mutate(
+    blrp = if_else(!is.na(b), b / lrp, blrp),
+    busr = if_else(!is.na(b), b / usr, busr),
+    bbmsy = if_else(!is.na(b), b / bmsy, bbmsy)
+  ) %>%
+  ungroup()
+
 out <- d %>% group_by(species, region, year) %>%
   summarise(
-    log_blrp = mean(log(b / lrp)), sd_log_blrp = sd(log(b / lrp)),
-    q0.05_blrp = quant(b / lrp, probs = 0.05), q0.95_blrp = quant(b / lrp, probs = 0.95),
-    log_busr = mean(log(b / usr)), sd_log_busr = sd(log(b / usr)),
-    q0.05_busr = quant(b / usr, probs = 0.05),q0.95_busr = quant(b / usr, probs = 0.95),
-    log_bbmsy = mean(log(b / bmsy)), sd_log_bbmsy = sd(log(b / bmsy)),
-    q0.05_bmsy = quant(b / bmsy, probs = 0.05),q0.95_bmsy = quant(b / bmsy, probs = 0.95),
-    p_lrp = mean(b < lrp), p_usr = mean(b < usr),
+    log_blrp = mean(log(blrp)),
+    sd_log_blrp = sd(log(blrp)),
+    q0.05_blrp = quant(blrp, probs = 0.05),
+    q0.95_blrp = quant(blrp, probs = 0.95),
+
+    log_busr = mean(log(busr)),
+    sd_log_busr = sd(log(busr)),
+    q0.05_busr = quant(busr, probs = 0.05),
+    q0.95_busr = quant(busr, probs = 0.95),
+
+    log_bbmsy = mean(log(bbmsy)),
+    sd_log_bbmsy = sd(log(bbmsy)),
+    q0.05_bmsy = quant(bbmsy, probs = 0.05),
+    q0.95_bmsy = quant(bbmsy, probs = 0.95),
+
+    p_lrp = mean(blrp < 1),
+    p_usr = mean(busr < 1),
+
     .groups = "drop"
   )
 out <- bind_rows(out, readRDS("data-raw/quillback-inside.rds"))

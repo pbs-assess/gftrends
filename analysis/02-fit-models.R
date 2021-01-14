@@ -1,61 +1,61 @@
 library(dplyr)
-library(ggplot2)
 library(rstan)
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
-model <- stan_model("analysis/rw-ss.stan")
 source("analysis/utils.R")
+model <- stan_model("analysis/rw-ss.stan")
 
 dat <- readRDS("data-generated/b-status-dat.rds")
-dat[dat$species == "sablefish","sd_log_bbmsy"] <- dat[dat$species == "sablefish","sd_log_bbmsy"] * 2
-dat[dat$species == "sablefish","sd_log_blrp"] <- dat[dat$species == "sablefish","sd_log_blrp"] * 2
-dat[dat$species == "sablefish","sd_log_busr"] <- dat[dat$species == "sablefish","sd_log_busr"] * 2
+dat[dat$species == "sablefish","sd_log_bbmsy"] <-
+  dat[dat$species == "sablefish","sd_log_bbmsy"] * 2
+dat[dat$species == "sablefish","sd_log_blrp"] <-
+  dat[dat$species == "sablefish","sd_log_blrp"] * 2
+dat[dat$species == "sablefish","sd_log_busr"] <-
+  dat[dat$species == "sablefish","sd_log_busr"] * 2
 
-d <- format_stan_data(dat, log_blrp, sd_log_blrp)
-d <- format_stan_data(dat, log_bbmsy, sd_log_bbmsy)
-d <- format_stan_data(dat, log_busr, sd_log_busr)
+d <- list()
+d$blrp <- format_stan_data(dat, log_blrp, sd_log_blrp)
+d$bbmsy <- format_stan_data(dat, log_bbmsy, sd_log_bbmsy)
+d$busr <- format_stan_data(dat, log_busr, sd_log_busr)
 
-initf <- function() {
-  list(
-    rho = runif(1, 0.7, 0.95),
-    sigma_eps = runif(1, 0.03, 0.1),
-    sigma_x = runif(1, 0.03, 0.07),
-    sigma_alpha = runif(1, 0.05, 0.3),
-    x_t_intercept = runif(1, 1, 2)
+pars <- c("rho", "sigma_eps", "sigma_x", "x", "alpha", "y_true", "x_t_intercept")
+m <- purrr::map(d, function(.d) {
+  rstan::sampling(
+    model,
+    data = .d$stan_dat,
+    chains = 6, iter = 600,
+    init = initf,
+    pars = pars
   )
-}
+})
 
-m <- sampling(
-  model,
-  data = d,
-  chains = 6, iter = 300,
-  init = initf,
-  # control = list(adapt_delta = 0.98),
-  pars = c("rho", "sigma_eps", "sigma_x", "x", "alpha", "y_miss", "y_true")
-)
+purrr::walk(m, print, pars = pars[!pars %in% c("y_true", "x")])
+# pairs(m[[1]], pars = c("sigma_eps", "sigma_x", "rho", "x[1]", "alpha[1]"))
+# pairs(m[[2]], pars = c("sigma_eps", "sigma_x", "rho", "x[1]", "alpha[1]"))
+# pairs(m[[3]], pars = c("sigma_eps", "sigma_x", "rho", "x[1]", "alpha[1]"))
+# lapply(m, rstan::check_hmc_diagnostics)
+# lapply(m, rstan::stan_rhat)
+# lapply(m, rstan::stan_diag)
 
-# pairs(m, pars = c("sigma_eps", "sigma_x", "rho", "x[1]", "alpha[1]"))
-# rstan::check_hmc_diagnostics(m)
-# rstan::stan_rhat(m)
-# rstan::stan_diag(m)
-print(m, pars = c("sigma_eps", "sigma_x", "rho", "alpha", "y_miss"))
+# p <- purrr::map(m, rstan::extract)
 
-p <- rstan::extract(m)
+saveRDS(m, "data-generated/b-ratio-fits.rds")
+saveRDS(d, "data-generated/b-ratio-fits-data.rds")
 
-eps <- p$eps
-means <- apply(eps, c(2, 3), mean)
-sds <- apply(eps, c(2, 3), sd)
-matplot(means, type = "l")
-matplot(sds, type = "l")
-
-miss <- p$y_m
-apply(miss, 2, mean)
-apply(miss, 2, sd)
-
-# shinystan::launch_shinystan(m)
-
-apply(p$alpha, 2, mean)
-mean(apply(p$alpha, 2, mean))
+# eps <- p$eps
+# means <- apply(eps, c(2, 3), mean)
+# sds <- apply(eps, c(2, 3), sd)
+# matplot(means, type = "l")
+# matplot(sds, type = "l")
+#
+# miss <- p$y_m
+# apply(miss, 2, mean)
+# apply(miss, 2, sd)
+#
+# # shinystan::launch_shinystan(m)
+#
+# apply(p$alpha, 2, mean)
+# mean(apply(p$alpha, 2, mean))
 
 # pp <- apply(p$x, 2, function(x, ...) median(exp(x), ...), na.rm = TRUE)
 # plot(seq_along(pp), pp, lwd = 3, lty = 2, type = "l")
@@ -70,6 +70,6 @@ mean(apply(p$alpha, 2, mean))
 # x <- apply(p$y_true, c(2, 3), mean, na.rm = TRUE)
 # matplot(exp(x), type = "l", log = "y")
 
-hist(p$rho)
-hist(p$sigma_eps)
-hist(p$sigma_x)
+# hist(p$rho)
+# hist(p$sigma_eps)
+# hist(p$sigma_x)

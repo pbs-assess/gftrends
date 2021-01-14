@@ -373,3 +373,47 @@ out <- d %>% transmute(species = "Quillback", region = "BC Outside", year = year
   )
 
 out %>% saveRDS("data-raw/quillback-outside.rds")
+
+# lingcod -----------------------------------------------------------------
+
+d <- readr::read_csv("data-raw/model-output/Lingcod_forSean/mcmcPost_SSB_overLRP.csv")
+d <- tidyr::pivot_longer(d, cols = -1, names_to = "year", values_to = "blrp")
+d <- mutate(d,
+  year = as.integer(gsub("status_", "", year)),
+  busr = blrp * 0.5,
+  bbmsy = blrp * 0.4) %>%
+  rename(run = scenario) %>%
+  mutate(iter = rep(seq_len(2000), each = length(unique(run)) * length(unique(year)))) %>%
+  mutate(species = "lingcod", region = "4B") %>%
+  mutate(run = as.integer(as.factor(run)))
+set.seed(1829494)
+iter_sample <- sample(unique(d$iter), 200L) # downsample
+d <- filter(d, iter %in% iter_sample)
+saveRDS(d, "data-raw/lingcod-inside-mcmc.rds")
+
+# rocksole ----------------------------------------------------------------
+
+blim <- readr::read_csv("data-raw/model-output/RockSole_forSean/RockSole_BLim_Bmcmc-ROL-5AB.22.03.csv")
+b <- readr::read_csv("data-raw/model-output/RockSole_forSean/RockSole_SSB_Bmcmc-ROL-5AB.22.03.csv")
+b <- tidyr::pivot_longer(b, cols = -1, names_to = "year", values_to = "b")
+b <- mutate(b, year = as.integer(year)) %>%
+  rename(iter = X1) %>%
+  mutate(species = "rocksole", region = "5AB") %>%
+  mutate(run = 1L)
+blim <- rename(blim, iter = X1, blim = B.Lim)
+b <- left_join(b, blim)
+b <- rename(b, lrp = blim)
+saveRDS(b, "data-raw/rocksole-5AB-mcmc.rds")
+
+blim <- readr::read_csv("data-raw/model-output/RockSole_forSean/RockSole_BLim_Bmcmc-ROL-5CD.08.03.csv")
+b <- readr::read_csv("data-raw/model-output/RockSole_forSean/RockSole_SSB_Bmcmc-ROL-5CD.08.03.csv")
+b <- tidyr::pivot_longer(b, cols = -1, names_to = "year", values_to = "b")
+b <- mutate(b, year = as.integer(year)) %>%
+  rename(iter = X1) %>%
+  mutate(species = "rocksole", region = "5CD") %>%
+  mutate(run = 1L)
+blim <- rename(blim, iter = X1, blim = B.Lim)
+b <- left_join(b, blim)
+b <- rename(b, lrp = blim)
+saveRDS(b, "data-raw/rocksole-5CD-mcmc.rds")
+
