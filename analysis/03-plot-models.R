@@ -61,6 +61,51 @@ x_t %>%
     panel.grid.minor = element_line(colour = "grey98")
   )
 
+x_t %>%
+  mutate(.value = exp(.value)) %>%
+  mutate(year = .t + 1950) %>%
+  group_by(year) %>%
+  summarize(
+    lwr2 = quantile(.value, 0.975),
+    upr2 = quantile(.value, 0.025),
+    lwr1 = quantile(.value, 0.25),
+    upr1 = quantile(.value, 0.75),
+    lwr = quantile(.value, 0.1),
+    upr = quantile(.value, 0.9),
+    med = median(.value), .groups = "drop"
+  ) %>%
+  ggplot(aes(year, med)) +
+  geom_ribbon(aes(
+    x = year,
+    y = exp(log_blrp),
+    ymin = q0.05_blrp,
+    ymax = q0.95_blrp,
+    fill = stock
+  ),
+    colour = NA, alpha = 0.05, data = dat
+  ) +
+  geom_line(aes(
+    x = year,
+    y = exp(log_blrp), colour = stock,
+  ), alpha = 0.6, data = dat) +
+  scale_colour_viridis_d() +
+  scale_fill_viridis_d() +
+  geom_ribbon(aes(ymin = lwr2, ymax = upr2), fill = "grey70", alpha = 0.8) +
+  geom_ribbon(aes(ymin = lwr1, ymax = upr1), fill = "grey60", alpha = 0.8) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey50", alpha = 0.8) +
+  geom_line(lwd = 1) +
+  ggsidekick::theme_sleek() +
+  coord_cartesian(xlim = c(1951, 2020), ylim = c(0, 8), expand = FALSE) +
+  geom_hline(yintercept = 1, lty = 3) +
+  # scale_y_log10() +
+  # facet_wrap(~stock) +
+  # ylab(expression(B/B[MSY])) +
+  ylab(expression(B/LRP)) +
+  theme(
+    axis.title.x = element_blank(), panel.grid.major = element_line(colour = "grey92"),
+    panel.grid.minor = element_line(colour = "grey98")
+  )
+
 y_true <- tidybayes::gather_draws(m, y_true[.t,j], n = 30)
 
 stock_ids <- distinct(select(dat, stock)) %>%
