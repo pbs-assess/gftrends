@@ -74,17 +74,19 @@ out <- mutate(out, stock = paste(species, region)) %>%
   select(species, region, stock, year, everything())
 out <- filter(out, !(species == "bocaccio" & year >= 2020))
 
-out %>%
+g <- out %>%
   ggplot(aes(
     x = year,
     y = exp(log_blrp),
     ymin = exp(log_blrp - 2 * sd_log_blrp),
     ymax = exp(log_blrp + 2 * sd_log_blrp)
   )) +
-  # geom_ribbon(colour = NA, fill = "grey50", alpha = 0.4) +
-  geom_ribbon(colour = NA, fill = "red", alpha = 0.2, mapping = aes(ymin = q0.05_blrp, ymax = q0.95_blrp)) +
-  geom_ribbon(colour = NA, fill = "blue", alpha = 0.2, mapping = aes(ymin = q0.05_busr, ymax = q0.95_busr)) +
-  geom_ribbon(colour = NA, fill = "green", alpha = 0.2, mapping = aes(ymin = q0.05_bmsy, ymax = q0.95_bmsy)) +
+  geom_ribbon(colour = NA, fill = "red", alpha = 0.2,
+    mapping = aes(ymin = q0.05_blrp, ymax = q0.95_blrp)) +
+  geom_ribbon(colour = NA, fill = "blue", alpha = 0.2,
+    mapping = aes(ymin = q0.05_busr, ymax = q0.95_busr)) +
+  geom_ribbon(colour = NA, fill = "green", alpha = 0.2,
+    mapping = aes(ymin = q0.05_bmsy, ymax = q0.95_bmsy)) +
   geom_line(aes(y = exp(log_blrp)), col = "red") +
   geom_line(aes(y = exp(log_busr)), col = "blue") +
   geom_line(aes(y = exp(log_bbmsy)), col = "green") +
@@ -93,8 +95,9 @@ out %>%
   scale_y_log10() +
   geom_hline(yintercept = 1, lty = 2) +
   coord_cartesian(xlim = c(1950, 2020)) +
-  ylab("B/LRP") +
+  ylab("B status ratio") +
   theme(axis.title.x = element_blank())
+print(g)
 
 saveRDS(out, "data-generated/b-status-dat.rds")
 

@@ -156,12 +156,43 @@ d <- dplyr::left_join(b, d2) %>%
   rename(iter = sample)
 d %>% saveRDS("data-raw/pop-5abcd-mcmc.rds")
 
+# POP 3CD -----------------------------------------------------------------
+
+format_rowan_mcmc_data1 <- function(sheet1, sheet2, .species, .region) {
+  b <- tidyr::pivot_longer(sheet1, cols = -1, names_to = "year", values_to = "B")
+  dplyr::left_join(b, sheet2) %>%
+    mutate(year = as.integer(as.character(year))) %>%
+    rename(b = B, bmsy = Bmsy) %>%
+    mutate(run = 1) %>%
+    mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
+    mutate(species = .species, region = .region) %>%
+    rename(iter = sample)
+}
+d1 <- readxl::read_xlsx("data-raw/model-output/POP.3CD.2012.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/POP.3CD.2012.MCMC.forSean.xlsx", sheet = 2)
+format_rowan_mcmc_data1(d1, d2, "pacific-ocean-perch", "3CD") %>%
+  saveRDS("data-raw/pop-3cd-mcmc.rds")
+
+# POP 5DE -----------------------------------------------------------------
+
+d1 <- readxl::read_xlsx("data-raw/model-output/POP.5DE.2012.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/POP.5DE.2012.MCMC.forSean.xlsx", sheet = 2)
+format_rowan_mcmc_data1(d1, d2, "pacific-ocean-perch", "5DE") %>%
+  saveRDS("data-raw/pop-5de-mcmc.rds")
+
+# SGR BC ------------------------------------------------------------------
+
+d1 <- readxl::read_xlsx("data-raw/model-output/SGR.CST.2013.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/SGR.CST.2013.MCMC.forSean.xlsx", sheet = 2)
+format_rowan_mcmc_data1(d1, d2, "silvergray", "BC") %>%
+  saveRDS("data-raw/sgr-bc-mcmc.rds")
+
 # Bocaccio ------------------------------------------------------------------
 
 # multiple 'Runs':
 format_rowan_raw_data2 <- function(sheet1, sheet2, .species, .region, lrp = Bmsy) {
-  b <- tidyr::pivot_longer(d1, cols = -c(1, 2), names_to = "year", values_to = "B")
-  d <- dplyr::left_join(b, d2) %>%
+  b <- tidyr::pivot_longer(sheet1, cols = -c(1, 2), names_to = "year", values_to = "B")
+  d <- dplyr::left_join(b, sheet2) %>%
     mutate(year = as.character(year))
   # ggplot(d, aes(year, B / Bmsy, group = sample)) + geom_line()
   mutate(d, species = .species, region = .region) %>%
@@ -191,6 +222,7 @@ format_rowan_raw_data2_mcmc_lrp <- function(sheet1, sheet2, .species, .region) {
   dplyr::left_join(b, d2) %>%
     mutate(year = as.integer(as.character(year))) %>%
     rename(b = B, lrp = Bmin) %>%
+    mutate(usr = lrp * 2) %>%
     rename(run = Run) %>%
     mutate(species = .species, region = .region) %>%
     rename(iter = sample)
@@ -201,6 +233,28 @@ d2 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", 
 d <- format_rowan_raw_data2(d1, d2, "bocaccio", "5ABCD")
 d %>% saveRDS("data-raw/bocaccio-5abcd.rds")
 format_rowan_raw_data2_mcmc(d1, d2, "bocaccio", "5ABCD") %>% saveRDS("data-raw/bocaccio-5abcd-mcmc.rds")
+
+# shortspine BC -----------------------------------------------------------
+
+d1 <- readxl::read_xlsx("data-raw/model-output/SST.CST.2015.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/SST.CST.2015.MCMC.forSean.xlsx", sheet = 2)
+d2$BtBmsy <- NULL
+d2$B2016 <- NULL
+names(d1)[1] <- "Run"
+format_rowan_raw_data2_mcmc(d1, d2, "shortspine thornyhead", "BC") %>%
+  saveRDS("data-raw/shortspine-bc-mcmc.rds")
+
+# redstripe ---------------------------------------------------------------
+
+d1 <- readxl::read_xlsx("data-raw/model-output/RSR.BCN.2018.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/RSR.BCN.2018.MCMC.forSean.xlsx", sheet = 2)
+format_rowan_mcmc_data1(d1, d2, "redstripe rockfish", "BC North") %>%
+  saveRDS("data-raw/redstripe-bc-north-mcmc.rds")
+
+d1 <- readxl::read_xlsx("data-raw/model-output/RSR.BCS.2018.MCMC.forSean.xlsx", sheet = 1)
+d2 <- readxl::read_xlsx("data-raw/model-output/RSR.BCS.2018.MCMC.forSean.xlsx", sheet = 2)
+format_rowan_mcmc_data1(d1, d2, "redstripe rockfish", "BC South") %>%
+  saveRDS("data-raw/redstripe-bc-south-mcmc.rds")
 
 # widow ---------------------------------------------------------------------
 
@@ -322,7 +376,7 @@ bmsy <- 5742
 lrp <- bmsy * 0.4
 usr <- bmsy * 0.8
 
-out <- d %>% transmute(species = "Quillback", region = "WCVI Inside", year = year,
+out <- d %>% transmute(species = "quillback", region = "WCVI Inside", year = year,
   log_blrp = log(med / lrp), sd_log_blrp = sd_log_B,
   log_busr = log(med / usr), sd_log_busr = sd_log_B,
   log_bbmsy = log(med / bmsy), sd_log_bbmsy = sd_log_B,
@@ -362,7 +416,7 @@ bmsy <- 11718
 lrp <- bmsy * 0.4
 usr <- bmsy * 0.8
 
-out <- d %>% transmute(species = "Quillback", region = "BC Outside", year = year,
+out <- d %>% transmute(species = "quillback", region = "BC Outside", year = year,
   log_blrp = log(med / lrp), sd_log_blrp = sd_log_B,
   log_busr = log(med / usr), sd_log_busr = sd_log_B,
   log_bbmsy = log(med / bmsy), sd_log_bbmsy = sd_log_B,
@@ -395,25 +449,33 @@ saveRDS(d, "data-raw/lingcod-inside-mcmc.rds")
 
 blim <- readr::read_csv("data-raw/model-output/RockSole_forSean/RockSole_BLim_Bmcmc-ROL-5AB.22.03.csv")
 b <- readr::read_csv("data-raw/model-output/RockSole_forSean/RockSole_SSB_Bmcmc-ROL-5AB.22.03.csv")
+bmsy <- readr::read_csv("data-raw/model-output/RockSole_forSean/RockSole_Bmsy_Bmcmc-ROL-5AB.22.03.csv")
 b <- tidyr::pivot_longer(b, cols = -1, names_to = "year", values_to = "b")
+
 b <- mutate(b, year = as.integer(year)) %>%
   rename(iter = X1) %>%
   mutate(species = "rocksole", region = "5AB") %>%
   mutate(run = 1L)
 blim <- rename(blim, iter = X1, blim = B.Lim)
-b <- left_join(b, blim)
-b <- rename(b, lrp = blim)
+bmsy <- rename(bmsy, iter = X1, bmsy = Bmsy)
+# b <- left_join(b, blim)
+# b <- rename(b, lrp = blim)
+b <- left_join(b, bmsy)
+b <- mutate(b, lrp = 0.4 * bmsy, usr = 0.8 * bmsy)
 saveRDS(b, "data-raw/rocksole-5AB-mcmc.rds")
 
 blim <- readr::read_csv("data-raw/model-output/RockSole_forSean/RockSole_BLim_Bmcmc-ROL-5CD.08.03.csv")
 b <- readr::read_csv("data-raw/model-output/RockSole_forSean/RockSole_SSB_Bmcmc-ROL-5CD.08.03.csv")
+bmsy <- readr::read_csv("data-raw/model-output/RockSole_forSean/RockSole_Bmsy_Bmcmc-ROL-5CD.08.03.csv")
 b <- tidyr::pivot_longer(b, cols = -1, names_to = "year", values_to = "b")
 b <- mutate(b, year = as.integer(year)) %>%
   rename(iter = X1) %>%
   mutate(species = "rocksole", region = "5CD") %>%
   mutate(run = 1L)
-blim <- rename(blim, iter = X1, blim = B.Lim)
-b <- left_join(b, blim)
-b <- rename(b, lrp = blim)
+# blim <- rename(blim, iter = X1, blim = B.Lim)
+# b <- left_join(b, blim)
+# b <- rename(b, lrp = blim)
+bmsy <- rename(bmsy, iter = X1, bmsy = Bmsy)
+b <- left_join(b, bmsy)
+b <- mutate(b, lrp = 0.4 * bmsy, usr = 0.8 * bmsy)
 saveRDS(b, "data-raw/rocksole-5CD-mcmc.rds")
-
