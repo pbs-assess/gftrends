@@ -27,26 +27,33 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
 
   .y_true <- left_join(.y_true, distinct(select(last_dat, stock, last_status)))
 
-  x_t %>%
-    mutate(.value = exp(.value)) %>%
-    mutate(year = .t + 1949) %>%
-    group_by(year) %>%
-    summarize(
-      lwr2 = quantile(.value, 0.975),
-      upr2 = quantile(.value, 0.025),
-      lwr1 = quantile(.value, 0.25),
-      upr1 = quantile(.value, 0.75),
-      lwr = quantile(.value, 0.1),
-      upr = quantile(.value, 0.9),
-      med = median(.value), .groups = "drop"
-    ) %>%
-    ggplot(aes(year, med)) +
-    geom_ribbon(aes(ymin = lwr2, ymax = upr2), fill = "grey70", alpha = 0.6) +
-    geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey55", alpha = 0.6) +
-    geom_ribbon(aes(ymin = lwr1, ymax = upr1), fill = "grey40", alpha = 0.6) +
+  x_t <- x_t %>% mutate(.value = exp(.value)) %>%
+    mutate(year = .t + 1949)
+
+  # summarized <- x_t %>%
+  #   mutate(.value = exp(.value)) %>%
+  #   mutate(year = .t + 1949) %>%
+  #   group_by(year) %>%
+  #   summarize(
+  #     lwr2 = quantile(.value, 0.975),
+  #     upr2 = quantile(.value, 0.025),
+  #     lwr1 = quantile(.value, 0.25),
+  #     upr1 = quantile(.value, 0.75),
+  #     lwr = quantile(.value, 0.1),
+  #     upr = quantile(.value, 0.9),
+  #     med = median(.value), .groups = "drop"
+  #   ) %>%
+  set.seed(1234)
+  .samples <- sample(unique(x_t$.draw), 150L)
+    x_t %>% filter(.draw %in% .samples) %>%
+      ggplot(aes(year, .value)) +
+      geom_line(aes(y = .value, group = .draw), colour = "grey10", alpha = 0.04) +
+    # geom_ribbon(aes(ymin = lwr2, ymax = upr2), fill = "grey70", alpha = 0.6) +
+    # geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey55", alpha = 0.6) +
+    # geom_ribbon(aes(ymin = lwr1, ymax = upr1), fill = "grey40", alpha = 0.6) +
     geom_line(mapping = aes(x = year, y = exp(.value), group = .draw, colour = last_status),
       alpha = 0.3, lwd = 0.15, data = .y_true, inherit.aes = FALSE) +
-    geom_line(lwd = 0.7, alpha = 0.75) +
+    # geom_line(lwd = 0.7, alpha = 0.75) +
     geom_ribbon(aes(
       x = year,
       y = exp({{col_log_mean}}),
@@ -115,3 +122,14 @@ ggsave("figs/bbmsy-x-t.png", width = 10, height = 7.5)
 #   ggsidekick::theme_sleek() +
 #   coord_cartesian(xlim = c(1950, 2020), ylim = c(0, 10))
 # ggsave("figs/blrp-stock-latent.png", width = 10, height = 7)
+
+# MRP: (e.g., https://mc-stan.org/rstanarm/articles/mrp.html)
+
+# y <- y_true$busr
+#
+# catch <- readRDS("/Volumes/Extreme-SSD/src/gfsynopsis/report/data-cache/pacific-cod.rds")$catch
+#
+# group_by(y, .t, .draw) %>% summarise(mean = mean(.value)) %>%
+#   ggplot(aes(.t, mean, group = .draw)) + geom_line() +
+#   geom_line(aes(x = .t, y = .value, group = .draw),
+#     colour = "red", data = x_t$busr, alpha = 0.04)
