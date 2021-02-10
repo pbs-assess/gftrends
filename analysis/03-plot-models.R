@@ -86,7 +86,8 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
       # panel.grid.minor = element_line(colour = "grey98")
     ) +
     labs(fill = "Last\nstatus", colour = "Last\nstatus") +
-      guides(fill = FALSE, colour = FALSE)
+      guides(fill = FALSE, colour = FALSE) +
+    theme(plot.margin = margin(t = 4, r = 13, b = 1, l = 2, unit = "pt"))
   # theme(legend.position = "none")
 }
 
