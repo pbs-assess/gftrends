@@ -44,6 +44,8 @@ d <- d %>% group_by(species, region, year) %>%
   ) %>%
   ungroup()
 
+saveRDS(d, "data-generated/all-mcmc.rds")
+
 out <- d %>% group_by(species, region, year) %>%
   summarise(
     log_blrp = mean(log(blrp)),
