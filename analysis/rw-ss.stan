@@ -34,6 +34,8 @@ transformed parameters {
       if (t > first_obs[j] && y[t,j] != 999) {
         y_true[t,j] = y[t,j] - (tau[t,j] * tau_raw[t,j]); // measurement model (non-centered)
         eps[t,j] = y_true[t,j] - (x[t] + alpha[j]);
+        // -y_true[t,j] = -eps[t,j] - (x[t] + alpha[j]);
+        // y_true[t,j] = x[t] + alpha[j] + eps[t,j];
       }
       if (t > first_obs[j] && y[t,j] == 999) { // estimate missing values
         k += 1;
