@@ -1,6 +1,7 @@
 library(dplyr)
 library(ggplot2)
 source("analysis/utils.R")
+source('analysis/stock_df.R')
 dir.create("figs", showWarnings = FALSE)
 
 m <- readRDS("data-generated/b-ratio-fits.rds")
@@ -13,7 +14,8 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
     group_by(stock) %>%
     mutate(last_status = exp({{col_log_mean}})[n()]) %>%
     ungroup() %>%
-    mutate(stock = gsub("_", " ", stock))
+    # mutate(stock = gsub("_", " ", stock)) %>%
+    left_join(stock_df)
 
   stock_ids <- distinct(select(.fitted_dat, stock)) %>%
     arrange(stock) %>%
@@ -23,9 +25,11 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
     arrange(year) %>%
     mutate(.t = seq(1, n()))
   .y_true <- left_join(.y_true, stock_ids) %>% left_join(year_ids)
-  .y_true <- mutate(.y_true, stock = gsub("_", " ", stock))
+  # .y_true <- mutate(.y_true, stock = gsub("_", " ", stock)) %>%
+  .y_true <- .y_true %>%
+    left_join(stock_df)
 
-  .y_true <- left_join(.y_true, distinct(select(last_dat, stock, last_status)))
+  .y_true <- left_join(.y_true, distinct(select(last_dat, stock_clean, last_status)))
 
   x_t <- x_t %>% mutate(.value = exp(.value)) %>%
     mutate(year = .t + 1949)
@@ -44,7 +48,7 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
   #     med = median(.value), .groups = "drop"
   #   ) %>%
   set.seed(1234)
-  .samples <- sample(unique(x_t$.draw), 150L)
+  .samples <- sample(unique(x_t$.draw), 100L)
     x_t %>% filter(.draw %in% .samples) %>%
       ggplot(aes(year, .value)) +
       geom_line(aes(y = .value, group = .draw), colour = "grey10", alpha = 0.04) +
@@ -72,15 +76,17 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
     scale_fill_viridis_c(direction = -1, option = "C", end = 0.9) +
     ggsidekick::theme_sleek() +
     coord_cartesian(xlim = c(1950, 2020), ylim = ylim, expand = FALSE) +
-    geom_hline(yintercept = 1, lty = 2) +
+    geom_hline(yintercept = 1, lty = 2, col = "grey40") +
     # scale_y_log10() +
-    facet_wrap(~stock) +
+    facet_wrap(~stock_clean, ncol = 4) +
     ylab(ylab) +
     theme(
-      axis.title.x = element_blank(), panel.grid.major = element_line(colour = "grey92"),
-      panel.grid.minor = element_line(colour = "grey98")
+      axis.title.x = element_blank()
+      # panel.grid.major = element_line(colour = "grey92"),
+      # panel.grid.minor = element_line(colour = "grey98")
     ) +
-    labs(fill = "Last\nstatus", colour = "Last\nstatus")
+    labs(fill = "Last\nstatus", colour = "Last\nstatus") +
+      guides(fill = FALSE, colour = FALSE)
   # theme(legend.position = "none")
 }
 
@@ -93,43 +99,61 @@ y_true <- lapply(m, function(.x) {
 g <- plot_x_t(x_t[["blrp"]], y_true[["blrp"]], d[["blrp"]]$filtered_dat,
   log_blrp, q0.05_blrp, q0.95_blrp,
   ylab = expression(B/LRP), ylim = c(0, 10))
-ggsave("figs/blrp-x-t.pdf", width = 10, height = 7.5)
-ggsave("figs/blrp-x-t.png", width = 10, height = 7.5)
+ggsave("figs/blrp-x-t.pdf", width = 7, height = 8)
+ggsave("figs/blrp-x-t.png", width = 7, height = 8, dpi = 200)
 
 g <- plot_x_t(x_t[["busr"]], y_true[["busr"]], d[["busr"]]$filtered_dat,
   log_busr, q0.05_busr, q0.95_busr,
   ylab = expression(B/USR), ylim = c(0, 5))
-ggsave("figs/busr-x-t.pdf", width = 10, height = 7.5)
-ggsave("figs/busr-x-t.png", width = 10, height = 7.5)
+ggsave("figs/busr-x-t.pdf", width = 7, height = 8)
+ggsave("figs/busr-x-t.png", width = 7, height = 8, dpi = 200)
 
 g <- plot_x_t(x_t[["bbmsy"]], y_true[["bbmsy"]], d[["bbmsy"]]$filtered_dat,
   log_bbmsy, q0.05_bmsy, q0.95_bmsy,
   ylab = expression(B/B[MSY]), ylim = c(0, 3.5))
-ggsave("figs/bbmsy-x-t.pdf", width = 10, height = 7.5)
-ggsave("figs/bbmsy-x-t.png", width = 10, height = 7.5)
+ggsave("figs/bbmsy-x-t.pdf", width = 7, height = 8)
+ggsave("figs/bbmsy-x-t.png", width = 7, height = 8, dpi = 200)
 
-# g <- ggplot(y_true, aes(year, exp(.value), group = .draw)) +
-#   geom_line(alpha = 0.3, lwd = 0.2) +
-#   facet_wrap(~stock) +
-#   geom_line(aes(x = year, y = exp(log_blrp)),
-#     data = filter(dat, year >= 1950, year <= 2020), colour = "red",
-#     inherit.aes = FALSE
-#   ) +
-#   geom_ribbon(aes(x = year, y = exp(log_blrp), ymin = q0.05_blrp, ymax = q0.95_blrp),
-#     data = filter(dat, year >= 1950, year <= 2020), colour = NA, fill = "red", alpha = 0.2,
-#     inherit.aes = FALSE
-#   ) +
-#   ggsidekick::theme_sleek() +
-#   coord_cartesian(xlim = c(1950, 2020), ylim = c(0, 10))
-# ggsave("figs/blrp-stock-latent.png", width = 10, height = 7)
+# Summary plot --------------------------------------------------------
 
-# MRP: (e.g., https://mc-stan.org/rstanarm/articles/mrp.html)
+set.seed(1234)
+.samples <- sample(unique(x_t[[1]]$.draw), 25L)
 
-# y <- y_true$busr
-#
-# catch <- readRDS("/Volumes/Extreme-SSD/src/gfsynopsis/report/data-cache/pacific-cod.rds")$catch
-#
-# group_by(y, .t, .draw) %>% summarise(mean = mean(.value)) %>%
-#   ggplot(aes(.t, mean, group = .draw)) + geom_line() +
-#   geom_line(aes(x = .t, y = .value, group = .draw),
-#     colour = "red", data = x_t$busr, alpha = 0.04)
+plot_data <- bind_rows(x_t, .id = "ratio") %>%
+  mutate(year = .t + 1949) %>%
+  mutate(.value = exp(.value)) %>%
+  mutate(ratio = gsub("bbmsy", "B/B[MSY]", ratio)) %>%
+  mutate(ratio = gsub("blrp", "B/LRP", ratio)) %>%
+  mutate(ratio = gsub("busr", "B/USR", ratio)) %>%
+  mutate(ratio = factor(ratio, levels = c("B/LRP", "B/USR", "B/B[MSY]")))
+
+summarized_plot_data <- group_by(plot_data, ratio, year) %>%
+  summarize(
+    lwr = quantile(.value, probs = 0.025),
+    upr = quantile(.value, probs = 0.975),
+    med = median(.value), .groups = "drop")
+
+plot_data <- plot_data %>% filter(.draw %in% .samples)
+
+g <- plot_data %>%
+  ggplot(aes(year, .value, group = paste(ratio, .draw), color = ratio)) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr, y = med, x = year, fill = ratio), inherit.aes = FALSE, data = summarized_plot_data, alpha = 0.3) +
+  geom_line(aes(y = med, x = year, color = ratio),
+    inherit.aes = FALSE, data = summarized_plot_data, alpha = 1, lwd = 1) +
+  geom_line(alpha = 0.3, lwd = 0.3) +
+  ggsidekick::theme_sleek() +
+  coord_cartesian(expand = FALSE, ylim = c(0.8, 6)) +
+  # scale_y_continuous(trans = "sqrt") +
+  ylab("Ratio value") + xlab("Year") +
+  labs(color = "Ratio",fill = 'Ratio') +
+  theme(legend.position = c(0.85, 0.85), plot.margin = margin(t = 8, r = 13, b = 1, l = 2, unit = "pt")) +
+  scale_colour_brewer(palette = "Dark2",
+    labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
+    ) +
+  scale_fill_brewer(palette = "Dark2",
+    labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
+  ) +
+  geom_hline(yintercept = 1, lty = 2, col = "grey60")
+ggsave("figs/ts-summary.pdf", width = 4.5, height = 4)
+ggsave("figs/ts-summary.png", width = 4.5, height = 4)
+
