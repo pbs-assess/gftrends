@@ -61,12 +61,13 @@ model {
       }
     }
   }
-  x_raw ~ student_t(3, 0, 1);
+  // x_raw ~ student_t(3, 0, 1);
+  x_raw ~ std_normal();
   to_vector(tau_raw) ~ std_normal();
   // priors:
   sigma_x ~ std_normal();
   sigma_eps ~ std_normal();
-  alpha_raw ~ normal(0, 5);
+//  alpha_raw ~ normal(0, 5);
   rho ~ normal(0, rho_sd);
-  x_t_intercept ~ normal(0, 5);
+//  x_t_intercept ~ normal(0, 5);
 }
