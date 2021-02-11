@@ -38,8 +38,8 @@ format_stan_data <- function(dat, column_mean, column_sd) {
 
 initf <- function() {
   list(
-    rho = runif(1, 0.6, 0.98),
-    sigma_eps = runif(1, 0.03, 0.1),
+    rho = runif(2, 0.6, 0.98),
+    sigma_eps = runif(2, 0.03, 0.1),
     sigma_x = runif(1, 0.03, 0.1),
     sigma_alpha = runif(1, -0.5, 0.5),
     x_t_intercept = runif(1, 0.5, 1.5)
