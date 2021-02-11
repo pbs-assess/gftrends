@@ -45,11 +45,13 @@ p_thresh <- readRDS(here("data-generated/p-thresh.rds"))
 
 # Highlights
 
+- Ongoing surveys, nothing in 2020, double in 2021... this year we look at trends in assessed stock status
+
 - We developed a data set of the full posterior distribution of three measures
   of stock status (...) from 24 stock assessments in BC. These represent... We
   fit a hierarchical time series model to evaluate overall trends and status.
 
-- Something about the posterior distributions in the last assess year; highlight a few stocks
+- Something about the posterior distributions in the last assessed year; highlight a few stocks
 
 - Something about the clear declining trend that was arrested around 2000. Mean
   trend relatively stable since 2000, by considerable variability for some
@@ -57,9 +59,7 @@ p_thresh <- readRDS(here("data-generated/p-thresh.rds"))
 
 - Something about the overall estimated mean status as of 2020
 
-- Ongoing surveys, nothing in 2020, double in 2021...
-
-# A hierarchical time-series model of groundfish stock status
+# A state-space time-series model of groundfish stock status
 
 The Groundfish Section at Pacific Biological Station conducts regular stock assessment of...
 These assessments take into account...
@@ -90,25 +90,24 @@ where $\eta_t$ is a random walk deviation with standard deviation $\sigma_\eta$.
 We assume an auto-regressive observation model:
 $$
 \begin{aligned}
-\hat{y}_{j,t} &\sim \mathrm{Normal} \left( y_{j,t}, \tau^2\right),\\
+\hat{y}_{j,t} &\sim \mathrm{Normal} \left( y_{j,t}, \hat{\tau}^2\right),\\
 y_{j,t} &= x_{t} + \alpha_j + \epsilon_{j,t}, \;
       \epsilon_{j,t} \sim \mathrm{Normal}
-      \left(\varphi \epsilon_{j,t-1}, \sigma_{\epsilon}^2 \right),
+      \left(\rho \epsilon_{j,t-1}, \sigma_{\epsilon}^2 \right),
 \end{aligned}
 $$
 where $\hat{y}_{j,t}$ is the mean log stock status for stock $j$
-and time $t$ (from an assessment), $y_{j,t}$ is the "true" unobserved (latent) stock-specific status,
-and $\tau$ is the standard deviation of the log stock status from an assessment.
-We group Pacific Cod and Walleye Pollock stocks to share a $\varphi$ and $\sigma_{\epsilon}$
-and all other stock to share another $\varphi$ and $\sigma_{\epsilon}$ (these two stocks were
-fit with delay difference models and have considerably more "wiggly" stock trajectories).
+and time $t$ (from an assessment), $y_{j,t}$ is the unobserved "true" mean stock-specific status,
+and $\hat{\tau}$ is the standard deviation of the log stock status from an assessment.
+We group Pacific Cod and Walleye Pollock stocks to share a $\rho$ and $\sigma_{\epsilon}$
+and all other stock to share another $\rho$ and $\sigma_{\epsilon}$ (stock trajectories were considerably more "wiggly" for these species).
 The symbol $\alpha_j$ represents a stock-specific intercept
-that is constrained such that the sum of all $\alpha_j$ is zero to make the overall mean identifiable.
+that is constrained such that the sum of all $\alpha_j$ is zero to make the overall mean $x_t$ identifiable.
 The symbol $\epsilon_{j,t}$ represents a first-order autoregressive (AR1) deviation
-with correlation $\varphi$ and standard deviation $\sigma_\epsilon$.
+with correlation $\rho$ and standard deviation $\sigma_\epsilon$.
 We place half-Normal(0, 1) priors on $\sigma_{\epsilon}$ and $\sigma_{\eta}$,
 Normal(0, 5^2^) priors on $x_0$ and $\alpha_j$,
-and a Normal(0, 1)[-1, 1] prior on $\varphi$.
+and a Normal(0, 1)[-1, 1] prior on $\rho$.
 We fit the models with Stan [@carpenter2017; @rstan2020], sampling 1000 iterations
 on each of 6 chains and discarding the first half as warm up.
 
@@ -145,7 +144,7 @@ Main results here; quick bullets for now
 
 - Overall mean B/USR and B/B~MSY~ are estimated at `r med1(busr$.value)` (95% CI: `r lwr1(busr$.value)`--`r upr1(busr$.value)`) and `r med1(bbmsy$.value)` (95% CI: `r lwr1(bbmsy$.value)`--`r upr1(bbmsy$.value)`) in 2020
 
--  `r sum(p_thresh$p_usr > 0.25)`/`r nrow(p_thresh)` in Figure \@ref(fig:overall) stocks had > 25% probability of being below their USR as of the last
+-  `r sum(p_thresh$p_usr > 0.25)`/`r nrow(p_thresh)` in Figure \@ref(fig:ridges) stocks had > 25% probability of being below their USR as of the last
   date of assessment
 
 ```{r pcod, include=FALSE}
@@ -188,6 +187,7 @@ has been square-root transformed two slightly compress high ratio values for
 visualization. Stocks with missing data in the B/B~MSY~ column are assessments
 where historical reference points were chosen instead of MSY-based reference
 points.
+Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column.
 
 ```{r ridges, fig.cap = "(ref:fig-ridges)", out.width="4.2in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/ridges.pdf"))
@@ -195,7 +195,7 @@ include_graphics(here("figs/ridges.pdf"))
 
 (ref:fig-overall) Overall mean biomass status ($x_t$) for B/LRP, B/USR, and
 B/B~MSY~. Dark lines represent the median trajectory, shaded ribbons represent
-95% quantile credible intervals, and thin lines represent 25 draws from the
+95% quantile credible intervals, and thin lines represent 25 illustrative draws from the
 posterior.
 
 ```{r overall, fig.cap = "(ref:fig-overall)", out.width="3.5in", fig.align="center", fig.pos="ht"}
@@ -204,11 +204,11 @@ include_graphics(here("figs/ts-summary.pdf"))
 
 
 (ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC. Coloured lines
-and ribbons represent the individual stocks. Dark coloured lines and ribbons
+and ribbons represent the individual stocks. Dark coloured lines and shaded ribbons
 represent output from stock assessments: trajectories of median B/LRP 95%
-quantile credible intervals. All thin lines represent draws from the posterior
-distribution of $y_{j,t}$ (latent stock-specific mean trends; colours) or $x_t$
-(latent overall mean trend; grey). The overall mean trend (grey) is the same
+quantile credible intervals. Thin lines represent draws from the posterior
+distribution of $y_{j,t}$ (latent stock-specific mean trends; colours) and $x_t$
+(latent overall mean trend; grey). The overall mean trend ($x_t$; grey) is the same
 across panels.
 
 ```{r ts-lrp, fig.cap = "(ref:fig-ts-lrp)", out.width="5in", fig.align="center", fig.pos="ht"}
