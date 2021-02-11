@@ -70,8 +70,8 @@ overall status across stocks up until the year 2020...
 
 We model three measures of stock status:
 (1) B/B~MSY~ (biomass divided by biomass at maximum sustainable yield),
-(2) B/USR (biomass divided by the upper stock reference], and
-(3) B/LRP (biomass divided by the limit reference point]).
+(2) B/USR (biomass divided by the upper stock reference), and
+(3) B/LRP (biomass divided by the limit reference point).
 To do this, we build on a model described in @hilborn2020 in two ways:
 (1) we incorporate uncertainty in stock-specific status and
 (2) we project the latent underlying stock-specific status forward to the last year (2020).
@@ -105,9 +105,9 @@ The symbol $\alpha_j$ represents a stock-specific intercept
 that is constrained such that the sum of all $\alpha_j$ is zero to make the overall mean identifiable.
 The symbol $\epsilon_{j,t}$ represents a first-order autoregressive (AR1) deviation
 with correlation $\varphi$ and standard deviation $\sigma_\epsilon$.
-We place half-Student-t(7, 0, 2) priors on $\sigma_{\epsilon}$ and $\sigma_{\eta}$
+We place half-Normal(0, 1) priors on $\sigma_{\epsilon}$ and $\sigma_{\eta}$
 and a Normal(0, 1)[-1, 1] prior on $\varphi$.
-We fit the models with Stan [@carpenter2017; @rstan2020], sampling 600 iterations
+We fit the models with Stan [@carpenter2017; @rstan2020], sampling 1000 iterations
 on each of 6 chains and discarding the first half as warm up.
 
 # Status and trends
