@@ -75,7 +75,7 @@ We model three measures of stock status:
 To do this, we build on a model described in @hilborn2020 in two ways:
 (1) we incorporate uncertainty in stock-specific status and
 (2) we project the latent underlying stock-specific status forward to the last year (2020).
-The later accounts for not all stocks having an up-to-date stock assessment
+The latter accounts for not all stocks having an up-to-date stock assessment
 and accounts for future possible stock states based on the time-series properties
 of the fitted stock trajectories.
 
