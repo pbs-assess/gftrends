@@ -1,5 +1,5 @@
 ---
-title: "Trends in assessed groundfish status in British Columbia from 1960--2020"
+title: "Trends in Pacific Canadian groundfish stock status"
 author:
 - "Sean C. Anderson^1^"
 - "Other authors here^1^"
@@ -9,8 +9,6 @@ output:
   bookdown::pdf_document2:
     toc: false
     number_sections: false
-    includes:
-      in_header: "preamble.tex"
 fontsize: 12pt
 bibliography: "refs.bib"
 csl: "csas.csl"
@@ -81,15 +79,18 @@ of the fitted stock trajectories.
 
 Using $x_t$ to denote **log** stock status at time $t$, we model $x_t$ as
 $$
-x_t = x_{t-1} + \eta_t, \;
+\begin{aligned}
+x_{t=1} &=  x_0 ,\\
+x_{t>1} &= x_{t-1} + \eta_t, \;
       \eta_t \sim \mathrm{Normal}
       \left( 0, \sigma_{\eta}^2 \right),
+\end{aligned}
 $$
 where $\eta_t$ is a random walk deviation with standard deviation $\sigma_\eta$.
 We assume an auto-regressive observation model:
 $$
 \begin{aligned}
-\hat{y}_{j,t} &\sim \mathrm{Normal} \left( y_{j,t}, \tau^2\right)\\
+\hat{y}_{j,t} &\sim \mathrm{Normal} \left( y_{j,t}, \tau^2\right),\\
 y_{j,t} &= x_{t} + \alpha_j + \epsilon_{j,t}, \;
       \epsilon_{j,t} \sim \mathrm{Normal}
       \left(\varphi \epsilon_{j,t-1}, \sigma_{\epsilon}^2 \right),
@@ -98,14 +99,15 @@ $$
 where $\hat{y}_{j,t}$ is the mean log stock status for stock $j$
 and time $t$ (from an assessment), $y_{j,t}$ is the "true" unobserved (latent) stock-specific status,
 and $\tau$ is the standard deviation of the log stock status from an assessment.
-We group Pacific Cod and Walleye Pollock stocks to share a $\sigma_{\epsilon}$
-and all other stock to share another $\sigma_{\epsilon}$ (these two stocks were
+We group Pacific Cod and Walleye Pollock stocks to share a $\varphi$ and $\sigma_{\epsilon}$
+and all other stock to share another $\varphi$ and $\sigma_{\epsilon}$ (these two stocks were
 fit with delay difference models and have considerably more "wiggly" stock trajectories).
 The symbol $\alpha_j$ represents a stock-specific intercept
 that is constrained such that the sum of all $\alpha_j$ is zero to make the overall mean identifiable.
 The symbol $\epsilon_{j,t}$ represents a first-order autoregressive (AR1) deviation
 with correlation $\varphi$ and standard deviation $\sigma_\epsilon$.
-We place half-Normal(0, 1) priors on $\sigma_{\epsilon}$ and $\sigma_{\eta}$
+We place half-Normal(0, 1) priors on $\sigma_{\epsilon}$ and $\sigma_{\eta}$,
+Normal(0, 5^2^) priors on $x_0$ and $\alpha_j$,
 and a Normal(0, 1)[-1, 1] prior on $\varphi$.
 We fit the models with Stan [@carpenter2017; @rstan2020], sampling 1000 iterations
 on each of 6 chains and discarding the first half as warm up.
