@@ -47,14 +47,14 @@ data_plot <- dat %>%
   mutate(ratio = factor(ratio, levels = (c("B/LRP", "B/USR", "B/B[MSY]")))) %>%
   group_by(ratio) %>%
   dplyr::filter(
-    ratio_value < quantile(ratio_value, probs = 0.97, na.rm = TRUE),
+    ratio_value < quantile(ratio_value, probs = 0.98, na.rm = TRUE),
     ratio_value > quantile(ratio_value, probs = 0.005, na.rm = TRUE)
   )
 
 years <- select(data_plot, ratio, stock_clean, year) %>%
   distinct() %>%
   filter(ratio == "B/LRP") %>%
-  mutate(ratio_value = 9) %>%
+  mutate(ratio_value = 8.6) %>%
   mutate(ratio = factor(ratio, levels = (c("B/LRP", "B/USR", "B/B[MSY]"))))
 
 g <- data_plot %>%
