@@ -134,9 +134,9 @@ summarized_plot_data <- group_by(plot_data, ratio, year) %>%
     upr = quantile(.value, probs = 0.975),
     med = median(.value), .groups = "drop")
 
-plot_data <- plot_data %>% filter(.draw %in% .samples)
+plot_data_sub <- plot_data %>% filter(.draw %in% .samples)
 
-g <- plot_data %>%
+g <- plot_data_sub %>%
   ggplot(aes(year, .value, group = paste(ratio, .draw), color = ratio)) +
   geom_ribbon(aes(ymin = lwr, ymax = upr, y = med, x = year, fill = ratio), inherit.aes = FALSE, data = summarized_plot_data, alpha = 0.3) +
   geom_line(aes(y = med, x = year, color = ratio),
@@ -158,3 +158,4 @@ g <- plot_data %>%
 ggsave("figs/ts-summary.pdf", width = 4.5, height = 4)
 ggsave("figs/ts-summary.png", width = 4.5, height = 4)
 
+saveRDS(plot_data, "data-generated/x_t_posterior.rds")

@@ -1,0 +1,230 @@
+---
+title: "Trends in assessed groundfish status in British Columbia from 1960--2020"
+author:
+- "Sean C. Anderson^1^"
+- "Other authors here^1^"
+date: |
+  ^1^Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo, BC, V6T 6N7, Canada\
+output:
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: false
+    includes:
+      in_header: "preamble.tex"
+fontsize: 12pt
+bibliography: "refs.bib"
+csl: "csas.csl"
+link-citations: no
+linkcolor: "black"
+urlcolor: "black"
+---
+
+```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(here)
+opts_chunk$set(echo = FALSE, message = FALSE, warnings = FALSE)
+
+status_dat <- readRDS(here("data-generated/x_t_posterior.rds"))
+status <- filter(status_dat, year == 2020)
+blrp <- filter(status, ratio == "B/LRP")
+busr <- filter(status, ratio == "B/USR")
+bbmsy <- filter(status, ratio == "B/B[MSY]")
+
+med1 <- function(x) {
+  sprintf("%.1f", round(median(x), 1))
+}
+lwr1 <- function(x) {
+  sprintf("%.1f", round(quantile(x, probs = 0.025), 1))
+}
+upr1 <- function(x) {
+  sprintf("%.1f", round(quantile(x, probs = 0.975), 1))
+}
+
+p_thresh <- readRDS(here("data-generated/p-thresh.rds"))
+```
+
+# Highlights
+
+- We developed a data set of the full posterior distribution of three measures
+  of stock status (...) from 24 stock assessments in BC. These represent... We
+  fit a hierarchical time series model to evaluate overall trends and status.
+
+- Something about the posterior distributions in the last assess year; highlight a few stocks
+
+- Something about the clear declining trend that was arrested around 2000. Mean
+  trend relatively stable since 2000, by considerable variability for some
+  individual stocks such as ...
+
+- Something about the overall estimated mean status as of 2020
+
+- Ongoing surveys, nothing in 2020, double in 2021...
+
+# A hierarchical time-series model of groundfish stock status
+
+The Groundfish Section at Pacific Biological Station conducts regular stock assessment of...
+These assessments take into account...
+Here, we develop a Bayesian hierarchical time-series model to explore trends in
+overall status across stocks up until the year 2020...
+
+We model three measures of stock status:
+(1) B/B~MSY~ (biomass divided by biomass at maximum sustainable yield),
+(2) B/USR (biomass divided by the upper stock reference], and
+(3) B/LRP (biomass divided by the limit reference point]).
+To do this, we build on a model described in @hilborn2020 in two ways:
+(1) we incorporate uncertainty in stock-specific status and
+(2) we project the latent underlying stock-specific status forward to the last year (2020).
+The later accounts for not all stocks having an up-to-date stock assessment
+and accounts for future possible stock states based on the time-series properties
+of the fitted stock trajectories.
+
+Using $x_t$ to denote **log** stock status at time $t$, we model $x_t$ as
+$$
+x_t = x_{t-1} + \eta_t, \;
+      \eta_t \sim \mathrm{Normal}
+      \left( 0, \sigma_{\eta}^2 \right),
+$$
+where $\eta_t$ is a random walk deviation with standard deviation $\sigma_\eta$.
+We assume an auto-regressive observation model:
+$$
+\begin{aligned}
+\hat{y}_{j,t} &\sim \mathrm{Normal} \left( y_{j,t}, \tau^2\right)\\
+y_{j,t} &= x_{t} + \alpha_j + \epsilon_{j,t}, \;
+      \epsilon_{j,t} \sim \mathrm{Normal}
+      \left(\varphi \epsilon_{j,t-1}, \sigma_{\epsilon}^2 \right),
+\end{aligned}
+$$
+where $\hat{y}_{j,t}$ is the mean log stock status for stock $j$
+and time $t$ (from an assessment), $y_{j,t}$ is the "true" unobserved (latent) stock-specific status,
+and $\tau$ is the standard deviation of the log stock status from an assessment.
+We group Pacific Cod and Walleye Pollock stocks to share a $\sigma_{\epsilon}$
+and all other stock to share another $\sigma_{\epsilon}$ (these two stocks were
+fit with delay difference models and have considerably more "wiggly" stock trajectories).
+The symbol $\alpha_j$ represents a stock-specific intercept
+that is constrained such that the sum of all $\alpha_j$ is zero to make the overall mean identifiable.
+The symbol $\epsilon_{j,t}$ represents a first-order autoregressive (AR1) deviation
+with correlation $\varphi$ and standard deviation $\sigma_\epsilon$.
+We place half-Student-t(7, 0, 2) priors on $\sigma_{\epsilon}$ and $\sigma_{\eta}$
+and a Normal(0, 1)[-1, 1] prior on $\varphi$.
+We fit the models with Stan [@carpenter2017; @rstan2020], sampling 600 iterations
+on each of 6 chains and discarding the first half as warm up.
+
+# Status and trends
+
+Main results here; quick bullets for now
+
+- Lingcod 4B  Bocaccio 5ABCD the only stocks with considerable posterior
+  density below the LRP as of the last assessment. Bocaccio, however, are
+  predicted to rebuild by XX due to a massive recruitment event in XX (REF).
+
+- Note that Yelloweye Rockfish in outside BC waters were previously estimated
+  to be below their LRP [@dfo2015yelloweyeoutside]; an updated assessment (REF)
+  found a low probability of this, but is not included here, reasons...
+  Quillback, some probability as of XX, but full posterior not available and so
+  not shown in Figure \@ref(fig:overall) but is shown in Figure
+  \@ref(fig:ts-lrp).
+
+- No clear correlation between year of last assessment and stock status (Figure
+  \@ref(fig:overall))
+
+- There was a clear decline in status for all three metrics prior to
+  approximately 2000 (Figure \@ref(fig:overall)). Status prior to 2000 is more
+  uncertain since there is not a continuous random stratified survey and a lack
+  of commercial observers...
+
+- Mean status since about 2000 has been relatively stable, although with
+  considerable variation within some stocks (e.g., Pacific Cod, Walleye
+  Pollock, and Redstripe Rockfish stocks)
+
+- Overall mean B/LRP is estimated to be `r med1(blrp$.value)` (95% CI: `r lwr1(blrp$.value)`--`r upr1(blrp$.value)`) in 2020, and we note
+  the increased uncertainty in the last few years due to not all assessments
+  being current (Figure \@ref(fig:overall)).
+
+- Overall mean B/USR and B/B~MSY~ are estimated at `r med1(busr$.value)` (95% CI: `r lwr1(busr$.value)`--`r upr1(busr$.value)`) and `r med1(bbmsy$.value)` (95% CI: `r lwr1(bbmsy$.value)`--`r upr1(bbmsy$.value)`) in 2020
+
+-  `r sum(p_thresh$p_usr > 0.25)`/`r nrow(p_thresh)` in Figure \@ref(fig:overall) stocks had > 25% probability of being below their USR as of the last
+  date of assessment
+
+```{r pcod, include=FALSE}
+pcod3cd <- filter(p_thresh, stock_clean == "Pacific Cod 3CD") %>% pull(p_lrp)
+pcod3cd <- sprintf("%.1f", round(pcod3cd * 100, 1))
+```
+
+- `r sum(p_thresh$p_lrp > 0.05)`/`r nrow(p_thresh)` stocks had > 5% probability of being below their LRP as of the last
+  date of assessment. Pacific Cod 3CD: `r pcod3cd`% in 2020
+
+# Factors influencing trends
+
+There are many potential causes for the observed trends with the most obvious
+and direct being the impact from fishery removals and management interventions.
+There are also potential species interactions and climatic effects on trends in
+local biomass density of these species. Ongoing work suggests ... Philina's
+work here...
+
+\vspace{6pt}
+
+# References
+
+\vspace{9pt}
+
+<div id="refs"></div>
+
+\clearpage
+
+\setlength{\parindent}{0in}
+\setlength{\leftskip}{0pt}
+\setlength{\parskip}{6pt}
+
+# Figures
+
+(ref:fig-ridges) Posterior distribution of three measures of stock status.
+Stocks are arranged in order of assessment with the most recent assessments at
+the top; years in the first column represent the year of the assessment (NOTE
+SOME HAVE PROJECTIONS!?). Colours represent the mean B/LRP value. The x-axis
+has been square-root transformed two slightly compress high ratio values for
+visualization. Stocks with missing data in the B/B~MSY~ column are assessments
+where historical reference points were chosen instead of MSY-based reference
+points.
+
+```{r ridges, fig.cap = "(ref:fig-ridges)", out.width="4.2in", fig.align="center", fig.pos="ht"}
+include_graphics(here("figs/ridges.pdf"))
+```
+
+(ref:fig-overall) Overall mean biomass status ($x_t$) for B/LRP, B/USR, and
+B/B~MSY~. Dark lines represent the median trajectory, shaded ribbons represent
+95% quantile credible intervals, and thin lines represent 25 draws from the
+posterior.
+
+```{r overall, fig.cap = "(ref:fig-overall)", out.width="3.5in", fig.align="center", fig.pos="ht"}
+include_graphics(here("figs/ts-summary.pdf"))
+```
+
+
+(ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC. Coloured lines
+and ribbons represent the individual stocks. Dark coloured lines and ribbons
+represent output from stock assessments: trajectories of median B/LRP 95%
+quantile credible intervals. All thin lines represent draws from the posterior
+distribution of $y_{j,t}$ (latent stock-specific mean trends; colours) or $x_t$
+(latent overall mean trend; grey). The overall mean trend (grey) is the same
+across panels.
+
+```{r ts-lrp, fig.cap = "(ref:fig-ts-lrp)", out.width="5in", fig.align="center", fig.pos="ht"}
+include_graphics(here("figs/blrp-x-t.pdf"))
+```
+
+(ref:fig-ts-usr) Same as Figure \@ref(fig:ts-lrp) but for B/USR. WILL NEED TO
+PICK ONE OF FIGURES 3--5 OR COMBINE THEM SOMEHOW
+
+```{r ts-usr, fig.cap = "(ref:fig-ts-usr)", out.width="5in", fig.align="center", fig.pos="ht"}
+include_graphics(here("figs/busr-x-t.pdf"))
+```
+
+(ref:fig-ts-bbmsy) Same as Figure \@ref(fig:ts-lrp) but for B/B~MSY~. Stocks
+with missing data are assessments where historical reference points were chosen
+instead of MSY-based reference points.
+
+```{r ts-bbmsy, fig.cap = "(ref:fig-ts-bbmsy)", out.width="5in", fig.align="center", fig.pos="ht"}
+include_graphics(here("figs/bbmsy-x-t.pdf"))
+```
+
