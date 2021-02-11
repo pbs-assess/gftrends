@@ -23,8 +23,8 @@ m <- purrr::map(d, function(.d) {
   rstan::sampling(
     model,
     data = .d$stan_dat,
-    chains = 6, iter = 1000,
-    # init = initf,
+    chains = 4L, iter = 2000L,
+    init = initf,
     pars = pars
   )
 })
