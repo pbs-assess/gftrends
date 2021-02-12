@@ -22,13 +22,13 @@ arrowtooth %>% ggplot(aes(year, ssb / lrp, group = iter)) + geom_line(alpha = 0.
 arrowtooth_sum <- arrowtooth %>%
   mutate(blrp = ssb / lrp) %>%
   group_by(year) %>%
-  summarise(species = "arrowtooth", region = "3CD",
+  summarise(species = "arrowtooth", region = "BC",
     log_blrp = mean(log(blrp)), sd_log_blrp = sd(log(blrp)))
 
-arrowtooth_sum %>% saveRDS("data-raw/arrowtooth-3cd.rds")
+arrowtooth_sum %>% saveRDS("data-raw/arrowtooth-bc.rds")
 arrowtooth %>% rename(b = ssb) %>%
-  mutate(species = "arrowtooth", region = "3CD") %>%
-  saveRDS("data-raw/arrowtooth-3cd-mcmc.rds")
+  mutate(species = "arrowtooth", region = "BC") %>%
+  saveRDS("data-raw/arrowtooth-bc-mcmc.rds")
 
 # pcod average model ------------------------------------------------------
 
