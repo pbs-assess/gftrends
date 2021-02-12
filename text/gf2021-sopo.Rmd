@@ -47,12 +47,10 @@ p_thresh <- readRDS(here("data-generated/p-thresh.rds"))
 
 # Highlights
 
-- We assembled a data set of the posterior distribution of three measures of
-  stock status for 24 BC groundfish stocks assessed over the last decade. We
-  fit a hierarchical time series model to evaluate overall trends in status.
+- Something about most recent assessments...
 
 - Something about the posterior distributions in the last assessed year;
-  highlight a few stocks
+  highlight a few stocks...
 
 - Something about the clear declining trend that was arrested around 2000. Mean
   trend relatively stable since 2000, but considerable variability for some
@@ -63,22 +61,21 @@ p_thresh <- readRDS(here("data-generated/p-thresh.rds"))
 
 # Fisheries-independent groundfish surveys
 
-The Fisheries and Oceans Canada (DFO) Groundfish Section conducts a suite of
-randomized surveys using bottom trawl, longline hook, and longline trap gear
-that, in aggregate, provide coverage for all offshore waters of Canada's
-Pacific Coast. Synoptic trawl surveys in Queen Charlotte Sound and Hecate
-Strait are conducted in odd numbered years and the West Coast of Vancouver
-Island (WCVI) and the West Coast of Haida Gwaii (WCHG) surveys are conducted in
-even numbered years. In addition to the bottom trawl surveys, two Hard Bottom
-Longline (HBLL) surveys are conducted, one in "inside" waters (east of
-Vancouver Island) and another in "outside" waters (everything else). Each year
-the surveys alternate between northern and southern areas (the northern areas
-were surveyed in 2019). Lastly, a coast-wide longline trap survey targeting
-sablefish is conducted every year. In addition to the random depth-stratified
-surveys, DFO collects additional information from the International Pacific
-Halibut Commission (IPHC) Setline Survey. In 2020, the synoptic WCHG trawl
-survey, HBLL south survey, IPHC setline survey, and sablefish survey were
-conducted. The synoptic WCVI survey did not run due to COVID-19.
+DFO conducts a suite of randomized surveys using bottom trawl, longline hook,
+and longline trap gear that, in aggregate, provide coverage for all offshore
+waters of Canada's Pacific Coast. Synoptic trawl surveys in Queen Charlotte
+Sound and Hecate Strait are conducted in odd numbered years and the West Coast
+of Vancouver Island (WCVI) and the West Coast of Haida Gwaii (WCHG) surveys are
+conducted in even numbered years. In addition to the bottom trawl surveys, four
+biennial Hard Bottom Longline (HBLL) surveys are conducted, two in "inside"
+waters (east of Vancouver Island) and two others in "outside" waters
+(everything else). Each year the HBLL surveys alternate between northern and
+southern areas. Lastly, a coast-wide longline trap survey targeting sablefish
+is conducted every year and DFO collects biological information from the
+International Pacific Halibut Commission (IPHC) Setline Survey. In 2020, the
+synoptic WCHG trawl survey, HBLL south survey, IPHC setline survey, and
+sablefish survey were conducted. The synoptic WCVI survey did not run due to
+COVID-19.
 
 # A state-space model of groundfish stock status
 
@@ -89,8 +86,9 @@ two stock status reference points: (1) the Limit Reference Point (LRP),
 a "status below which serious harm is occurring to the stock", and (2) the
 Upper Stock Reference Point (USR), which represents the "threshold below which
 removals must be progressively reduced in order to avoid reaching the LRP"
-[@dfo2009PA]. The USR defines the breakpoint between the healthy and cautious zone and
-the LRP defines the breakpoint between the cautious and critical zone.
+[@dfo2009PA, Figure \@ref(fig:pa-framework)]. The USR defines the breakpoint
+between the healthy and cautious zone and the LRP defines the breakpoint
+between the cautious and critical zone (Figure \@ref(fig:pa-framework)).
 
 Assessment scientists conduct regular stock assessment of major fish stocks in
 BC. These assessments take into account... and assess status with respect to
@@ -223,19 +221,22 @@ work here...
 vertical lines---the Limit Reference Point (LRP) and Upper Stock Reference
 (USR)---are the focus of this analysis. Based on @dfo2009PA.
 
-```{r pa-illustration, fig.cap="(ref:fig-pa)", out.width="3.1in", fig.align="center", fig.pos="ht"}
+```{r pa-framework, fig.cap="(ref:fig-pa)", out.width="3.1in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/pa-framework.pdf"))
 ```
 
 (ref:fig-ridges) Posterior distribution of three measures of stock status.
 Stocks are arranged in order of assessment with the most recent assessments at
-the top; years in the first column represent the year the status represents (NOTE
-SOME HAVE PROJECTIONS!?). Colours represent the mean B/LRP value. The x-axis
-has been square-root transformed two slightly compress high ratio values for
-visualization. Stocks with missing data in the B/B~MSY~ column are assessments
-where historical reference points were chosen instead of MSY-based reference
-points. Vertical dashed lines are at values of 1.0 in all columns and also at
-values of 0.4 and 0.8 in the B/B~MSY~ column.
+the top; years in the first column represent the year the status represents.
+Colours represent the mean B/LRP value. The x-axis has been square-root
+transformed to slightly compress high ratio values for visualization. Stocks
+with missing data in the B/B~MSY~ column are assessments where historical
+reference points were chosen instead of MSY-based reference points. Vertical
+dashed lines are at values of 1.0 in all columns and also at values of 0.4 and
+0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR
+values in the PA Framework).
+
+<!-- TODO: SOME HAVE PROJECTIONS? -->
 
 ```{r ridges, fig.cap = "(ref:fig-ridges)", out.width="4.2in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/ridges.pdf"))
