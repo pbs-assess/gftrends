@@ -9,6 +9,8 @@ output:
   bookdown::pdf_document2:
     toc: false
     number_sections: false
+    includes:
+      in_header: "preamble.tex"
 fontsize: 12pt
 bibliography: "refs.bib"
 csl: "csas.csl"
@@ -45,19 +47,19 @@ p_thresh <- readRDS(here("data-generated/p-thresh.rds"))
 
 # Highlights
 
-- Ongoing surveys, nothing in 2020, double in 2021... this year we look at trends in assessed stock status
+- We assembled a data set of the posterior distribution of three measures of
+  stock status for 24 BC groundfish stocks assessed over the last decade. We
+  fit a hierarchical time series model to evaluate overall trends in status.
 
-- We developed a data set of the full posterior distribution of three measures
-  of stock status (...) from 24 stock assessments in BC. These represent... We
-  fit a hierarchical time series model to evaluate overall trends and status.
-
-- Something about the posterior distributions in the last assessed year; highlight a few stocks
+- Something about the posterior distributions in the last assessed year;
+  highlight a few stocks
 
 - Something about the clear declining trend that was arrested around 2000. Mean
-  trend relatively stable since 2000, by considerable variability for some
-  individual stocks such as ...
+  trend relatively stable since 2000, but considerable variability for some
+  individual stocks such as ... Something about the overall estimated mean
+  status as of 2020...
 
-- Something about the overall estimated mean status as of 2020
+- Something about probability density below LRP and USR...
 
 # Fisheries-independent groundfish surveys
 
@@ -87,23 +89,20 @@ two stock status reference points: (1) the Limit Reference Point (LRP),
 a "status below which serious harm is occurring to the stock", and (2) the
 Upper Stock Reference Point (USR), which represents the "threshold below which
 removals must be progressively reduced in order to avoid reaching the LRP"
-(REF). The USR defines the breakpoint between the healthy and cautious zone and
+[@dfo2009PA]. The USR defines the breakpoint between the healthy and cautious zone and
 the LRP defines the breakpoint between the cautious and critical zone.
 
-Scientists from the Stock Assessment and Research Division conduct regular stock
-assessment of major fish stocks in BC. These assessments take into account...
-and assess status with respect to reference points...
+Assessment scientists conduct regular stock assessment of major fish stocks in
+BC. These assessments take into account... and assess status with respect to
+reference points...
 
 Here, we gather output data from these assessments representing the full
-posterior distribution of biomass compared to three measures of stock status...
-
-We develop a Bayesian state-space time-series model to explore trends in
-overall status across stocks up until the year 2020...
-
-We model three measures of stock status:
+posterior distribution of biomass compared to three measures of stock status:
 (1) B/B~MSY~ (biomass divided by biomass at maximum sustainable yield),
-(2) B/USR (biomass divided by the upper stock reference), and
-(3) B/LRP (biomass divided by the limit reference point).
+(2) B/USR (biomass divided by the USR), and
+(3) B/LRP (biomass divided by the LRP).
+We develop a Bayesian state-space time-series model to explore trends in
+the measures of status across stocks until the year 2020.
 To do this, we build on a model described in @hilborn2020 in two ways:
 (1) we incorporate uncertainty in stock-specific status and
 (2) we project the latent underlying stock-specific status forward to the last year (2020).
@@ -219,6 +218,14 @@ work here...
 \setlength{\parskip}{6pt}
 
 # Figures
+
+(ref:fig-pa) Illustration of DFO's Precautionary Approach Framework. The two
+vertical lines---the Limit Reference Point (LRP) and Upper Stock Reference
+(USR)---are the focus of this analysis. Based on @dfo2009PA.
+
+```{r pa-illustration, fig.cap="(ref:fig-pa)", out.width="3.1in", fig.align="center", fig.pos="ht"}
+include_graphics(here("figs/pa-framework.pdf"))
+```
 
 (ref:fig-ridges) Posterior distribution of three measures of stock status.
 Stocks are arranged in order of assessment with the most recent assessments at
