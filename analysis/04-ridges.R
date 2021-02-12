@@ -54,7 +54,7 @@ data_plot <- dat %>%
 years <- select(data_plot, ratio, stock_clean, year) %>%
   distinct() %>%
   filter(ratio == "B/LRP") %>%
-  mutate(ratio_value = 8.6) %>%
+  mutate(ratio_value = 9.6) %>%
   mutate(ratio = factor(ratio, levels = (c("B/LRP", "B/USR", "B/B[MSY]"))))
 
 g <- data_plot %>%
