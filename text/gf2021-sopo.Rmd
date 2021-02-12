@@ -156,11 +156,11 @@ Main results here; quick bullets for now
   to be below their LRP [@dfo2015yelloweyeoutside]; an updated assessment (REF)
   found a low probability of this, but is not included here, reasons...
   Quillback, some probability as of XX, but full posterior not available and so
-  not shown in Figure \@ref(fig:overall) but is shown in Figure
+  not shown in Figure \@ref(fig:ridges) but is shown in Figure
   \@ref(fig:ts-lrp).
 
 - No clear correlation between year of last assessment and stock status (Figure
-  \@ref(fig:overall))
+  \@ref(fig:ridges))
 
 - There was a clear decline in status for all three metrics prior to
   approximately 2000 (Figure \@ref(fig:overall)). Status prior to 2000 is more
