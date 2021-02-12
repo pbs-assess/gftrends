@@ -73,22 +73,23 @@ waters (east of Vancouver Island) and two others in "outside" waters
 southern areas. Lastly, a coast-wide longline trap survey targeting sablefish
 is conducted every year and DFO collects biological information from the
 International Pacific Halibut Commission (IPHC) Setline Survey. In 2020, the
-synoptic WCHG trawl survey, HBLL south survey, IPHC setline survey, and
+synoptic WCHG trawl survey, outside HBLL south survey, IPHC setline survey, and
 sablefish survey were conducted. The synoptic WCVI survey did not run due to
-COVID-19.
+COVID-19. As of writing, the only 2020 data in DFO's survey databases are the
+WCHG and sablefish surveys.
 
 # A state-space model of groundfish stock status
 
 Recent amendments to the *Fisheries Act* via the Fish Stocks provisions have
-resulted in an increased focus on stock status with respect to biological stock
-status reference points. The Precautionary Approach (PA) Framework describes
-two stock status reference points: (1) the Limit Reference Point (LRP),
-a "status below which serious harm is occurring to the stock", and (2) the
-Upper Stock Reference Point (USR), which represents the "threshold below which
-removals must be progressively reduced in order to avoid reaching the LRP"
-[@dfo2009PA, Figure \@ref(fig:pa-framework)]. The USR defines the breakpoint
-between the healthy and cautious zone and the LRP defines the breakpoint
-between the cautious and critical zone (Figure \@ref(fig:pa-framework)).
+resulted in an increased focus on stock status with respect to biological
+reference points. The Precautionary Approach (PA) Framework describes two stock
+status reference points: (1) the Limit Reference Point (LRP), a "status below
+which serious harm is occurring to the stock", and (2) the Upper Stock
+Reference Point (USR), which represents the "threshold below which removals
+must be progressively reduced in order to avoid reaching the LRP" [@dfo2009PA,
+Figure \@ref(fig:pa-framework)]. The USR defines the breakpoint between the
+healthy and cautious zone and the LRP defines the breakpoint between the
+cautious and critical zone (Figure \@ref(fig:pa-framework)).
 
 Assessment scientists conduct regular stock assessment of major fish stocks in
 BC. These assessments take into account... and assess status with respect to
