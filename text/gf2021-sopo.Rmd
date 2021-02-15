@@ -205,5 +205,7 @@ include_graphics(here("figs/blrp-x-t.pdf"))
 (ref:fig-overall) Overall mean biomass status ($x_t$) for B/LRP, B/USR, and B/B~MSY~.
 Dark lines represent the median trajectory, shaded ribbons represent 95% quantile credible intervals, and thin lines represent 25 illustrative draws from the posterior.
 
-```{r overall, fig.cap = "(ref:fig-overall)", out.width="3.5in", fig.align="center", fig.pos="ht"} include_graphics(here("figs/ts-summary.pdf")) ```
+```{r overall, fig.cap = "(ref:fig-overall)", out.width="3.5in", fig.align="center", fig.pos="ht"}
+include_graphics(here("figs/ts-summary.pdf")) 
+```
 
