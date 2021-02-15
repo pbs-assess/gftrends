@@ -14,3 +14,4 @@ dlm_ar1.cpp
 *.pdf
 *.docx
 figs/
+*.log
