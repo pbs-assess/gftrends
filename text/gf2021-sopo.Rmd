@@ -120,7 +120,7 @@ We fit the models with Stan [@carpenter2017; @rstan2020], sampling 1000 iteratio
 
 We collected assessment biological stock status data from 24 groundfish assessments in BC. Four stocks provided historical reference points for management advice, 18 provided MSY-based reference points for management advice, and two stocks (Rocksole 5AB and 5CD) provided both historical and MSY reference points (here we use the MSY-based ones).
 
-The posterior density of B/LRP was clearly above one for most stocks as of the last assessment (Figure \@ref(fig:ridges)). 
+The posterior density of B/LRP was clearly above one for most stocks as of the last assessment (Figure \@ref(fig:ridges)).
 Lingcod 4B and Bocaccio 5ABCD were the only stocks (with full available posteriors) with considerable posterior density below their LRP as of their last assessment (Figure \@ref(fig:ridges)).
 The assessment of Bocaccio, however, predicted the stock to rebuild to XX by XX due to a large recruitment event in XX (REF).
 Yelloweye Rockfish in outside BC waters were previously estimated to be below their LRP [@dfo2015yelloweyeoutside]; however, an updated assessment (REF; the one stock not included in our dataset) found a low probability of this.
@@ -130,9 +130,8 @@ Conversely, `r sum(p_thresh$p_usr > 0.25)`/`r nrow(p_thresh)` of the stocks in F
 
 Across all stocks, there was a clear decline in average biological status for all three indices prior to approximately 2000 (Figure \@ref(fig:overall)).
 The late 1990s and early 2000s marked the beginning of a relatively stable average status.
-This change coincided witht the implementation of individual transferable quotas (ITQs) for the trawl fleet in 1997 [@turris2000], and with the initiation of the current synoptic trawl surveys in 2003.
-We estimated the overall mean B/LRP in 2020 to be `r med1(blrp$.value)` (95% CI: `r lwr1(blrp$.value)`--`r upr1(blrp$.value)`). 
-We estimated the overall mean B/USR and B/B~MSY~ in 2020 to be `r med1(busr$.value)` (95% CI: `r lwr1(busr$.value)`--`r upr1(busr$.value)`) and `r med1(bbmsy$.value)` (95% CI: `r lwr1(bbmsy$.value)`--`r upr1(bbmsy$.value)`). 
+We estimated the overall mean B/LRP in 2020 to be `r med1(blrp$.value)` (95% CI: `r lwr1(blrp$.value)`--`r upr1(blrp$.value)`).
+We estimated the overall mean B/USR and B/B~MSY~ in 2020 to be `r med1(busr$.value)` (95% CI: `r lwr1(busr$.value)`--`r upr1(busr$.value)`) and `r med1(bbmsy$.value)` (95% CI: `r lwr1(bbmsy$.value)`--`r upr1(bbmsy$.value)`).
 We note the increased uncertainty in the last few years due to not all assessments being current (Figure \@ref(fig:overall)).
 
 The clear pattern in the average biological status has been accompanied by considerable variation within and across individual stocks (Figure \@ref(fig:ts-lrp)).
@@ -146,8 +145,10 @@ The Sablefish stock trajectory has shown some signs of turnaround in recent year
 # Factors influencing trends
 
 There are many potential causes for the observed trends with the most obvious and direct being the impact from fishery removals and management interventions.
+The transition from declining average B/LRP and B/USR to a relatively stable trajectory coincided with the implementation of individual transferable quotas (ITQs) for the trawl fleet in 1997 [@turris2000], and with the initiation of the current synoptic trawl surveys in 2003.
+Quota, and therefore catches  [@anderson2019syn], for many stocks has remained relatively constant over the last two decades.
 
-There are also potential species interactions and climatic effects on trends in local biomass density of these species. Ongoing work suggests ... Philina's work here...
+There are also potential species interactions and climatic effects on trends in local biomass density of these species. Ongoing work [@english2021] suggests that ...
 
 \vspace{6pt}
 
@@ -191,7 +192,7 @@ include_graphics(here("figs/ridges.pdf"))
 Dark lines represent the median trajectory, shaded ribbons represent 95% quantile credible intervals, and thin lines represent 25 illustrative draws from the posterior.
 
 ```{r overall, fig.cap = "(ref:fig-overall)", out.width="3.5in", fig.align="center", fig.pos="ht"}
-include_graphics(here("figs/ts-summary.pdf")) 
+include_graphics(here("figs/ts-summary.pdf"))
 ```
 
 (ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC.
