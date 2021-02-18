@@ -123,16 +123,17 @@ We collected assessment biological stock status data from 24 groundfish assessme
 The posterior density of B/LRP was clearly above one for most stocks as of the last assessment (Figure \@ref(fig:ridges)). 
 Lingcod 4B and Bocaccio 5ABCD were the only stocks (with full available posteriors) with considerable posterior density below their LRP as of their last assessment (Figure \@ref(fig:ridges)).
 The assessment of Bocaccio, however, predicted the stock to rebuild to XX by XX due to a large recruitment event in XX (REF).
-Yelloweye Rockfish in outside BC waters were previously estimated to be below their LRP [@dfo2015yelloweyeoutside]; however, an updated assessment (REF; output not included here) found a low probability of this.
-Quillback Rockfish in outside and inside waters, had some posterior density below their LRPs as of the 2011 assessment, but the full posterior distribution was not available and so is not shown in Figure \@ref(fig:ridges) but is shown as quantiles in Figure \@ref(fig:ts-lrp).
-`r sum(p_thresh$p_usr > 0.25)`/`r nrow(p_thresh)` of the stocks in Figure \@ref(fig:ridges) had > 25% probability of being below their USR as of the last date of assessment.
-`r sum(p_thresh$p_lrp > 0.05)`/`r nrow(p_thresh)` stocks had > 5% probability of being below their LRP as of the last date of assessment; Pacific Cod in 3CD almost met this threshold with a `r pcod3cd`% probability B $<$ LRP in 2020.
+Yelloweye Rockfish in outside BC waters were previously estimated to be below their LRP [@dfo2015yelloweyeoutside]; however, an updated assessment (REF; the one stock not included in our dataset) found a low probability of this.
+Quillback Rockfish in both outside and inside waters had some posterior density below their LRPs as of the 2011 assessment, but the full posterior distribution was not available and so is not shown in Figure \@ref(fig:ridges) but is shown as quantiles in Figure \@ref(fig:ts-lrp).
+As of the last assessment date, `r sum(p_thresh$p_lrp > 0.05)`/`r nrow(p_thresh)` stocks had > 5% probability of being below their LRP; Pacific Cod in 3CD almost met this threshold with a `r pcod3cd`% probability B $<$ LRP in 2020.
+Conversely, `r sum(p_thresh$p_usr > 0.25)`/`r nrow(p_thresh)` of the stocks in Figure \@ref(fig:ridges) had > 25% probability of being below their USR.
 
-Across all stocks, there was a clear decline in status for all three metrics prior to approximately 2000 (Figure \@ref(fig:overall)).
-<!-- Status prior to 2000 is more uncertain since there is not a continuous random stratified survey and a lack of commercial observers. -->
-The implementation of ITQs in 1997 [@turris2000], and the initiation of the current synoptic trawl surveys in 2002, coincided with the beginning of a relatively stable mean status.
-We estimate the overall mean B/LRP in 2020 to be `r med1(blrp$.value)` (95% CI: `r lwr1(blrp$.value)`--`r upr1(blrp$.value)`). We note the increased uncertainty in the last few years due to not all assessments being current (Figure \@ref(fig:overall)).
-We estimate the overall mean B/USR and B/B~MSY~ in 2020 to be `r med1(busr$.value)` (95% CI: `r lwr1(busr$.value)`--`r upr1(busr$.value)`) and `r med1(bbmsy$.value)` (95% CI: `r lwr1(bbmsy$.value)`--`r upr1(bbmsy$.value)`). 
+Across all stocks, there was a clear decline in average biological status for all three indices prior to approximately 2000 (Figure \@ref(fig:overall)).
+The late 1990s and early 2000s marked the beginning of a relatively stable average status.
+This change coincided witht the implementation of individual transferable quotas (ITQs) in 1997 [@turris2000], and with the initiation of the current synoptic trawl surveys in 2003.
+We estimated the overall mean B/LRP in 2020 to be `r med1(blrp$.value)` (95% CI: `r lwr1(blrp$.value)`--`r upr1(blrp$.value)`). 
+We note the increased uncertainty in the last few years due to not all assessments being current (Figure \@ref(fig:overall)).
+We estimated the overall mean B/USR and B/B~MSY~ in 2020 to be `r med1(busr$.value)` (95% CI: `r lwr1(busr$.value)`--`r upr1(busr$.value)`) and `r med1(bbmsy$.value)` (95% CI: `r lwr1(bbmsy$.value)`--`r upr1(bbmsy$.value)`). 
 
 The clear decline followed by a stable biological status has been accompanied by a considerable variation across and within some stocks (Figure \@ref(fig:ts-lrp)).
 Within individual stocks, Pacific Cod and Walleye Pollock, both with shorter generation times compared to many other assessed stocks here, exhibited strong patterns of decadal variation. These patterns are largely driven by commercial catches in earlier decades.
