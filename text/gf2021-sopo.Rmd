@@ -130,15 +130,18 @@ Conversely, `r sum(p_thresh$p_usr > 0.25)`/`r nrow(p_thresh)` of the stocks in F
 
 Across all stocks, there was a clear decline in average biological status for all three indices prior to approximately 2000 (Figure \@ref(fig:overall)).
 The late 1990s and early 2000s marked the beginning of a relatively stable average status.
-This change coincided witht the implementation of individual transferable quotas (ITQs) in 1997 [@turris2000], and with the initiation of the current synoptic trawl surveys in 2003.
+This change coincided witht the implementation of individual transferable quotas (ITQs) for the trawl fleet in 1997 [@turris2000], and with the initiation of the current synoptic trawl surveys in 2003.
 We estimated the overall mean B/LRP in 2020 to be `r med1(blrp$.value)` (95% CI: `r lwr1(blrp$.value)`--`r upr1(blrp$.value)`). 
-We note the increased uncertainty in the last few years due to not all assessments being current (Figure \@ref(fig:overall)).
 We estimated the overall mean B/USR and B/B~MSY~ in 2020 to be `r med1(busr$.value)` (95% CI: `r lwr1(busr$.value)`--`r upr1(busr$.value)`) and `r med1(bbmsy$.value)` (95% CI: `r lwr1(bbmsy$.value)`--`r upr1(bbmsy$.value)`). 
+We note the increased uncertainty in the last few years due to not all assessments being current (Figure \@ref(fig:overall)).
 
-The clear decline followed by a stable biological status has been accompanied by a considerable variation across and within some stocks (Figure \@ref(fig:ts-lrp)).
-Within individual stocks, Pacific Cod and Walleye Pollock, both with shorter generation times compared to many other assessed stocks here, exhibited strong patterns of decadal variation. These patterns are largely driven by commercial catches in earlier decades.
-Across stocks, Redstripe Rockfish in north and south BC and Yellowtail Rockfish our examples of stocks with B/LRP trajectories consistently above the average.
-On the other hand, Lingcod 4B and Bocaccio 5ABCD our examples of stocks with B/LRP estimated at consistently below the average. Sablefish followed the average B/LRP trajectory until around 1990 when it continued to decline while the average stabilized. The stock trajectory has shown some signs of turnaround in the last few years (Figure \@ref(fig:ts-lrp)).
+The clear pattern in the average biological status has been accompanied by considerable variation within and across individual stocks (Figure \@ref(fig:ts-lrp)).
+Within individual stocks, Pacific Cod and Walleye Pollock---both with shorter generation times compared to many other assessed stocks here---exhibited strong patterns of decadal variation.
+These patterns are partially driven by trends in commercial catches in earlier decades.
+Across stocks, Redstripe Rockfish in north and south BC and Yellowtail Rockfish are examples of stocks with B/LRP trajectories consistently above the average.
+On the other hand, Lingcod 4B and Bocaccio 5ABCD are examples of stocks with B/LRP estimated at consistently below the average.
+Sablefish followed the average B/LRP trajectory until around 1990 when they continued to decline while the average stabilized.
+The Sablefish stock trajectory has shown some signs of turnaround in recent years (Figure \@ref(fig:ts-lrp)).
 
 # Factors influencing trends
 
@@ -173,9 +176,10 @@ include_graphics(here("figs/pa-framework.pdf"))
 (ref:fig-ridges) Posterior distribution of three measures of stock status.
 Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column represent the year the status represents.
 Colours represent the mean B/LRP value.
-The x-axis has been square-root transformed to slightly compress high ratio values for visualization.
 Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were chosen instead of MSY-based reference points.
 Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values in the PA Framework).
+The x-axis has been square-root transformed to slightly compress high ratio values for visualization.
+In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data.
 
 <!-- TODO: SOME HAVE PROJECTIONS? -->
 
