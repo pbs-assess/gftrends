@@ -118,36 +118,26 @@ We fit the models with Stan [@carpenter2017; @rstan2020], sampling 1000 iteratio
 
 # Status and trends
 
-Main results here; quick bullets for now
+We collected assessment biological stock status data from 24 groundfish assessments in BC. Four stocks provided historical reference points for management advice, 18 provided MSY-based reference points for management advice, and two stocks (Rocksole 5AB and 5CD) provided both historical and MSY reference points (here we use the MSY-based ones).
 
-Lingcod 4B and Bocaccio 5ABCD were the only stocks (with available time series posteriors) with considerable posterior density below their LRP as of their last assessment.
-Bocaccio, however, are predicted to rebuild by XX due to a large recruitment
-event in XX (REF).
-
-Yelloweye Rockfish in outside BC waters were previously estimated to be below their LRP [@dfo2015yelloweyeoutside]; however, an updated assessment (REF) found a low probability of this.
-Quillback Rockfish in outside and inside waters, had some posterior density below their LRPs as of the 2011 assessment, but the full posterior distribution was not available and so is not shown in Figure \@ref(fig:ridges) but is shown
-as quantiles in Figure \@ref(fig:ts-lrp).
-
-
-We observed no clear correlation between the year of last assessment and stock status (Figure \@ref(fig:ridges)).
-
-There was a clear decline in status for all three metrics prior to approximately 2000 (Figure \@ref(fig:overall)).
-Status prior to 2000 is more uncertain since there is not a continuous random stratified survey and a lack of commercial observers.
-
-The implementation of ITQs in 1997 [@turris2000], and the initiation of the current synoptic trawl surveys in 2002, coincided with the beginning of a relatively stable mean status.
-However, this stable mean is accompanied by a considerable variation across and within some stocks Figure \@ref(fig:ts-lrp).
-
-<!-- - Mean status since about 2000 has been relatively stable, although with -->
-<!--   considerable variation within some stocks (e.g., Pacific Cod, Walleye -->
-<!--   Pollock, and Redstripe Rockfish stocks) -->
-
-We estimate the overall mean B/LRP in 2020 to be `r med1(blrp$.value)` (95% CI: `r lwr1(blrp$.value)`--`r upr1(blrp$.value)`). We note the increased uncertainty in the last few years due to not all assessments being current (Figure \@ref(fig:overall)).
-
-We estimate the overall mean B/USR and B/B~MSY~ in 2020 to be `r med1(busr$.value)` (95% CI: `r lwr1(busr$.value)`--`r upr1(busr$.value)`) and `r med1(bbmsy$.value)` (95% CI: `r lwr1(bbmsy$.value)`--`r upr1(bbmsy$.value)`).
-
+The posterior density of B/LRP was clearly above one for most stocks as of the last assessment (Figure \@ref(fig:ridges)). 
+Lingcod 4B and Bocaccio 5ABCD were the only stocks (with full available posteriors) with considerable posterior density below their LRP as of their last assessment (Figure \@ref(fig:ridges)).
+The assessment of Bocaccio, however, predicted the stock to rebuild to XX by XX due to a large recruitment event in XX (REF).
+Yelloweye Rockfish in outside BC waters were previously estimated to be below their LRP [@dfo2015yelloweyeoutside]; however, an updated assessment (REF; output not included here) found a low probability of this.
+Quillback Rockfish in outside and inside waters, had some posterior density below their LRPs as of the 2011 assessment, but the full posterior distribution was not available and so is not shown in Figure \@ref(fig:ridges) but is shown as quantiles in Figure \@ref(fig:ts-lrp).
 `r sum(p_thresh$p_usr > 0.25)`/`r nrow(p_thresh)` of the stocks in Figure \@ref(fig:ridges) had > 25% probability of being below their USR as of the last date of assessment.
-
 `r sum(p_thresh$p_lrp > 0.05)`/`r nrow(p_thresh)` stocks had > 5% probability of being below their LRP as of the last date of assessment; Pacific Cod in 3CD almost met this threshold with a `r pcod3cd`% probability B $<$ LRP in 2020.
+
+Across all stocks, there was a clear decline in status for all three metrics prior to approximately 2000 (Figure \@ref(fig:overall)).
+<!-- Status prior to 2000 is more uncertain since there is not a continuous random stratified survey and a lack of commercial observers. -->
+The implementation of ITQs in 1997 [@turris2000], and the initiation of the current synoptic trawl surveys in 2002, coincided with the beginning of a relatively stable mean status.
+We estimate the overall mean B/LRP in 2020 to be `r med1(blrp$.value)` (95% CI: `r lwr1(blrp$.value)`--`r upr1(blrp$.value)`). We note the increased uncertainty in the last few years due to not all assessments being current (Figure \@ref(fig:overall)).
+We estimate the overall mean B/USR and B/B~MSY~ in 2020 to be `r med1(busr$.value)` (95% CI: `r lwr1(busr$.value)`--`r upr1(busr$.value)`) and `r med1(bbmsy$.value)` (95% CI: `r lwr1(bbmsy$.value)`--`r upr1(bbmsy$.value)`). 
+
+The clear decline followed by a stable biological status has been accompanied by a considerable variation across and within some stocks (Figure \@ref(fig:ts-lrp)).
+Within individual stocks, Pacific Cod and Walleye Pollock, both with shorter generation times compared to many other assessed stocks here, exhibited strong patterns of decadal variation. These patterns are largely driven by commercial catches in earlier decades.
+Across stocks, Redstripe Rockfish in north and south BC and Yellowtail Rockfish our examples of stocks with B/LRP trajectories consistently above the average.
+On the other hand, Lingcod 4B and Bocaccio 5ABCD our examples of stocks with B/LRP estimated at consistently below the average. Sablefish followed the average B/LRP trajectory until around 1990 when it continued to decline while the average stabilized. The stock trajectory has shown some signs of turnaround in the last few years (Figure \@ref(fig:ts-lrp)).
 
 # Factors influencing trends
 
@@ -192,6 +182,13 @@ Vertical dashed lines are at values of 1.0 in all columns and also at values of 
 include_graphics(here("figs/ridges.pdf"))
 ```
 
+(ref:fig-overall) Overall mean biomass status ($x_t$) for B/LRP, B/USR, and B/B~MSY~.
+Dark lines represent the median trajectory, shaded ribbons represent 95% quantile credible intervals, and thin lines represent 25 illustrative draws from the posterior.
+
+```{r overall, fig.cap = "(ref:fig-overall)", out.width="3.5in", fig.align="center", fig.pos="ht"}
+include_graphics(here("figs/ts-summary.pdf")) 
+```
+
 (ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC.
 Coloured lines and ribbons represent the individual stocks.
 Dark coloured lines and shaded ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals.
@@ -200,12 +197,5 @@ The overall mean trend ($x_t$; grey) is the same across panels.
 
 ```{r ts-lrp, fig.cap = "(ref:fig-ts-lrp)", out.width="5in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/blrp-x-t.pdf"))
-```
-
-(ref:fig-overall) Overall mean biomass status ($x_t$) for B/LRP, B/USR, and B/B~MSY~.
-Dark lines represent the median trajectory, shaded ribbons represent 95% quantile credible intervals, and thin lines represent 25 illustrative draws from the posterior.
-
-```{r overall, fig.cap = "(ref:fig-overall)", out.width="3.5in", fig.align="center", fig.pos="ht"}
-include_graphics(here("figs/ts-summary.pdf")) 
 ```
 
