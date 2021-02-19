@@ -189,21 +189,13 @@ This pattern of redistribution has implications for the efficiency of fishing, t
 
 ## Figures
 
-(ref:fig-pa) Illustration of DFO's Precautionary Approach Framework.
-The two vertical lines---the Limit Reference Point (LRP) and Upper Stock Reference (USR)---are the focus of this analysis.
-Based on @dfo2009PA.
+(ref:fig-pa) Illustration of DFO's Precautionary Approach Framework. The two vertical lines---the Limit Reference Point (LRP) and Upper Stock Reference (USR)---are the focus of this analysis. Based on @dfo2009PA.
 
 ```{r pa-framework, fig.cap="(ref:fig-pa)", out.width="3.1in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/pa-framework.pdf"))
 ```
 
-(ref:fig-ridges) Posterior distribution of three measures of stock status.
-Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column represent the year the status represents.
-Colours represent the mean B/LRP value.
-Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were chosen instead of MSY-based reference points.
-Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values in the PA Framework).
-The x-axis has been square-root transformed to slightly compress high ratio values for visualization.
-In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data.
+(ref:fig-ridges) Posterior distribution of three measures of stock status. Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column represent the year the status represents. Colours represent the mean B/LRP value. Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were chosen instead of MSY-based reference points. Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values in the PA Framework). The x-axis has been square-root transformed to slightly compress high ratio values for visualization. In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data.
 
 <!-- TODO: SOME HAVE PROJECTIONS? -->
 
@@ -211,18 +203,13 @@ In a few cases (e.g., Bocaccio) the status represents a one- or two-year project
 include_graphics(here("figs/ridges.pdf"))
 ```
 
-(ref:fig-overall) Overall mean biomass status ($x_t$) for B/LRP, B/USR, and B/B~MSY~.
-Dark lines represent the median trajectory, shaded ribbons represent 95% quantile credible intervals, and thin lines represent 25 illustrative draws from the posterior.
+(ref:fig-overall) Overall mean biomass status ($x_t$) for B/LRP, B/USR, and B/B~MSY~. Dark lines represent the median trajectory, shaded ribbons represent 95% quantile credible intervals, and thin lines represent 25 illustrative draws from the posterior.
 
 ```{r overall, fig.cap = "(ref:fig-overall)", out.width="3.5in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/ts-summary.pdf"))
 ```
 
-(ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC.
-Coloured lines and ribbons represent the individual stocks.
-Dark coloured lines and shaded ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals.
-Thin lines represent draws from the posterior distribution of $y_{j,t}$ (latent stock-specific mean trends; colours) and $x_t$ (latent overall mean trend; grey).
-The overall mean trend ($x_t$; grey) is the same across panels.
+(ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC. Coloured lines and ribbons represent the individual stocks. Dark coloured lines and shaded ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals. Thin lines represent draws from the posterior distribution of $y_{j,t}$ (latent stock-specific mean trends; colours) and $x_t$ (latent overall mean trend; grey). The overall mean trend ($x_t$; grey) is the same across panels.
 
 ```{r ts-lrp, fig.cap = "(ref:fig-ts-lrp)", out.width="5in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/blrp-x-t.pdf"))
