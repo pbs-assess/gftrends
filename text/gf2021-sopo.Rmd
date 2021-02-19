@@ -1,16 +1,9 @@
 ---
-title: "Trends in Pacific Canadian groundfish stock status"
-author:
-- "Sean C. Anderson^1^"
-- "Other authors here^1^"
-date: |
-  ^1^Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo, BC, V6T 6N7, Canada\
+title: ""
+author: ""
 output:
-  bookdown::pdf_document2:
-    toc: false
-    number_sections: false
-    includes:
-      in_header: "preamble.tex"
+  word_document:
+    reference_docx: "sopo-2021-template.docx"
 fontsize: 12pt
 bibliography: "refs.bib"
 csl: "csas.csl"
@@ -51,7 +44,13 @@ pcod3cd <- dplyr::filter(p_thresh, stock_clean == "Pacific Cod 3CD") %>%
 pcod3cd <- sprintf("%.1f", round(pcod3cd * 100, 1))
 ```
 
-# Highlights
+# Trends in Pacific Canadian groundfish stock status
+
+Sean C. Anderson^1^, other authors here^2^, and more
+
+^1^Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo, BC, <sean.anderson@dfo-mpo.gc.ca>/
+
+## Highlights
 
 <!-- - In 2020, the West Coast Haida Gwaii synoptic trawl, southern outside hard -->
 <!--   bottom long line, International Pacific Halibut Commission, and Sablefish -->
@@ -76,7 +75,7 @@ pcod3cd <- sprintf("%.1f", round(pcod3cd * 100, 1))
 - Something about considerable variability within and across individual stocks
   around the overall mean; pick examples
 
-# Fisheries-independent groundfish surveys
+## Fisheries-independent groundfish surveys
 
 DFO conducts a suite of randomized surveys using bottom trawl, longline hook, and longline trap gear that, in aggregate, cover Canada's Pacific Coast.
 Synoptic trawl surveys in Queen Charlotte Sound and Hecate Strait are conducted in odd numbered years and the West Coast of Vancouver Island (WCVI) and the West Coast of Haida Gwaii (WCHG) surveys are conducted in even numbered years.
@@ -88,7 +87,7 @@ The synoptic WCVI survey did not run due to COVID-19.
 As of writing, the only 2020 data in DFO's survey databases are the WCHG and sablefish surveys.
 Because of this, and because of legislative changes described below, we focus our report this year on groundfish biological status from assessments over the last decade.
 
-# A state-space model of groundfish stock status
+## A state-space model of groundfish stock status
 
 Recent amendments to the *Fisheries Act* via the Fish Stocks provisions have increased DFO's focus on stock status with respect to biological reference points.
 The Precautionary Approach (PA) Framework describes two stock status reference points: (1) the Limit Reference Point (LRP), a "status below which serious harm is occurring to the stock", and (2) the Upper Stock Reference Point (USR), which represents the "threshold below which removals must be progressively reduced in order to avoid reaching the LRP" [@dfo2009PA, Figure \@ref(fig:pa-framework)].
@@ -129,7 +128,7 @@ We place half-Normal(0, 1) priors on $\sigma_{\epsilon}$ and $\sigma_{\eta}$, No
 We fit the models with Stan [@carpenter2017; @rstan2020], sampling 1000 iterations on each of 6 chains and discarding the first half as warm up.
 Data and code for our analysis are available at \url{https://github.com/pbs-assess/gftrends}.
 
-# Status and trends
+## Status and trends
 
 We collected biological stock status estimates from 24 groundfish assessments in BC. Four stocks provided historical reference points for management advice, 18 provided MSY-based reference points for management advice, and two stocks (Rocksole 5AB and 5CD) provided both historical and MSY reference points (here we use the MSY-based ones). The most recent assessments were for Rougheye/Blackspotted Rockfish, Pacific Cod, Bocaccio, inside and outside Yelloweye Rockfish, and Sablefish (Figure \@ref(fig:ridges)).
 
@@ -158,7 +157,7 @@ Conversely, Lingcod 4B and Bocaccio 5ABCD are examples of stocks with B/LRP esti
 Sablefish followed the average B/LRP trajectory until around 1990 when they continued to decline while the average stabilized.
 The Sablefish stock trajectory has shown signs of a turnaround since around 2015 (Figure \@ref(fig:ts-lrp)).
 
-# Factors influencing trends
+## Factors influencing trends
 
 There are many potential causes for the observed trends with the most obvious and direct being the impact from fishery removals and management interventions.
 The transition from declining average B/LRP and B/USR to a relatively stable trajectory coincided with the implementation of individual transferable quotas (ITQs) for the trawl fleet in 1997 [@turris2000] and with the initiation of the current synoptic trawl surveys in 2003 (REF?).
@@ -182,7 +181,9 @@ This pattern of redistribution has implications for the efficiency of fishing, t
 <!-- In contrast, locations experiencing minimal warming or cool locations experiencing maximum warming experienced stable or increasing biotic velocities. -->
 <!-- Evidence of declines in biomass in the warmest locations and increases in cooler locations suggests a redistribution of species with the potential for new ecological and fisheries interactions. -->
 
-# References
+## Implications of those trends
+
+## References
 
 <div id="refs"></div>
 
@@ -192,7 +193,7 @@ This pattern of redistribution has implications for the efficiency of fishing, t
 \setlength{\leftskip}{0pt}
 \setlength{\parskip}{6pt}
 
-# Figures
+## Figures
 
 (ref:fig-pa) Illustration of DFO's Precautionary Approach Framework.
 The two vertical lines---the Limit Reference Point (LRP) and Upper Stock Reference (USR)---are the focus of this analysis.
