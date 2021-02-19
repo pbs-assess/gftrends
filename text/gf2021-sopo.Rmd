@@ -131,7 +131,7 @@ Data and code for our analysis are available at \url{https://github.com/pbs-asse
 
 # Status and trends
 
-We collected assessment biological stock status data from 24 groundfish assessments in BC. Four stocks provided historical reference points for management advice, 18 provided MSY-based reference points for management advice, and two stocks (Rocksole 5AB and 5CD) provided both historical and MSY reference points (here we use the MSY-based ones). The most recent assessments were for Rougheye/Blackspotted Rockfish, Pacific Cod, Bocaccio, inside and outside Yelloweye Rockfish, and Sablefish (Figure \@ref(fig:ridges)).
+We collected biological stock status estimates from 24 groundfish assessments in BC. Four stocks provided historical reference points for management advice, 18 provided MSY-based reference points for management advice, and two stocks (Rocksole 5AB and 5CD) provided both historical and MSY reference points (here we use the MSY-based ones). The most recent assessments were for Rougheye/Blackspotted Rockfish, Pacific Cod, Bocaccio, inside and outside Yelloweye Rockfish, and Sablefish (Figure \@ref(fig:ridges)).
 
 Estimated biomass was above the LRP and USR for most stocks as of the last assessment (Figure \@ref(fig:ridges)).
 Lingcod 4B and Bocaccio 5ABCD were the only stocks (with full posterior distributions available) with $>$ 5% posterior density below their LRP as of their last assessment (Figure \@ref(fig:ridges)).
@@ -174,7 +174,7 @@ Conversely, other stocks (e.g., Bocaccio REF) have experienced periods of extrem
 Underlying these stock-level trends, ongoing work suggests that temperature velocity---the pace a fish would have to move to maintain consistent temperature---may be related to a fine-scale redistribution of groundfish species Canadian Pacific waters [@english2021].
 @english2021 found declines in biomass density over the last decade (negative "biomass velocities", or the equivalent of temperature velocity for biomass) in the warmest locations of the coast for approximately one-quarter of the species examined.
 However, at the same time, biomass density remained stable or increased in cooler regions for 94% of the species.
-This pattern of redistribution has implications for the efficiency of fishing through a potential for temporary climate-induced hyperstability (catch rates that remain high despite population declines) as organisms concentrate in preferred habitats during population decline, and to strengthen or weaken some species interactions.
+This pattern of redistribution has implications for the efficiency of fishing, through temporary climate-induced hyperstability (catch rates that remain high despite population declines) as organisms concentrate in preferred habitats during population decline, and the potential to strengthen or weaken some species interactions.
 <!-- Such a redistribution of species biomass has the potential to generate new ecological and fisheries interactions.-->
 
 <!-- On average, and for roughly half the species-maturity combinations, temperature velocity had a more negative effect on biotic velocity in already warm locations than in relatively cool locations. -->
