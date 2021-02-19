@@ -143,13 +143,13 @@ g <- plot_data_sub %>%
     inherit.aes = FALSE, data = summarized_plot_data, alpha = 1, lwd = 1) +
   geom_line(alpha = 0.3, lwd = 0.3) +
   # ITQ introduced
-  geom_vline(xintercept = 1997, linetype="dashed") +
-  annotate(geom="text", x=1999, y=5, label="ITQ introduced", angle = 90,
-    color="black") +
+  geom_vline(xintercept = 1997, linetype="dashed",color="grey40") +
+  annotate(geom="text", x=1999, y=5.8, label="Trawl ITQs introduced", angle = 90,
+    color="grey30", hjust = 1) +
   # synoptic trawl surveys begin
-  geom_vline(xintercept = 2003, linetype="dashed") +
-  annotate(geom="text", x=2005, y=4.9, label="Surveys begin", angle = 90,
-    color="black") +
+  geom_vline(xintercept = 2003, linetype="dashed",color="grey40") +
+  annotate(geom="text", x=2005, y=5.8, label="Synoptic surveys begin", angle = 90,
+    color="grey30", hjust = 1) +
   ggsidekick::theme_sleek() +
   coord_cartesian(expand = FALSE, ylim = c(0.8, 6)) +
   # scale_y_continuous(trans = "sqrt") +
