@@ -96,8 +96,8 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
     #   ) +
     # scale_fill_distiller(palette = "Spectral", direction = 1) +
     # scale_colour_distiller(palette = "Spectral", direction = 1) +
-    scale_colour_viridis_c(direction = 1, option = "D", end = 0.65) +
-    scale_fill_viridis_c(direction = 1, option = "D", end = 0.65) +
+    scale_colour_viridis_c(direction = 1, option = "B", end = 0.85) +
+    scale_fill_viridis_c(direction = 1, option = "B", end = 0.85) +
     ggsidekick::theme_sleek() +
     coord_cartesian(xlim = c(1950, 2020), ylim = ylim, expand = FALSE) +
     geom_hline(yintercept = 1, lty = 2, col = "grey40") +
