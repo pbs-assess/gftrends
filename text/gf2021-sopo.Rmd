@@ -74,7 +74,7 @@ pcod3cd <- sprintf("%.1f", round(pcod3cd * 100, 1))
   surveys.
 
 - Something about considerable variability within and across individual stocks
-  around the overall mean
+  around the overall mean; pick examples
 
 # Fisheries-independent groundfish surveys
 
