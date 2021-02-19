@@ -63,8 +63,8 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
     # geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey55", alpha = 0.6) +
     # geom_ribbon(aes(ymin = lwr1, ymax = upr1), fill = "grey40", alpha = 0.6) +
     geom_line(mapping = aes(x = year, y = exp(.value), group = .draw,
-      # colour = last_status
-      colour = last3status
+      colour = last_status
+      # colour = last3status
       ),
       alpha = 0.3, lwd = 0.15, data = .y_true, inherit.aes = FALSE) +
     # geom_line(lwd = 0.7, alpha = 0.75) +
@@ -73,16 +73,16 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
       y = exp({{col_log_mean}}),
       ymin = {{col_q0.05}},
       ymax = {{col_q0.95}},
-      # fill = last_status
-      fill = last3status
+      fill = last_status
+      # fill = last3status
     ),
     colour = NA, alpha = 0.3, data = last_dat
     ) +
     geom_line(aes(
       x = year,
       y = exp({{col_log_mean}}),
-      # colour = last_status
-      colour = last3status
+      colour = last_status
+      # colour = last3status
     ), alpha = 0.9, data = last_dat, lwd = 0.6) +
     # scale_colour_gradient2(
     #   low = "red", high = "green", mid="blue",

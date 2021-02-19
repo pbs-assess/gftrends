@@ -202,7 +202,7 @@ include_graphics(here("figs/pa-framework.pdf"))
 include_graphics(here("figs/ridges.png"))
 ```
 
-(ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC. Coloured lines and ribbons represent the individual stocks. Colours represent mean ratios for 2018-2020 such that green stocks are highest, blue is intermediate, and purple represents stock at, or near, their LRP. Dark coloured lines and shaded ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals. Thin lines represent draws from the posterior distribution of $y_{j,t}$ (latent stock-specific mean trends; colours) and $x_t$ (latent overall mean trend; grey). The overall mean trend ($x_t$; grey) is the same across panels.
+(ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC. Coloured lines and ribbons represent the individual stocks. Colours represent the projected ratio in 2020 such that green stocks are highest, blue is intermediate, and purple represents stock at, or near, their LRP. Dark coloured lines and shaded ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals. Thin lines represent draws from the posterior distribution of $y_{j,t}$ (latent stock-specific mean trends; colours) and $x_t$ (latent overall mean trend; grey). The overall mean trend ($x_t$; grey) is the same across panels.
 
 ```{r ts-lrp, fig.cap = "(ref:fig-ts-lrp)", out.width="5in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/blrp-x-t.png"))
