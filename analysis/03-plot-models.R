@@ -202,22 +202,21 @@ g <- plot_data_sub %>%
   # scale_fill_manual(values = pal,
   #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
   # ) +
-  scale_colour_brewer(palette = "Dark2",
-    labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
-    ) +
-  scale_fill_brewer(palette = "Dark2",
-    labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
+  # scale_colour_brewer(palette = "Dark2",
+  #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
+  #   ) +
+  # scale_fill_brewer(palette = "Dark2",
+  #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
+  # ) +
+  scale_colour_viridis_d(
+    labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY])),
+    option = "A", end = 0.85, direction = 1
   ) +
-  # scale_colour_viridis_d(
-  #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY])),
-  #   option = "A", end = 0.85, direction = 1
-  # ) +
-  # scale_fill_viridis_d(
-  #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY])),
-  #   option = "A", end = 0.85, direction = 1
-  # ) +
+  scale_fill_viridis_d(
+    labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY])),
+    option = "A", end = 0.85, direction = 1
+  ) +
   geom_hline(yintercept = 1, lty = 2, col = "grey60")
-g
 
 ggsave("figs/ts-summary.pdf", width = 4.5, height = 4)
 ggsave("figs/ts-summary.png", width = 4.5, height = 4)
