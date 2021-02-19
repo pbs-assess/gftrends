@@ -154,14 +154,19 @@ g <- plot_data_sub %>%
   geom_vline(xintercept = 1997, linetype = "dashed", color = "grey40") +
   annotate(
     geom = "text", x = 1999, y = 5.8, label = "Trawl ITQs introduced", angle = 90,
-    color = "grey30", hjust = 1
+    color = "grey30", hjust = 1, size = 3.5
   ) +
   # synoptic trawl surveys begin
   geom_vline(xintercept = 2003, linetype = "dashed", color = "grey40") +
   annotate(
     geom = "text", x = 2005, y = 5.8, label = "Synoptic surveys begin", angle = 90,
-    color = "grey30", hjust = 1
+    color = "grey30", hjust = 1, size = 3.5
   ) +
+  # geom_vline(xintercept = 1996, linetype = "dashed", color = "grey40") +
+  # annotate(
+  #   geom = "text", x = 1998, y = 5.8, label = "Trawl observerer coverage", angle = 90,
+  #   color = "grey30", hjust = 1, size = 3.5
+  # ) +
   ggsidekick::theme_sleek() +
   coord_cartesian(expand = FALSE, ylim = c(0.8, 6)) +
   # scale_y_continuous(trans = "sqrt") +
