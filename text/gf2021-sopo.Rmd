@@ -148,7 +148,7 @@ Considering the USR instead of LRP, `r sum(p_thresh$p_usr > 0.25)`/`r nrow(p_thr
 Across all stocks, there was a clear decline in average biological status for all three indices prior to approximately 2000 (Figure \@ref(fig:overall)).
 The late 1990s and early 2000s marked the beginning of a relatively stable average status.
 We estimated the overall mean B/LRP in 2020 to be `r med1(blrp$.value)` (95% credible interval [CI]: `r lwr1(blrp$.value)`--`r upr1(blrp$.value)`).
-The overall mean B/USR and B/B~MSY~ in 2020 was `r med1(busr$.value)` (95% CI: `r lwr1(busr$.value)`--`r upr1(busr$.value)`) and `r med1(bbmsy$.value)` (95% CI: `r lwr1(bbmsy$.value)`--`r upr1(bbmsy$.value)`).
+The overall mean B/USR and B/B~MSY~ in 2020 was `r med1(busr$.value)` (95% CI: `r lwr1(busr$.value)`--`r upr1(busr$.value)`) and `r med1(bbmsy$.value)` (95% CI: `r lwr1(bbmsy$.value)`--`r upr1(bbmsy$.value)`) respectively.
 Average status uncertainty in the last few years increased due to not all stocks having a current assessment (Figure \@ref(fig:overall)).
 
 The clear pattern in the average biological status has been accompanied by considerable variation within and across individual stocks (Figure \@ref(fig:ts-lrp)).
@@ -171,10 +171,11 @@ ANYTHING ABOUT SPECIES INTERACTIONS?
 Loss of spawning habitat due to recent oceanographic conditions has been hypothesized to have led to years of low recruitment in some groundfish [e.g., Pacific Cod in nearby Alaskan waters; @laurel2020].
 Conversely, other stocks (e.g., Bocaccio REF) have experienced periods of extremely strong recruitment (44 times the average in XX) presumably due to, at least in part, oceanographic conditions.
 
-Underlying these stock-level trends, ongoing work suggests that temperature velocity---the pace a fish would have to move to maintain consistent temperature---may be leading to a fine-scale redistribution of groundfish species Canadian Pacific waters [@english2021].
+Underlying these stock-level trends, ongoing work suggests that temperature velocity---the pace a fish would have to move to maintain consistent temperature---may be related to a fine-scale redistribution of groundfish species Canadian Pacific waters [@english2021].
 @english2021 found declines in biomass density over the last decade (negative "biomass velocities", or the equivalent of temperature velocity for biomass) in the warmest locations of the coast for approximately one-quarter of the species examined.
 However, at the same time, biomass density remained stable or increased in cooler regions for 94% of the species.
-Such a redistribution of species biomass has the potential to generate new ecological and fisheries and interactions.
+This pattern of redistribution has implications for the efficiency of fishing through a potential for temporary climate-induced hyperstability (catch rates that remain high despite population declines) as organisms concentrate in preferred habitats during population decline, and to strengthen or weaken some species interactions.
+<!-- Such a redistribution of species biomass has the potential to generate new ecological and fisheries interactions.-->
 
 <!-- On average, and for roughly half the species-maturity combinations, temperature velocity had a more negative effect on biotic velocity in already warm locations than in relatively cool locations. -->
 <!-- approximately one quarter of species-maturity combinations experienced declines (negative biotic velocities) in the warmest locations when experiencing maximum warming. -->
