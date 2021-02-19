@@ -172,25 +172,16 @@ g <- plot_data_sub %>%
   ) +
   geom_line(alpha = 0.3, lwd = 0.3) +
   # ITQ introduced
-  # geom_vline(xintercept = 1997, linetype="dotted",
-  #   color="grey50") +
-  # annotate(geom="text", x=1999, y=5.2, label="Trawl ITQ", angle = 90,
-  #   color="grey30") +
-  # # synoptic trawl surveys begin
-  # geom_vline(xintercept = 2003, linetype="dotted",
-  #   color="grey50") +
-  # annotate(geom="text", x=2005, y=5.2, label="Synoptic trawl surveys", angle = 90,
-  #   color="grey30") +
-  geom_vline(xintercept = 1997, linetype = "dashed", color = "grey40") +
+  geom_vline(xintercept = 1997, linetype = "dotted", color = "grey40") +
   annotate(
-    geom = "text", x = 1999, y = 5.8, label = "Trawl ITQs introduced", angle = 90,
-    color = "grey30", hjust = 1, size = 3.5
+    geom = "text", x = 1999, y = 6.4, label = "Trawl ITQs introduced",
+    angle = 90, color = "grey30", hjust = 1, size = 3.5
   ) +
   # synoptic trawl surveys begin
-  geom_vline(xintercept = 2003, linetype = "dashed", color = "grey40") +
+  geom_vline(xintercept = 2003, linetype = "dotted", color = "grey40") +
   annotate(
-    geom = "text", x = 2005, y = 5.8, label = "Synoptic surveys begin", angle = 90,
-    color = "grey30", hjust = 1, size = 3.5
+    geom = "text", x = 2005, y = 6.4, label = "Synoptic surveys begin",
+    angle = 90, color = "grey30", hjust = 1, size = 3.5
   ) +
   # geom_vline(xintercept = 1996, linetype = "dashed", color = "grey40") +
   # annotate(
@@ -198,8 +189,8 @@ g <- plot_data_sub %>%
   #   color = "grey30", hjust = 1, size = 3.5
   # ) +
   ggsidekick::theme_sleek() +
-  coord_cartesian(expand = FALSE, ylim = c(0.7, 6.7)) +
-  # scale_y_continuous(trans = "sqrt") +
+  coord_cartesian(expand = FALSE, ylim = c(0.7, 6.5)) +
+  scale_y_continuous(breaks = c(1,2,3,4,5,6)) +
   ylab("Ratio value") +
   xlab("Year") +
   labs(color = "Ratio", fill = "Ratio") +
