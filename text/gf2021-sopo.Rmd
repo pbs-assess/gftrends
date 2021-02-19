@@ -2,7 +2,7 @@
 title: ""
 author: ""
 output:
-  word_document:
+  bookdown::word_document2:
     reference_docx: "sopo-2021-template.docx"
 fontsize: 12pt
 bibliography: "refs.bib"
