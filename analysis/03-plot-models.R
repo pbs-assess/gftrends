@@ -142,12 +142,20 @@ g <- plot_data_sub %>%
   geom_line(aes(y = med, x = year, color = ratio),
     inherit.aes = FALSE, data = summarized_plot_data, alpha = 1, lwd = 1) +
   geom_line(alpha = 0.3, lwd = 0.3) +
+  # ITQ introduced
+  geom_vline(xintercept = 1997, linetype="dashed") +
+  annotate(geom="text", x=1999, y=5, label="ITQ introduced", angle = 90,
+    color="black") +
+  # synoptic trawl surveys begin
+  geom_vline(xintercept = 2003, linetype="dashed") +
+  annotate(geom="text", x=2005, y=4.9, label="Surveys begin", angle = 90,
+    color="black") +
   ggsidekick::theme_sleek() +
   coord_cartesian(expand = FALSE, ylim = c(0.8, 6)) +
   # scale_y_continuous(trans = "sqrt") +
   ylab("Ratio value") + xlab("Year") +
   labs(color = "Ratio",fill = 'Ratio') +
-  theme(legend.position = c(0.85, 0.85), plot.margin = margin(t = 8, r = 13, b = 1, l = 2, unit = "pt")) +
+  theme(legend.position = c(0.13, 0.2), plot.margin = margin(t = 8, r = 13, b = 1, l = 2, unit = "pt")) +
   scale_colour_brewer(palette = "Dark2",
     labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
     ) +
@@ -155,6 +163,8 @@ g <- plot_data_sub %>%
     labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
   ) +
   geom_hline(yintercept = 1, lty = 2, col = "grey60")
+g
+
 ggsave("figs/ts-summary.pdf", width = 4.5, height = 4)
 ggsave("figs/ts-summary.png", width = 4.5, height = 4)
 
