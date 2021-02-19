@@ -194,7 +194,7 @@ Conversely, other stocks (e.g., Bocaccio REF) have experienced periods of extrem
 include_graphics(here("figs/pa-framework.pdf"))
 ```
 
-(ref:fig-ridges) Posterior distribution of three measures of stock status. Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column represent the year the status represents. Colours represent the mean B/LRP value. Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were chosen instead of MSY-based reference points. Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values in the PA Framework). The x-axis has been square-root transformed to slightly compress high ratio values for visualization. In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data.
+(ref:fig-ridges) Posterior distribution of three measures of stock status. Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column represent the year the status represents. Colours represent the mean B/LRP value across all years. Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were chosen instead of MSY-based reference points. Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values in the PA Framework). The x-axis has been square-root transformed to slightly compress high ratio values for visualization. In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data.
 
 <!-- TODO: SOME HAVE PROJECTIONS? -->
 
@@ -202,7 +202,7 @@ include_graphics(here("figs/pa-framework.pdf"))
 include_graphics(here("figs/ridges.png"))
 ```
 
-(ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC. Coloured lines and ribbons represent the individual stocks. Dark coloured lines and shaded ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals. Thin lines represent draws from the posterior distribution of $y_{j,t}$ (latent stock-specific mean trends; colours) and $x_t$ (latent overall mean trend; grey). The overall mean trend ($x_t$; grey) is the same across panels.
+(ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC. Coloured lines and ribbons represent the individual stocks. Colours represent mean ratios for 2018-2020 such that green stocks are highest, blue is intermediate, and purple represents stock at, or near, their LRP. Dark coloured lines and shaded ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals. Thin lines represent draws from the posterior distribution of $y_{j,t}$ (latent stock-specific mean trends; colours) and $x_t$ (latent overall mean trend; grey). The overall mean trend ($x_t$; grey) is the same across panels.
 
 ```{r ts-lrp, fig.cap = "(ref:fig-ts-lrp)", out.width="5in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/blrp-x-t.png"))
