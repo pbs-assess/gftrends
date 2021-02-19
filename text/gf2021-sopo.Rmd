@@ -78,6 +78,8 @@ Sean C. Anderson^1^, other authors here^2^, and more
 
 ## Fisheries-independent groundfish surveys
 
+*Skip or condense for space?*
+
 DFO conducts a suite of randomized surveys using bottom trawl, longline hook, and longline trap gear that, in aggregate, cover Canada's Pacific Coast.
 Synoptic trawl surveys in Queen Charlotte Sound and Hecate Strait are conducted in odd numbered years and the West Coast of Vancouver Island (WCVI) and the West Coast of Haida Gwaii (WCHG) surveys are conducted in even numbered years.
 In addition, four biennial Hard Bottom Longline (HBLL) surveys are conducted, two in "inside" waters (east of Vancouver Island) and two others in "outside" waters (everything else).
@@ -197,17 +199,17 @@ include_graphics(here("figs/pa-framework.pdf"))
 <!-- TODO: SOME HAVE PROJECTIONS? -->
 
 ```{r ridges, fig.cap = "(ref:fig-ridges)", out.width="4.2in", fig.align="center", fig.pos="ht"}
-include_graphics(here("figs/ridges.pdf"))
+include_graphics(here("figs/ridges.png"))
 ```
 
 (ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC. Coloured lines and ribbons represent the individual stocks. Dark coloured lines and shaded ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals. Thin lines represent draws from the posterior distribution of $y_{j,t}$ (latent stock-specific mean trends; colours) and $x_t$ (latent overall mean trend; grey). The overall mean trend ($x_t$; grey) is the same across panels.
 
 ```{r ts-lrp, fig.cap = "(ref:fig-ts-lrp)", out.width="5in", fig.align="center", fig.pos="ht"}
-include_graphics(here("figs/blrp-x-t.pdf"))
+include_graphics(here("figs/blrp-x-t.png"))
 ```
 
 (ref:fig-overall) Overall mean biomass status ($x_t$) for B/LRP, B/USR, and B/B~MSY~. Dark lines represent the median trajectory, shaded ribbons represent 95% quantile credible intervals, and thin lines represent 25 illustrative draws from the posterior.
 
 ```{r overall, fig.cap = "(ref:fig-overall)", out.width="3.5in", fig.align="center", fig.pos="ht"}
-include_graphics(here("figs/ts-summary.pdf"))
+include_graphics(here("figs/ts-summary.png"))
 ```
