@@ -230,9 +230,9 @@ format_rowan_raw_data2_mcmc_lrp <- function(sheet1, sheet2, .species, .region) {
 
 d1 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 1)
 d2 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 2)
-d <- format_rowan_raw_data2(d1, d2, "bocaccio", "5ABCD")
-d %>% saveRDS("data-raw/bocaccio-5abcd.rds")
-format_rowan_raw_data2_mcmc(d1, d2, "bocaccio", "5ABCD") %>% saveRDS("data-raw/bocaccio-5abcd-mcmc.rds")
+d <- format_rowan_raw_data2(d1, d2, "bocaccio", "BC")
+d %>% saveRDS("data-raw/bocaccio-5-bc.rds")
+format_rowan_raw_data2_mcmc(d1, d2, "bocaccio", "BC") %>% saveRDS("data-raw/bocaccio-5-bc-mcmc.rds")
 
 # shortspine BC -----------------------------------------------------------
 
