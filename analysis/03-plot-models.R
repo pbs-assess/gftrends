@@ -164,6 +164,7 @@ summarized_plot_data <- group_by(plot_data, ratio, year) %>%
 
 plot_data_sub <- plot_data %>% filter(.draw %in% .samples)
 
+pal <- c("#08d9d6", "#252a34", "#ff2e63")
 g <- plot_data_sub %>%
   ggplot(aes(year, .value, group = paste(ratio, .draw), color = ratio)) +
   geom_ribbon(aes(ymin = lwr, ymax = upr, y = med, x = year, fill = ratio), inherit.aes = FALSE, data = summarized_plot_data, alpha = 0.3) +
@@ -195,19 +196,28 @@ g <- plot_data_sub %>%
   xlab("Year") +
   labs(color = "Ratio", fill = "Ratio") +
   theme(legend.position = c(0.13, 0.2), plot.margin = margin(t = 8, r = 13, b = 1, l = 2, unit = "pt")) +
-  # scale_colour_brewer(palette = "Dark2",
+  # scale_colour_manual(values = pal,
   #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
   #   ) +
-  # scale_fill_brewer(palette = "Dark2",
+  # scale_fill_manual(values = pal,
   #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
   # ) +
-  scale_colour_viridis_d(
+  scale_colour_brewer(palette = "Dark2",
+    labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
+    ) +
+  scale_fill_brewer(palette = "Dark2",
     labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
   ) +
-  scale_fill_viridis_d(
-    labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
-  ) +
+  # scale_colour_viridis_d(
+  #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY])),
+  #   option = "A", end = 0.85, direction = 1
+  # ) +
+  # scale_fill_viridis_d(
+  #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY])),
+  #   option = "A", end = 0.85, direction = 1
+  # ) +
   geom_hline(yintercept = 1, lty = 2, col = "grey60")
+g
 
 ggsave("figs/ts-summary.pdf", width = 4.5, height = 4)
 ggsave("figs/ts-summary.png", width = 4.5, height = 4)
