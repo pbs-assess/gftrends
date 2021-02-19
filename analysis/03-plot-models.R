@@ -12,7 +12,13 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
 
   last_dat <- dat %>%
     group_by(stock) %>%
-    mutate(last_status = exp({{col_log_mean}})[n()]) %>%
+    mutate(
+      countn = n(),
+      last_status = exp({{col_log_mean}})[n()],
+      next2last = exp({{col_log_mean}})[countn-1],
+      next3last = exp({{col_log_mean}})[countn-2],
+      last3status = (last_status + next2last + next3last)/3
+      ) %>%
     ungroup() %>%
     # mutate(stock = gsub("_", " ", stock)) %>%
     left_join(stock_df)
@@ -29,7 +35,7 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
   .y_true <- .y_true %>%
     left_join(stock_df)
 
-  .y_true <- left_join(.y_true, distinct(select(last_dat, stock_clean, last_status)))
+  .y_true <- left_join(.y_true, distinct(select(last_dat, stock_clean, last_status, last3status)))
 
   x_t <- x_t %>% mutate(.value = exp(.value)) %>%
     mutate(year = .t + 1949)
@@ -55,7 +61,10 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
     # geom_ribbon(aes(ymin = lwr2, ymax = upr2), fill = "grey70", alpha = 0.6) +
     # geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey55", alpha = 0.6) +
     # geom_ribbon(aes(ymin = lwr1, ymax = upr1), fill = "grey40", alpha = 0.6) +
-    geom_line(mapping = aes(x = year, y = exp(.value), group = .draw, colour = last_status),
+    geom_line(mapping = aes(x = year, y = exp(.value), group = .draw,
+      # colour = last_status
+      colour = last3status
+      ),
       alpha = 0.3, lwd = 0.15, data = .y_true, inherit.aes = FALSE) +
     # geom_line(lwd = 0.7, alpha = 0.75) +
     geom_ribbon(aes(
@@ -63,17 +72,31 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
       y = exp({{col_log_mean}}),
       ymin = {{col_q0.05}},
       ymax = {{col_q0.95}},
-      fill = last_status
+      # fill = last_status
+      fill = last3status
     ),
       colour = NA, alpha = 0.3, data = last_dat
     ) +
     geom_line(aes(
       x = year,
       y = exp({{col_log_mean}}),
-      colour = last_status,
-    ), alpha = 0.8, data = last_dat, lwd = 0.6) +
-    scale_colour_viridis_c(direction = -1, option = "C", end = 0.9) +
-    scale_fill_viridis_c(direction = -1, option = "C", end = 0.9) +
+      # colour = last_status
+      colour = last3status
+    ), alpha = 0.9, data = last_dat, lwd = 0.6) +
+    # scale_colour_gradient2(
+    #   low = "red", high = "green", mid="blue",
+    #   # midpoint = mean(.y_true$last_status)
+    #   midpoint = 1
+    #   ) +
+    # scale_fill_gradient2(
+    #   low = "red", high = "green", mid="blue",
+    #   # midpoint = mean(.y_true$last_status)
+    #   midpoint = 1
+    #   ) +
+    # scale_fill_distiller(palette = "Spectral", direction = 1) +
+    # scale_colour_distiller(palette = "Spectral", direction = 1) +
+    scale_colour_viridis_c(direction = 1, option = "D", end = 0.65) +
+    scale_fill_viridis_c(direction = 1, option = "D", end = 0.65) +
     ggsidekick::theme_sleek() +
     coord_cartesian(xlim = c(1950, 2020), ylim = ylim, expand = FALSE) +
     geom_hline(yintercept = 1, lty = 2, col = "grey40") +
@@ -143,27 +166,34 @@ g <- plot_data_sub %>%
     inherit.aes = FALSE, data = summarized_plot_data, alpha = 1, lwd = 1) +
   geom_line(alpha = 0.3, lwd = 0.3) +
   # ITQ introduced
-  geom_vline(xintercept = 1997, linetype="dashed") +
-  annotate(geom="text", x=1999, y=5, label="ITQ introduced", angle = 90,
-    color="black") +
+  geom_vline(xintercept = 1997, linetype="dotted",
+    color="grey50") +
+  annotate(geom="text", x=1999, y=5.2, label="Trawl ITQ", angle = 90,
+    color="grey30") +
   # synoptic trawl surveys begin
-  geom_vline(xintercept = 2003, linetype="dashed") +
-  annotate(geom="text", x=2005, y=4.9, label="Surveys begin", angle = 90,
-    color="black") +
+  geom_vline(xintercept = 2003, linetype="dotted",
+    color="grey50") +
+  annotate(geom="text", x=2005, y=5.2, label="Synoptic trawl surveys", angle = 90,
+    color="grey30") +
   ggsidekick::theme_sleek() +
-  coord_cartesian(expand = FALSE, ylim = c(0.8, 6)) +
+  coord_cartesian(expand = FALSE, ylim = c(0.7, 6.7)) +
   # scale_y_continuous(trans = "sqrt") +
   ylab("Ratio value") + xlab("Year") +
   labs(color = "Ratio",fill = 'Ratio') +
   theme(legend.position = c(0.13, 0.2), plot.margin = margin(t = 8, r = 13, b = 1, l = 2, unit = "pt")) +
-  scale_colour_brewer(palette = "Dark2",
+  # scale_colour_brewer(palette = "Dark2",
+  #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
+  #   ) +
+  # scale_fill_brewer(palette = "Dark2",
+  #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
+  # ) +
+  scale_colour_viridis_d(
     labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
-    ) +
-  scale_fill_brewer(palette = "Dark2",
+  ) +
+  scale_fill_viridis_d(
     labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
   ) +
   geom_hline(yintercept = 1, lty = 2, col = "grey60")
-g
 
 ggsave("figs/ts-summary.pdf", width = 4.5, height = 4)
 ggsave("figs/ts-summary.png", width = 4.5, height = 4)
