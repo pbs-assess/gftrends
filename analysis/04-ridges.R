@@ -66,8 +66,8 @@ g <- data_plot %>%
   facet_wrap(vars(ratio), labeller = label_parsed, scales = "free_x") +
   geom_density_ridges2(scale = 4, alpha = 0.7, lwd = 0.4, colour = "grey30") +
   scale_x_continuous(trans = "sqrt", breaks = c(0.2, 1, 2, 5)) +
-  # scale_fill_viridis_c(option = "D", direction = -1) +
-  scale_fill_viridis_c(direction = 1, option = "B", end = 0.85) +
+  scale_fill_viridis_c(option = "D", direction = 1, end = 0.65) +
+  # scale_fill_viridis_c(direction = 1, option = "B", end = 0.85) +
   # scale_fill_distiller(palette = "Blues") +
   theme_sleek() +
   coord_cartesian(expand = FALSE) +
