@@ -8,19 +8,20 @@ m <- readRDS("data-generated/b-ratio-fits.rds")
 d <- readRDS("data-generated/b-ratio-fits-data.rds")
 dat <- readRDS("data-generated/b-status-dat.rds")
 
-plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.95, ylab = "", ylim = c(0, 10)) {
+plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.95,
+  # .type = c("Rockfish", "Flatfish", "Cod", "Cod allies"), # in case you want a subset
+  ylab = "", ylim = c(0, 10)
+  ) {
   last_dat <- dat %>%
     group_by(stock) %>%
     mutate(
-      countn = n(),
-      last_status = exp({{col_log_mean}})[n()],
-      next2last = exp({{col_log_mean}})[countn-1],
-      next3last = exp({{col_log_mean}})[countn-2],
-      last3status = (last_status + next2last + next3last)/3
+      last_status = exp({{col_log_mean}})[n()]
       ) %>%
     ungroup() %>%
     # mutate(stock = gsub("_", " ", stock)) %>%
     left_join(stock_df)
+
+  # last_dat <- filter(last_dat, type %in% .type)
 
   stock_ids <- distinct(select(.fitted_dat, stock)) %>%
     arrange(stock) %>%
@@ -29,12 +30,18 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
     filter(year >= 1950, year <= 2020) %>%
     arrange(year) %>%
     mutate(.t = seq(1, n()))
+
   .y_true <- left_join(.y_true, stock_ids) %>% left_join(year_ids)
+
   # .y_true <- mutate(.y_true, stock = gsub("_", " ", stock)) %>%
   .y_true <- .y_true %>%
     left_join(stock_df)
 
-  .y_true <- left_join(.y_true, distinct(select(last_dat, stock_clean, last_status, last3status)))
+  # .y_true <- filter(.y_true, type %in% .type)
+
+
+
+  .y_true <- left_join(.y_true, distinct(select(last_dat, stock_clean, last_status)))
 
   x_t <- x_t %>%
     mutate(.value = exp(.value)) %>%
@@ -64,7 +71,6 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
     # geom_ribbon(aes(ymin = lwr1, ymax = upr1), fill = "grey40", alpha = 0.6) +
     geom_line(mapping = aes(x = year, y = exp(.value), group = .draw,
       colour = last_status
-      # colour = last3status
       ),
       alpha = 0.3, lwd = 0.15, data = .y_true, inherit.aes = FALSE) +
     # geom_line(lwd = 0.7, alpha = 0.75) +
@@ -74,7 +80,6 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
       ymin = {{col_q0.05}},
       ymax = {{col_q0.95}},
       fill = last_status
-      # fill = last3status
     ),
     colour = NA, alpha = 0.3, data = last_dat
     ) +
@@ -82,7 +87,6 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
       x = year,
       y = exp({{col_log_mean}}),
       colour = last_status
-      # colour = last3status
     ), alpha = 0.9, data = last_dat, lwd = 0.6) +
     # scale_colour_gradient2(
     #   low = "red", high = "green", mid="blue",
@@ -94,8 +98,6 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
     #   # midpoint = mean(.y_true$last_status)
     #   midpoint = 1
     #   ) +
-    # scale_fill_distiller(palette = "Spectral", direction = 1) +
-    # scale_colour_distiller(palette = "Spectral", direction = 1) +
     scale_colour_viridis_c(direction = 1, option = "D", end = 0.82) +
     scale_fill_viridis_c(direction = 1, option = "D", end = 0.82) +
     ggsidekick::theme_sleek() +
@@ -121,12 +123,18 @@ y_true <- lapply(m, function(.x) {
   filter(result, .value != 0) # fake
 })
 
+# # change order of facets to group more like species together
+stock_df <- stock_df %>% arrange(desc(type), stock) # for grouping by taxa/type first
+# stock_df <- stock_df %>% arrange(stock) # for alphabetical order
+stock_df <- stock_df %>% mutate(stock_clean = factor(stock_clean,
+  levels = as.character(unique(stock_df$stock_clean))))
+
 g <- plot_x_t(x_t[["blrp"]], y_true[["blrp"]], d[["blrp"]]$filtered_dat,
   log_blrp, q0.05_blrp, q0.95_blrp,
   ylab = expression(B / LRP), ylim = c(0,11.5)
 )
 ggsave("figs/blrp-x-t.pdf", width = 7, height = 8)
-ggsave("figs/blrp-x-t.png", width = 7, height = 8)
+ggsave("figs/blrp-x-t.png", width = 5.5, height = 8)
 
 g <- plot_x_t(x_t[["busr"]], y_true[["busr"]], d[["busr"]]$filtered_dat,
   log_busr, q0.05_busr, q0.95_busr,
