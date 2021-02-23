@@ -173,37 +173,46 @@ summarized_plot_data <- group_by(plot_data, ratio, year) %>%
 plot_data_sub <- plot_data %>% filter(.draw %in% .samples)
 
 pal <- c("#08d9d6", "#252a34", "#ff2e63")
-g <- plot_data_sub %>%
+
+(g <- plot_data_sub %>%
   ggplot(aes(year, .value, group = paste(ratio, .draw), color = ratio)) +
+    coord_cartesian(expand = FALSE, ylim = c(0.7, 7)) +
+    # Trawl ITQ introduced
+    annotate(geom = "rect", xmin = 1992, xmax = 1997, ymin = 0.7, ymax= 7,
+      fill="grey", alpha = 0.4, inherit.aes = F) +
+    # geom_vline(xintercept = 1992, linetype = "dotted", color = "grey40") +
+    # geom_vline(xintercept = 1997, linetype = "dotted", color = "grey40") +
+    annotate(
+      geom = "text", x = 1994, y = 6.9, label = "Trawl ITQs begin",
+      angle = 90, color = "grey30", hjust = 1, size = 3.5
+    ) +
+    # synoptic trawl surveys begin
+    annotate(geom = "rect", xmin = 2003, xmax = 2005, ymin = 0.7, ymax= 7,
+      fill="grey", alpha = 0.4, inherit.aes = F) +
+  # geom_vline(xintercept = 2003, linetype = "dotted", color = "grey40") +
+  annotate(
+      geom = "text", x = 2004, y = 6.9, label = "Synoptic surveys begin",
+      angle = 90, color = "grey30", hjust = 1, size = 3.5
+    ) +
+    # ITQs and monitoring for line and trap begin
+    # annotate(geom = "rect", xmin = 2006, xmax = 2007, ymin = 0.7, ymax= 7,
+      # fill="grey", alpha = 0.4, inherit.aes = F) +
+  geom_vline(xintercept = 2006, linetype = "solid", color = "grey", alpha = 0.4, lwd = 1.4) +
+  annotate(
+      geom = "text", x = 2007.8, y = 6.9, label = "Line & trap ITQs begin",
+      angle = 90, color = "grey30", hjust = 1, size = 3.5
+    ) +
   geom_ribbon(aes(ymin = lwr, ymax = upr, y = med, x = year, fill = ratio), inherit.aes = FALSE, data = summarized_plot_data, alpha = 0.3) +
   geom_line(aes(y = med, x = year, color = ratio),
     inherit.aes = FALSE, data = summarized_plot_data, alpha = 1, lwd = 1
   ) +
   geom_line(alpha = 0.3, lwd = 0.3) +
-  # ITQ introduced
-  geom_vline(xintercept = 1997, linetype = "dotted", color = "grey40") +
-  annotate(
-    geom = "text", x = 1999, y = 6.4, label = "Trawl ITQs introduced",
-    angle = 90, color = "grey30", hjust = 1, size = 3.5
-  ) +
-  # synoptic trawl surveys begin
-  geom_vline(xintercept = 2003, linetype = "dotted", color = "grey40") +
-  annotate(
-    geom = "text", x = 2005, y = 6.4, label = "Synoptic surveys begin",
-    angle = 90, color = "grey30", hjust = 1, size = 3.5
-  ) +
-  # geom_vline(xintercept = 1996, linetype = "dashed", color = "grey40") +
-  # annotate(
-  #   geom = "text", x = 1998, y = 5.8, label = "Trawl observerer coverage", angle = 90,
-  #   color = "grey30", hjust = 1, size = 3.5
-  # ) +
+    scale_y_continuous(breaks = c(1,2,3,4,5,6)) +
+    ylab("Ratio value") +
+    xlab("Year") +
+    labs(color = "Ratio", fill = "Ratio") +
   ggsidekick::theme_sleek() +
-  coord_cartesian(expand = FALSE, ylim = c(0.7, 6.5)) +
-  scale_y_continuous(breaks = c(1,2,3,4,5,6)) +
-  ylab("Ratio value") +
-  xlab("Year") +
-  labs(color = "Ratio", fill = "Ratio") +
-  theme(legend.position = c(0.13, 0.2), plot.margin = margin(t = 8, r = 13, b = 1, l = 2, unit = "pt")) +
+  theme(legend.position = c(0.13, 0.65), plot.margin = margin(t = 8, r = 13, b = 1, l = 2, unit = "pt")) +
   # scale_colour_manual(values = pal,
   #   labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY]))
   #   ) +
@@ -224,7 +233,8 @@ g <- plot_data_sub %>%
     labels = c(expression(B/LRP), expression(B/USR), expression(B/B[MSY])),
     option = "A", end = 0.85, direction = 1
   ) +
-  geom_hline(yintercept = 1, lty = 2, col = "grey60")
+  geom_hline(yintercept = 1, lty = 2, col = "grey60"))
+
 
 ggsave("figs/ts-summary.pdf", width = 4.5, height = 4)
 ggsave("figs/ts-summary.png", width = 4.5, height = 4)
