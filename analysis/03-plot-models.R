@@ -10,7 +10,8 @@ dat <- readRDS("data-generated/b-status-dat.rds")
 
 plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.95,
                      # .type = c("Rockfish", "Flatfish", "Cod", "Cod allies"), # in case you want a subset
-                     ylab = "", ylim = c(0, 10)) {
+                     ylab = "", ylim = c(0, 10), example = FALSE) {
+
   last_dat <- dat %>%
     group_by(stock) %>%
     mutate(
@@ -42,13 +43,16 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
 
   # .y_true <- filter(.y_true, type %in% .type)
 
-
-
   .y_true <- left_join(.y_true, distinct(select(last_dat, stock_clean, last_status)))
 
   x_t <- x_t %>%
     mutate(.value = exp(.value)) %>%
     mutate(year = .t + 1949)
+
+  if (example) {
+    dat <- filter(dat, stock == "pcod_5abcd")
+    .y_true <- filter(.y_true, stock == "pcod_5abcd")
+  }
 
   # summarized <- x_t %>%
   #   mutate(.value = exp(.value)) %>%
@@ -157,7 +161,12 @@ g <- plot_x_t(x_t[["blrp"]], y_true[["blrp"]], d[["blrp"]]$filtered_dat,
   ylab = expression(B / LRP), ylim = c(0, 11.5)
 )
 ggsave("figs/blrp-x-t.pdf", width = 7, height = 8)
+<<<<<<< HEAD
 ggsave("figs/blrp-x-t.png", width = 5.5, height = 8)
+=======
+ggsave("figs/blrp-x-t.png", width = 7, height = 8)
+ggsave("figs/blrp-x-t-example.png", width = 4, height = 3, dpi = 200)
+>>>>>>> 5e78ca6 (Add example panel)
 
 g <- plot_x_t(x_t[["busr"]], y_true[["busr"]], d[["busr"]]$filtered_dat,
   log_busr, q0.05_busr, q0.95_busr,
