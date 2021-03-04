@@ -161,12 +161,8 @@ g <- plot_x_t(x_t[["blrp"]], y_true[["blrp"]], d[["blrp"]]$filtered_dat,
   ylab = expression(B / LRP), ylim = c(0, 11.5)
 )
 ggsave("figs/blrp-x-t.pdf", width = 7, height = 8)
-<<<<<<< HEAD
-ggsave("figs/blrp-x-t.png", width = 5.5, height = 8)
-=======
 ggsave("figs/blrp-x-t.png", width = 7, height = 8)
 ggsave("figs/blrp-x-t-example.png", width = 4, height = 3, dpi = 200)
->>>>>>> 5e78ca6 (Add example panel)
 
 g <- plot_x_t(x_t[["busr"]], y_true[["busr"]], d[["busr"]]$filtered_dat,
   log_busr, q0.05_busr, q0.95_busr,
