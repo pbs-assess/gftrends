@@ -177,7 +177,7 @@ Rebuilding and precautionary management of stocks in the critical and cautious z
 
 Anderson, S.C., Keppel, E.A., and Edwards, A.M. 2019. A reproducible data synopsis for over 100 species of British Columbia groundfish. DFO Can. Sci. Advis. Sec. Res. Doc. 2019/041: vii + 321 p.
 
-Carpenter, B., Gelman, A., Hoffman, M.D., Lee, D., Goodrich, B., Betancourt, M., Brubaker, M., Guo, J., Li, P., and Riddell, A. 2017. Stan: A Probabilistic Programming Language. J. Stat. Softw. 76(1).
+Carpenter, B., Gelman, A., Hoffman, M.D., Lee, D., Goodrich, B., Betancourt, M., Brubaker, M., Guo, J., Li, P., and Riddell, A. 2017. Stan: A Probabilistic Programming Language. Journal of Statistical Software. 76(1).
 
 DFO. 2009. A fishery decision-making framework incorporating the Precautionary Approach <https://www.dfo-mpo.gc.ca/reports-rapports/regs/sff-cpd/precaution-back-fiche-eng.htm>.
 
