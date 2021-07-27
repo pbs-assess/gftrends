@@ -16,3 +16,5 @@ dlm_ar1.cpp
 figs/
 *.log
 *.key
+*.pdf
+*.aux

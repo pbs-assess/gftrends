@@ -1,0 +1,230 @@
+---
+title: "Trends in Pacific Canadian groundfish stock status"
+author: "|
+  Sean C. Anderson$^1$^[Corresponding author: sean.anderson@dfo-mpo.gc.ca], Brendan Connors$^2$, Philina A. English$^1$, Robyn E. Forrest$^1$,\n| Rowan Haigh$^2$, Kendra R. Holt$^2$\n| $^1$Pacific Biological Station, Fisheries and Oceans Canada, \n| Nanaimo, BC, Canada\n| $^2$Institute of Ocean Sciences, Fisheries and Oceans Canada, \n| Sidney, BC, Canada\n| \n| This document is a preprint version of a contribution to the\n| Fisheries and Oceans Canada State of the Pacific Ocean report in 2021 \n"
+output:
+    bookdown::pdf_document2:
+      toc: false
+      number_sections: false
+      fig_caption: true
+csl: mee.csl
+bibliography: refs.bib
+link-citations: yes
+header-includes:
+  # \usepackage[left]{lineno}
+  # \linenumbers
+  \newcommand{\beginsupplement}{
+  \setcounter{equation}{0}
+  \renewcommand{\theequation}{S.\arabic{equation}}
+  \setcounter{table}{0}
+  \renewcommand{\thetable}{S\arabic{table}}
+  \setcounter{figure}{0}
+  \renewcommand{\thefigure}{S\arabic{figure}}}
+editor_options:
+  markdown:
+    wrap: sentence
+abstract: |
+    | We assembled estimated biomass (B) time series from stock assessments for 24 Pacific Canadian groundfish stocks and modelled average and stock status through 2020 based on biomass relative to each stocks' (1) Limit Reference Point (B/LRP), (2) Upper Stock Reference (B/USR), and (3) biomass at maximum sustainable yield (B/B~MSY~). The overall mean B/LRP in 2020 was 3.2 (95% credible interval [CI]: 2.6--3.9). The overall mean B/USR and B/B~MSY~ in 2020 was 1.5 (95% CI: 1.3--1.9) and 1.4 (95% CI: 1.1--1.7), respectively. Average stock status declined from 1950 to around 2000 and has remained relatively stable since then. The change around 2000 followed the implementation of ITQs (individual transferable quotas) for the trawl fleet and the commencement of the synoptic trawl surveys. As of their last assessment, four stocks (Strait of Georgia Lingcod [Area 4B], coastwide Bocaccio, and inside and outside Quillback Rockfish) had a greater than 5% probability of being below their LRP (i.e., in the "critical zone"); Pacific Cod in Area 3CD had a 4.6% probability. Roughly one-third of stocks had a greater than 1 in 4 chance of being below their USR (i.e., in the "cautious zone"). Conversely, two-thirds of assessed groundfish stocks had a high (\>75%) probability of being above the USR (i.e., in the "healthy zone").
+---
+
+```{r, echo = FALSE, include = FALSE, message = FALSE, warnings = FALSE}
+library(here)
+library(knitr)
+```
+
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+knitr::opts_chunk$set(
+  echo = FALSE, message = FALSE, warnings = FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+<!-- # Fisheries-independent groundfish surveys -->
+
+<!-- DFO conducts a suite of randomized surveys using bottom trawl, longline hook, and longline trap gear that, in aggregate, cover Canada's Pacific Coast (Anderson et al. 2019). -->
+<!-- Synoptic trawl surveys in Queen Charlotte Sound (Areas 5A and 5B) and Hecate Strait (Areas 5C and 5D) are conducted in odd numbered years, while the West Coast of Vancouver Island (WCVI; Areas 3C and 3D) and the West Coast of Haida Gwaii (WCHG; Area 5E) surveys are conducted in even numbered years. -->
+<!-- In addition, four biennial Hard Bottom Longline (HBLL) surveys are conducted, two in "inside" waters (east of Vancouver Island; Area 4B) and two others in "outside" waters (everywhere else). -->
+<!-- Lastly, a coast-wide longline trap survey targeting sablefish is conducted every year and DFO collects biological information from the International Pacific Halibut Commission (IPHC) Setline Survey. -->
+<!-- In 2020, only the synoptic WCHG trawl survey, outside HBLL south survey, IPHC setline survey, and sablefish survey were conducted. -->
+<!-- The synoptic WCVI survey did not occur due to COVID-19. -->
+<!-- At the time of writing, the only 2020 data available in DFO's survey databases are the WCHG and sablefish surveys. -->
+<!-- Because of this, and because of legislative changes described below, we focus our report this year on groundfish biological status from published stock assessments over the last decade. -->
+
+<!-- # A state-space model of groundfish stock status -->
+
+# Introduction
+
+Recent amendments to Canada's *Fisheries Act* via the [[Fish Stocks provisions]{.ul}](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547) have increased DFO's focus on stock status with respect to biological reference points.
+The amendments are based on Canada's Precautionary Approach (PA) Framework, which describes two stock status reference points: (1) the Limit Reference Point (LRP), a "status below which serious harm is occurring to the stock"; and (2) the Upper Stock Reference Point (USR), which represents the "threshold below which removals must be progressively reduced in order to avoid reaching the LRP" (DFO 2009, Figure 1a).
+The USR defines the breakpoint between the healthy and cautious zone and the LRP defines the breakpoint between the cautious and critical zone (Figure 1a).
+The LRP and USR are often calculated based on B~MSY~ (biomass at maximum sustainable yield) at provisional levels of 0.4 B~MSY~ and 0.8 B~MSY~, but in other cases can be based on proxies, such as average or minimum historical biomass levels (e.g., Forrest et al. 2020).
+
+(ref:fig-pa) Illustration of DFO's Precautionary Approach Framework. The two vertical lines---the Limit Reference Point (LRP) and Upper Stock Reference (USR)---are the focus of this analysis.
+Based on DFO (2009).
+(b) Overall mean biomass status ($x_{t}$) across all stocks for B/LRP, B/USR, and B/B~MSY~.
+Dark lines represent the median, shaded ribbons represent 95% quantile credible intervals, and thin lines represent 25 illustrative draws from the posterior distribution.
+
+```{r pa-framework, fig.cap="(ref:fig-pa)", out.width="5.2in", fig.align="center", fig.pos="ht"}
+include_graphics(here("figs/fig1-preprint.pdf"))
+```
+
+Assessment scientists conduct regular stock assessment for major fish stocks in BC.
+These assessments combine fishery-dependent data (such as commercial catches) with fishery-independent data (data from scientific surveys) to estimate quantities such as spawning stock biomass, growth and maturity, and derive measures of stock status and fishing intensity.
+Here, we gathered output data from assessments for 24 stocks representing the Bayesian posterior distribution of estimated biomass (B) compared to three measures of stock status: (1) B/LRP (biomass divided by the LRP), (2) B/USR (biomass divided by the USR), (3) B/B~MSY~ (biomass divided by B~MSY~).
+We develop a hierarchical Bayesian state-space time-series model to explore trends in these measures of status across all stocks until the year 2020.
+To do this, we built on a model described in Hilborn et al. (2020) in two ways: (1) we incorporated uncertainty in stock-specific status; and (2) we projected the latent underlying stock-specific status forward to the last year (2020).
+The latter accounts for not all stocks having an up-to-date stock assessment and accounts for future possible stock states based on the time-series properties of the fitted stock trajectories.
+
+# Methods
+
+We modelled overall (i.e., all stocks combined) log stock status $x$ at time $t$ as $x_{t = 1} = x_{0}$ and $x_{t > 1} = x_{t - 1} + \eta_{t},\eta_{t} \sim \text{Normal}\left( 0,\sigma_{\eta}^{2} \right)$, where $\eta_{t}$ is a random walk deviation with standard deviation $\sigma_{\eta}$.
+We assumed an auto-regressive observation model:
+
+```{=tex}
+\begin{align}
+{\widehat{y}}_{j,t} &\sim \text{Normal}\left( y_{j,t},{\widehat{\tau}}^{2} \right), \\
+y_{j,t} &= x_{t} + \alpha_{j} + \epsilon_{j,t},\epsilon_{j,t} \sim \text{Normal}\left( \rho\epsilon_{j,t - 1},\sigma_{\epsilon}^{2} \right),
+\end{align}
+```
+where ${\widehat{y}}_{j,t}$ is the mean log stock status for stock $j$ and time $t$ (from an assessment), $y_{j,t}$ is the unobserved "true" mean stock-specific status, and $\widehat{\tau}$ is the standard deviation of the log stock status from an assessment.
+The symbol $\alpha_{j}$ represents a stock-specific intercept that is constrained such that the sum of all $\alpha_{j}$ is zero to make the overall mean $x_{t}$ identifiable.
+The symbol $\epsilon_{j,t}$ represents a first-order autoregressive (AR1) deviation with correlation $\rho$ and standard deviation $\sigma_{\epsilon}$.
+We placed half-Normal(0, 1) priors on $\sigma_{\epsilon}$ and $\sigma_{\eta}$, Normal(0, 5^2^) priors on $x_{0}$ and $\alpha_{j}$, and a Normal(0, 1)[-1, 1] prior on $\rho$.
+We fit the models with Stan (Carpenter et al. 2017; Stan Development Team 2020), sampling 1000 iterations on each of 6 chains and discarding the first half as warm up.
+Data and code to reproduce our analysis are available at <https://github.com/pbs-assess/gftrends>.
+
+# Results
+
+Of the 24 groundfish stock status time series included in the analysis, four stocks provided historical reference points for management advice, 18 provided MSY-based reference points, and two (Rocksole in Areas 5AB and 5CD) provided both historical and MSY reference points (we herein use the MSY-based ones).
+The most recent assessments were for the Rougheye/Blackspotted Rockfish complex, Pacific Cod, Bocaccio, inside and outside Yelloweye Rockfish, and Sablefish.
+
+Across all stocks, there was a decline in average stock status for all three indices prior to approximately 2000 (Figure 1b).
+The late 1990s and early 2000s marked the beginning of a relatively stable average status.
+We estimated the overall mean B/LRP in 2020 to be 3.2 (95% credible interval [CI]: 2.6--3.9).
+The overall mean B/USR and B/B~MSY~ in 2020 was 1.5 (95% CI: 1.3--1.9) and 1.4 (95% CI: 1.1--1.7), respectively.
+Uncertainty in average status in the last few years increased because not all stocks had a current assessment (Figure 1b).
+
+(ref:fig-ts-lrp) Trends in B/LRP for 24 groundfish stocks in BC.
+Coloured lines and ribbons represent the individual stocks.
+Colours represent the ratio in the last year of assessment such that green stocks are highest and purple are lowest.
+Dark coloured lines and shaded ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals.
+Thin lines represent draws from the posterior distribution of $y_{j,t}$ (latent stock-specific mean trends; colours) and $x_{t}$ (latent overall mean trend; grey).
+The overall mean trend ($x_{t}$; grey) is the same across panels (see Figure 1b).
+
+```{r ts-lrp, fig.cap = "(ref:fig-ts-lrp)", out.width="4.6in", fig.align="center", fig.pos="ht"}
+include_graphics(here("figs/blrp-x-t.pdf"))
+```
+
+
+The clear pattern in the average biological status has been accompanied by considerable variation within and across individual stocks (Figure 2).
+Within individual stocks, Pacific Cod and Walleye Pollock---both with shorter generation times compared to many other stocks here---exhibited strong patterns of decadal variation.
+Across stocks, Redstripe Rockfish in northern and southern BC and coastwide Yellowtail Rockfish are examples of stocks with B/LRP trajectories consistently above the average.
+Conversely, Lingcod in 4B and coastwide Bocaccio are examples of stocks with B/LRP estimated consistently below the average.
+Sablefish followed the average B/LRP trajectory until around 1990 when they continued to decline while the average stabilized.
+The Sablefish stock trajectory has shown signs of increase since around 2015 as a result of large recent recruitments (DFO 2020a; Figure 2).
+
+Estimated biomass was above the LRP and USR for most stocks as of the most recent assessment (Figure 3).
+Lingcod in 4B and coastwide Bocaccio were the only stocks (with full posterior distributions available) with $>$ 5% posterior density below their LRP as of their most recent assessment (Figure 3).
+Pacific Cod in 3CD almost met this threshold with a 4.6% probability B $<$ LRP in 2020.
+The assessment of Bocaccio, however, projected the stock to rebuild above the LRP by 2023 due to a very large recruitment event in 2016 (DFO 2020b).
+Quillback Rockfish in both outside and inside waters had $>$ 5% posterior density below their LRPs as of the 2011 assessment, but the full posterior distribution was not available (quantiles are shown in Figure 2).
+Considering the USR instead of the LRP, 7/22 of the stocks in Figure 3 had \> 25% probability of being below their USR as of their most recent assessment.
+
+(ref:fig-ridges) Posterior distribution of the three measures of stock status for 22 of the 24 stocks.
+Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column represent the year the status represents.
+Colours represent the mean B/LRP value such that green is highest and purple is lowest.
+Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were used instead of MSY-based reference points.
+Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values in the PA Framework).
+The x-axis has been square-root transformed to slightly compress high ratio values for visualization.
+In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data.
+The full posteriors were not available for Quillback Rockfish stocks, which are shown in Figure 2.
+
+<!-- TODO: SOME HAVE PROJECTIONS? -->
+
+```{r ridges, fig.cap = "(ref:fig-ridges)", out.width="4.2in", fig.align="center", fig.pos="ht"}
+include_graphics(here("figs/ridges.pdf"))
+```
+
+# Discussion
+
+<!-- ## Factors influencing trends -->
+
+The factors most likely influencing the trends illustrated here have been fishery removals and management interventions.
+The transition from declining average B/LRP and B/USR to a relatively stable trajectory coincided with the implementation of individual transferable quotas (ITQs) for the trawl fleet and the introduction of 100% at-sea observer coverage over the period 1992--1997 (Turris 2000) and with the initiation of the current synoptic trawl surveys in 2003.
+Furthermore, ITQs and electronic at-sea monitoring were introduced into the longline and trap fisheries in 2006 (Stanley et al. 2015).
+Following these major management changes, quota for many stocks has remained relatively constant over the last two decades (DFO 2019).
+The decadal patterns in assessed status for Pacific Cod (Forrest et al. 2019) and Walleye Pollock (Starr and Haigh 2019) in early decades are largely driven by trends in commercial catches and catch per unit effort.
+Consistently poor recruitment for decades is thought to be the primary driver behind stock declines for some rockfish such as Bocaccio (DFO 2020b), although many stocks are data-limited and there is therefore considerable uncertainty around recruitment trends, which may be confounded with other factors such as the management changes noted above.
+In terms of absolute stock status, estimates of B~MSY~ for data-limited species may be highly uncertain, or in some cases biased (Forrest et al., 2018).
+
+There are also potential species interactions and climatic effects on trends in local biomass density of these species.
+Loss of spawning habitat due to recent oceanographic conditions has been hypothesized to have led to years of low recruitment in some groundfish (e.g., Pacific Cod in nearby Alaskan waters; Laurel and Rogers 2020).
+Conversely, after decades of poor recruitment, Bocaccio experienced a year of extremely strong recruitment (44 times the average for Bocaccio in 2016; DFO 2020b) possibly due to the availability of oxygen-rich water at depth during gestation (Schroeder et al. 2019).
+The slow recovery of Area 4B Lingcod since initial fishery-driven declines between the 1930s and 1980s may be a result of changes in the Strait of Georgia ecosystem (e.g., plankton timing, pinnipeds; DFO 2015).
+Underlying these stock-level trends, recent work suggests that temperature velocity---the pace a fish would have to move to maintain consistent temperature---may be related to a fine-scale redistribution of groundfish species density in Canadian Pacific waters (English et al. 2021).
+
+<!-- ## Implications of those trends -->
+
+The Sustainable Fisheries Framework and the Fish Stocks provisions of the *Fisheries Act* require that major ﬁsh stocks be maintained above their LRP with high probability.
+Stocks below their LRP will require a rebuilding plan.
+While average stock status was clearly above the LRP as of 2020, there was considerable variation among stocks.
+Four stocks had $>$ 5% probability of being below their LRP and roughly one-third of assessed stocks had $>$ 25% probability of being in the cautious zone where removals should be progressively reduced to avoid reaching the LRP.
+Rebuilding and precautionary management of stocks in the critical and cautious zones, respectively, should help ensure stock status improves over time in response to reduced fishing pressure and favorable environmental conditions if and when they occur.
+
+# References
+
+Anderson, S.C., Keppel, E.A., and Edwards, A.M. 2019. A reproducible data synopsis for over 100 species of British Columbia groundfish. DFO Can. Sci. Advis. Sec. Res. Doc. 2019/041: vii + 321 p.
+
+Carpenter, B., Gelman, A., Hoffman, M.D., Lee, D., Goodrich, B., Betancourt, M., Brubaker, M., Guo, J., Li, P., and Riddell, A. 2017. Stan: A Probabilistic Programming Language. J. Stat. Softw. 76(1).
+
+DFO. 2009. A fishery decision-making framework incorporating the Precautionary Approach <https://www.dfo-mpo.gc.ca/reports-rapports/regs/sff-cpd/precaution-back-fiche-eng.htm>.
+
+DFO. 2015. Stock assessment for Lingcod (*Ophiodon elongatus*) for the Strait of Georgia, British Columbia in 2014. DFO Can. Sci. Advis. Sec. Sci. Advis. Rep. 2015/014.
+
+DFO. 2019. Pacific Region Integrated Fishery Management Plan. Groundfish. Effective February 21, 2019 <https://www.pac.dfo-mpo.gc.ca/fm-gp/mplans/ground-fond-ifmp-pgip-sm-eng.html>.
+
+DFO. 2020a. Evaluating the robustness of candidate management procedures in the BC Sablefsh (*Anoplopoma fimbria*) fishery for 2019--2020. DFO Can. Sci. Advis. Sec. Sci. Resp. 2020/025.
+
+DFO 2020b. Bocaccio (*Sebastes paucispinis*) stock assessment for British Columbia in 2019, including guidance for rebuilding plans. DFO Can. Sci. Advis. Sec. Sci. Advis. Rep 2020/025.
+
+English, P.A., Ward, E.J., Rooper, C.N., Forrest, R.E., Rogers, L.A., Hunter, K.L., Edwards, A.M., Connors, B.M., and Anderson, S.C. 2021.
+Contrasting climate velocity impacts in warm and cool locations: A meta-analysis across 38 demersal fish species in the northeast Pacific. EcoEvoRxiv Preprint.
+<https://doi.org/10.32942/osf.io/b87ng>.
+
+Forrest, R.E., Anderson, S.C., Grandin, C.J., and J., S.P. 2020. Assessment of Pacific Cod (*Gadus macrocephalus*) for Hecate Strait and Queen Charlotte Sound (Area 5ABCD), and West Coast Vancouver Island (Area 3CD) in 2018.
+DFO Can. Sci. Advis. Sec. Res. Doc. 2020/70.
+
+Forrest, R.E., Holt, K.E, and Kronlund, A.R. 2018. Performance of alternative harvest control rules for two Pacific groundfish stocks with uncertain natural mortality: Bias, robustness and trade-offs.
+Fisheries Research 206: 259--286.
+
+Hilborn, R., Amoroso, R.O., Anderson, C.M., Baum, J.K., Branch, T.A., Costello, C., de Moor, C.L., Faraj, A., Hively, D., Jensen, O.P., Kurota, H., Little, L.R., Mace, P., McClanahan, T., Melnychuk, M.C., Minto, C., Osio, G.C., Parma, A.M., Pons, M., Segurado, S., Szuwalski, C.S., Wilson, J.R., and Ye, Y. 2020. Effective fisheries management instrumental in improving fish stock status.
+Proceedings of the National Academy of Sciences 117(4): 2218--2224.
+
+Laurel, B.J., and Rogers, L.A. 2020.
+Loss of spawning habitat and prerecruits of Pacific cod during a Gulf of Alaska heatwave.
+Canadian Journal of Fisheries and Aquatic Sciences 77(4): 644--650.
+
+Schroeder, I.D., Santora, J.A., Bograd, S.J., Hazen, E.L., Sakuma, K.M., Moore, A.M., Edwards, C.A., Wells, B.K., and Field, J.C.
+2018.
+Source water variability as a driver of rockfish recruitment in the California Current Ecosystem: implications for climate change and fisheries management.
+Canadian Journal of Fisheries and Aquatic Sciences 76: 950--960.
+
+Stan Development Team. 2020. RStan: The R interface to Stan.
+<https://CRAN.R-project.org/package=rstan>.
+
+Stanley, R.D., Karim, T., Koolman, J., and McElderry, H. 2015.
+Design and implementation of electronic monitoring in the British Columbia groundfish hook and line fishery: a retrospective view of the ingredients of success.
+ICES J. Mar. Sci. **72**(4): 1230--1236.
+
+Starr, P.J., and Haigh, R. 2019. Walleye Pollock (*Theragra chalcogramma*) stock assessment for British Columbia in 2017. DFO Can. Sci. Advis. Sec. Res. Doc. In press.
+
+Turris, B.R. 2000. A comparison of British Columbia's ITQ fisheries for groundfish trawl and sablefish: Similar results from programmes with differing objectives, designs and processes. FAO Fisheries Technical Paper (No. 404/1): 254--261. Food and Agriculture Organization (FAO). 
+
+<!-- \clearpage -->
+
+<!--
+::: {#refs}
+:::
+-->
