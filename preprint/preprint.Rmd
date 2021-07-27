@@ -73,7 +73,7 @@ include_graphics(here("figs/fig1-preprint.pdf"))
 Assessment scientists conduct regular stock assessment for major fish stocks in BC.
 These assessments combine fishery-dependent data (such as commercial catches) with fishery-independent data (data from scientific surveys) to estimate quantities such as spawning stock biomass, growth and maturity, and derive measures of stock status and fishing intensity.
 Here, we gathered output data from assessments for 24 stocks representing the Bayesian posterior distribution of estimated biomass (B) compared to three measures of stock status: (1) B/LRP (biomass divided by the LRP), (2) B/USR (biomass divided by the USR), (3) B/B~MSY~ (biomass divided by B~MSY~).
-We develop a hierarchical Bayesian state-space time-series model to explore trends in these measures of status across all stocks until the year 2020.
+We developed a hierarchical Bayesian state-space time-series model to explore trends in these measures of status across all stocks until the year 2020.
 To do this, we built on a model described in Hilborn et al. (2020) in two ways: (1) we incorporated uncertainty in stock-specific status; and (2) we projected the latent underlying stock-specific status forward to the last year (2020).
 The latter accounts for not all stocks having an up-to-date stock assessment and accounts for future possible stock states based on the time-series properties of the fitted stock trajectories.
 
@@ -116,7 +116,6 @@ The overall mean trend ($x_{t}$; grey) is the same across panels (see Figure 1b)
 ```{r ts-lrp, fig.cap = "(ref:fig-ts-lrp)", out.width="4.6in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/blrp-x-t.pdf"))
 ```
-
 
 The clear pattern in the average biological status has been accompanied by considerable variation within and across individual stocks (Figure 2).
 Within individual stocks, Pacific Cod and Walleye Pollock---both with shorter generation times compared to many other stocks here---exhibited strong patterns of decadal variation.
