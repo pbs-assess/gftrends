@@ -128,7 +128,7 @@ include_graphics(here("figs/blrp-x-t.pdf"))
 ```{r, results='asis'}
 library(magrittr)
 source(here::here("preprint/refs-table.R"))
-csasdown::csas_table(refs, col.names = c("Stock", "Reference"), caption = "Groundfish stocks included in the analysis with associated data reference. In cases where a Research Document is still `In press', we indicate the associated Science Advisory Report where the author is DFO.", longtable = FALSE)
+csasdown::csas_table(refs, col.names = c("Stock", "Reference"), caption = "Groundfish stocks included in the analysis with associated data reference. In cases where a Research Document was still 'In press', we indicate the associated published Science Advisory Report or Science Response.", longtable = FALSE)
 ```
 
 The clear pattern in the average biological status has been accompanied by considerable variation within and across individual stocks (Figure \@ref(fig:ts-lrp)).
