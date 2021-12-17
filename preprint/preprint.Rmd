@@ -166,7 +166,7 @@ include_graphics(here("figs/ridges.pdf"))
 <!-- ## Factors influencing trends -->
 
 The factors most likely influencing the trends illustrated here have been fishery removals and management interventions.
-The transition from declining average B/LRP and B/USR to a relatively stable trajectory coincided with (1) the implementation of individual transferable quotas (ITQs) for the trawl fleet, (2) the introduction of 100% at-sea observer coverage over the period 1992--1997 [@turris2000], and (3) with the initiation of the current synoptic trawl surveys in 2003.
+The transition from declining average B/LRP and B/USR to a relatively stable trajectory coincided with (1) the implementation of individual transferable quotas (ITQs) for the trawl fleet, (2) the introduction of 100% at-sea observer coverage over the period 1992--1997 [@turris2000], and (3) the initiation of the current synoptic trawl surveys in 2003.
 Furthermore, ITQs and electronic at-sea monitoring were introduced into the longline and trap fisheries in 2006 [@stanley2015].
 Following these major management changes, quota for many stocks has remained relatively constant over the last two decades [@dfo2019ifmp].
 The decadal patterns in assessed status for Pacific Cod [@forrest2020pcod] and Walleye Pollock [@starr2021pollock] in early decades are largely driven by trends in commercial catches and catch per unit effort.
@@ -174,9 +174,9 @@ Consistently poor recruitment for decades is thought to be the primary driver be
 In terms of absolute stock status, estimates of B~MSY~ for data-limited species may be highly uncertain, or in some cases biased [@forrest2018].
 
 There are also potential species interactions and climatic effects on trends in local biomass density of these species.
-Loss of spawning habitat due to recent oceanographic conditions has been hypothesized to have led to years of low recruitment in some groundfish [e.g., Pacific Cod in nearby Alaskan waters; @laurel2020].
+Loss of spawning habitat due to recent oceanographic conditions has been hypothesized to have led to years of low recruitment in some groundfish [e.g., Pacific Cod in nearby Alaskan waters, @laurel2020].
 Conversely, after decades of poor recruitment, Bocaccio experienced a year of extremely strong recruitment [44 times the average for Bocaccio in 2016, @dfo2020bocaccio] possibly due to the availability of oxygen-rich water at depth during gestation [@schroeder2019].
-The slow recovery of Area 4B Lingcod since initial fishery-driven declines between the 1930s and 1980s may be a result of changes in the Strait of Georgia ecosystem [e.g., plankton timing, pinnipeds; @holt2016lingsog].
+The slow recovery of Area 4B Lingcod since initial fishery-driven declines between the 1930s and 1980s may be a result of changes in the Strait of Georgia ecosystem [e.g., plankton timing, pinnipeds, @holt2016lingsog].
 Underlying these stock-level trends, recent work suggests that temperature velocity---the pace a fish would have to move to maintain consistent temperature---may be related to a fine-scale redistribution of groundfish species density in Canadian Pacific waters [@english2021b].
 
 <!-- ## Implications of those trends -->
