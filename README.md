@@ -10,8 +10,8 @@ The model extends the one described in the appendix section *Estimating regional
 
 This repository contains:
 * a script to go from raw data (MCMC samples usually; stored locally) to cleaned and processed data (`data-raw-process/process-raw-data.R`)
+* the processed data sets themselves as `.rds` files (`data-generated`)
 * the model in Stan `analysis/rw-ss.stan`
-* a simulation test of the model (in `analysis`)
-* the processed data itself as `.rds` files (`data-generated`)
+* a simulation test of the model (`analysis`)
 * code to fit the model and make figures (`analysis`)
 * text for the preprint (`preprint`)
