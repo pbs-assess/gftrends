@@ -97,13 +97,12 @@ The symbol $\alpha_{j}$ represents a stock-specific intercept that is constraine
 The symbol $\epsilon_{j,t}$ represents a first-order autoregressive (AR1) deviation with correlation $\rho$ and standard deviation $\sigma_{\epsilon}$.
 We placed half-Normal(0, 1) priors on $\sigma_{\epsilon}$ and $\sigma_{\eta}$, Normal(0, 5^2^) priors on $x_{0}$ and $\alpha_{j}$, and a Normal(0, 1)[-1, 1] prior on $\rho$.
 We fit the models with Stan [@carpenter2017; @rstan2020], sampling 1000 iterations on each of 6 chains and discarding the first half as warm up.
-Data and code to reproduce our analysis are available at <https://github.com/pbs-assess/gftrends>.
+Data and code to reproduce our analysis are available at <https://github.com/pbs-assess/gftrends> with the specific version at <https://github.com/pbs-assess/gftrends/releases/tag/v0.01>.
 
 # Results
 
 Of the 24 groundfish stock status time series included in the analysis (Table 1), four stocks provided historical reference points for management advice, 18 provided MSY-based reference points, and two (Rocksole in Areas 5AB and 5CD) provided both historical and MSY reference points (we herein use the MSY-based ones).
 The most recent assessments were for the Rougheye/Blackspotted Rockfish complex, Pacific Cod, Bocaccio, inside and outside Yelloweye Rockfish, and Sablefish.
-
 
 Across all stocks, there was a decline in average stock status for all three indices prior to approximately 2000 (Figure \@ref(fig:pa-framework)b).
 The late 1990s and early 2000s marked the beginning of a relatively stable average status.
