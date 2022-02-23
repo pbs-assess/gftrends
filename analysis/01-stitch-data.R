@@ -76,7 +76,7 @@ out <- mutate(out, stock = paste(species, region)) %>%
   mutate(stock = gsub(" ", "_", stock)) %>%
   mutate(stock = gsub("-", "_", stock)) %>%
   select(species, region, stock, year, everything())
-out <- filter(out, !(species == "bocaccio" & year >= 2020))
+# out <- filter(out, !(species == "bocaccio" & year >= 2021))
 
 g <- out %>%
   ggplot(aes(
@@ -104,7 +104,7 @@ g <- out %>%
   facet_wrap(~stock) +
   scale_y_log10() +
   geom_hline(yintercept = 1, lty = 2) +
-  coord_cartesian(xlim = c(1950, 2020)) +
+  coord_cartesian(xlim = c(1950, substr(Sys.Date(), 1, 4))) +
   ylab("B status ratio") +
   theme(axis.title.x = element_blank())
 print(g)
