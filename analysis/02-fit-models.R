@@ -1,9 +1,7 @@
 library(dplyr)
-library(rstan)
-rstan_options(auto_write = TRUE)
-options(mc.cores = parallel::detectCores())
+options(mc.cores = parallel::detectCores()/2)
 source("analysis/utils.R")
-model <- stan_model("analysis/rw-ss.stan")
+model <- cmdstanr::cmdstan_model("analysis/rw-ss.stan")
 
 dat <- readRDS("data-generated/b-status-dat.rds")
 dat[dat$species == "sablefish","sd_log_bbmsy"] <-
@@ -20,14 +18,16 @@ d$busr <- format_stan_data(dat, log_busr, sd_log_busr)
 
 pars <- c("rho", "sigma_eps", "sigma_x", "x", "alpha", "y_true", "x_t_intercept")
 m <- purrr::map(d, function(.d) {
-  rstan::sampling(
-    model,
+  fit <- model$sample(
     data = .d$stan_dat,
-    chains = 6L, iter = 1000L,
-    pars = pars,
-    control = list(max_treedepth = 20L, adapt_delta = 0.9),
-    seed = 84791
+    chains = 6L,
+    iter_sampling = 500L,
+    iter_warmup = 500L,
+    seed = 84791L,
+    adapt_delta = 0.9,
+    max_treedepth = 20L
   )
+  rstan::read_stan_csv(fit$output_files())
 })
 
 purrr::walk(m, print, pars = pars[!pars %in% c("y_true", "x")])
