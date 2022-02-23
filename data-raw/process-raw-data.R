@@ -228,11 +228,11 @@ format_rowan_raw_data2_mcmc_lrp <- function(sheet1, sheet2, .species, .region) {
     rename(iter = sample)
 }
 
-d1 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 1)
-d2 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 2)
-d <- format_rowan_raw_data2(d1, d2, "bocaccio", "BC")
-d %>% saveRDS("data-raw/bocaccio-5-bc.rds")
-format_rowan_raw_data2_mcmc(d1, d2, "bocaccio", "BC") %>% saveRDS("data-raw/bocaccio-5-bc-mcmc.rds")
+# d1 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 1)
+# d2 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2019.MCMC.forSean.xlsx", sheet = 2)
+# d <- format_rowan_raw_data2(d1, d2, "bocaccio", "BC")
+# d %>% saveRDS("data-raw/bocaccio-5-bc.rds")
+# format_rowan_raw_data2_mcmc(d1, d2, "bocaccio", "BC") %>% saveRDS("data-raw/bocaccio-5-bc-mcmc.rds")
 
 # shortspine BC -----------------------------------------------------------
 
@@ -479,3 +479,57 @@ bmsy <- rename(bmsy, iter = X1, bmsy = Bmsy)
 b <- left_join(b, bmsy)
 b <- mutate(b, lrp = 0.4 * bmsy, usr = 0.8 * bmsy)
 saveRDS(b, "data-raw/rocksole-5CD-mcmc.rds")
+
+# 2022-02-23 update -------------------------------------------------------
+
+# YMR 2021 ----------------------------------------------------------------
+
+d1 <- readxl::read_xlsx("data-raw/model-output/YMR.CST.2021.MCMC.forSean.xlsx", sheet = 1L)
+d2 <- readxl::read_xlsx("data-raw/model-output/YMR.CST.2021.MCMC.forSean.xlsx", sheet = 2L)
+names(d1)[1] <- "sample"
+names(d2)[1] <- "sample"
+d <- format_rowan_raw_data(d1, d2, "yellowmouth", "BC")
+d %>% saveRDS("data-raw/yellowmouth-bc.rds")
+b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
+d <- dplyr::left_join(b, d2) %>%
+  mutate(year = as.integer(as.character(year))) %>%
+  rename(b = B, bmsy = Bmsy) %>%
+  mutate(run = 1) %>%
+  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
+  mutate(species = "yellowmouth", region = "BC") %>%
+  rename(iter = sample)
+set.seed(123)
+iter_sample <- sample(unique(d$iter), 500L) # downsample
+d <- filter(d, iter %in% iter_sample)
+d$iter <- as.numeric(as.factor(as.character(d$iter)))
+d <- arrange(d, iter)
+
+d %>% saveRDS("data-raw/yellowmouth-bc-mcmc.rds")
+
+d %>% ggplot(aes(year, b / bmsy, group = iter)) + geom_line(alpha = 0.05)
+
+# BOR 2021 ----------------------------------------------------------------
+
+d1 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2021.MCMC.forSean.xlsx", sheet = 1L)
+d2 <- readxl::read_xlsx("data-raw/model-output/BOR.CST.2021.MCMC.forSean.xlsx", sheet = 2L)
+names(d1)[1] <- "sample"
+names(d2)[1] <- "sample"
+d <- format_rowan_raw_data(d1, d2, "bocaccio", "BC")
+head(d)
+d %>% saveRDS("data-raw/bocaccio-bc.rds")
+b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
+d <- dplyr::left_join(b, d2) %>%
+  mutate(year = as.integer(as.character(year))) %>%
+  rename(b = B, bmsy = Bmsy) %>%
+  mutate(run = 1) %>%
+  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
+  mutate(species = "bocaccio", region = "BC") %>%
+  rename(iter = sample)
+head(d)
+set.seed(123)
+iter_sample <- sample(unique(d$iter), 500L) # downsample
+d <- filter(d, iter %in% iter_sample)
+d$iter <- as.numeric(as.factor(as.character(d$iter)))
+d <- arrange(d, iter)
+d %>% saveRDS("data-raw/bocaccio-bc-mcmc.rds")
+d %>% ggplot(aes(year, b / bmsy, group = iter)) + geom_line(alpha = 0.05)
