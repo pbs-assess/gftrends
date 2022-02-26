@@ -82,7 +82,7 @@ g <- data_plot %>%
     data = years, size = 2.5, color = "grey30", nudge_y = 0.7,
     inherit.aes = FALSE
   ) +
-  guides(fill = FALSE)
+  guides(fill = "none")
 
 ggsave("figs/ridges.pdf", width = 5.8, height = 5.8)
 ggsave("figs/ridges.png", width = 5.8, height = 5.8)

@@ -1,7 +1,8 @@
 library(dplyr)
 options(mc.cores = parallel::detectCores()/2)
 source("analysis/utils.R")
-model <- cmdstanr::cmdstan_model("analysis/rw-ss.stan")
+# model <- cmdstanr::cmdstan_model("analysis/rw-ss.stan")
+model <- rstan::stan_model("analysis/rw-ss.stan")
 
 dat <- readRDS("data-generated/b-status-dat.rds")
 dat[dat$species == "sablefish","sd_log_bbmsy"] <-
@@ -18,16 +19,25 @@ d$busr <- format_stan_data(dat, log_busr, sd_log_busr)
 
 pars <- c("rho", "sigma_eps", "sigma_x", "x", "alpha", "y_true", "x_t_intercept")
 m <- purrr::map(d, function(.d) {
-  fit <- model$sample(
+  # fit <- model$sample(
+  #   data = .d$stan_dat,
+  #   chains = 6L,
+  #   iter_sampling = 500L,
+  #   iter_warmup = 500L,
+  #   seed = 84791L,
+  #   adapt_delta = 0.9,
+  #   max_treedepth = 20L
+  # )
+  #
+  rstan::sampling(
+    model,
     data = .d$stan_dat,
-    chains = 6L,
-    iter_sampling = 500L,
-    iter_warmup = 500L,
-    seed = 84791L,
-    adapt_delta = 0.9,
-    max_treedepth = 20L
+    chains = 6L, iter = 1000L,
+    pars = pars,
+    control = list(max_treedepth = 20L, adapt_delta = 0.9),
+    seed = 84791
   )
-  rstan::read_stan_csv(fit$output_files())
+  # rstan::read_stan_csv(fit$output_files())
 })
 
 purrr::walk(m, print, pars = pars[!pars %in% c("y_true", "x")])
@@ -38,5 +48,5 @@ purrr::walk(m, print, pars = pars[!pars %in% c("y_true", "x")])
 # lapply(m, rstan::stan_rhat)
 # lapply(m, rstan::stan_diag)
 
-saveRDS(m, "data-generated/b-ratio-fits.rds")
-saveRDS(d, "data-generated/b-ratio-fits-data.rds")
+saveRDS(m, "data-generated/b-ratio-fits-2022.rds")
+saveRDS(d, "data-generated/b-ratio-fits-data-2022.rds")

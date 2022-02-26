@@ -18,3 +18,4 @@ figs/
 *.key
 *.pdf
 *.aux
+.DS_Store

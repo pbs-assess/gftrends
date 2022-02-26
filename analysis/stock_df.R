@@ -23,5 +23,6 @@ stock_df <- tibble::tribble(
   "walleye_pollock_BC_South", "Walleye Pollock BC S", "Cod",
   "widow_rockfish_BC", "Widow Rockfish BC", "Rockfish",
   "yelloweye_4B", "Yelloweye Rockfish 4B", "Rockfish",
-  "yellowtail_BC", "Yellowtail Rockfish BC", "Rockfish"
+  "yellowtail_BC", "Yellowtail Rockfish BC", "Rockfish",
+  "yellowmouth_BC", "Yellowmouth Rockfish BC", "Rockfish"
 )
