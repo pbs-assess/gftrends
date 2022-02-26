@@ -126,7 +126,7 @@ g <- plot_x_t(x_t[["blrp"]], y_true[["blrp"]], d[["blrp"]]$filtered_dat,
 )
 ggsave("figs/blrp-x-t-2022.pdf", width = 7, height = 8)
 ggsave("figs/blrp-x-t-2022.png", width = 7, height = 8)
-ggsave("figs/blrp-x-t-example-2022.png", width = 4, height = 3, dpi = 200)
+# ggsave("figs/blrp-x-t-example-2022.png", width = 4, height = 3, dpi = 200)
 
 g <- plot_x_t(x_t[["busr"]], y_true[["busr"]], d[["busr"]]$filtered_dat,
   log_busr, q0.05_busr, q0.95_busr,
