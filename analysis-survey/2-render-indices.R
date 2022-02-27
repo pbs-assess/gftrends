@@ -3,8 +3,9 @@
 
 dir.create(file.path(here::here("analysis-survey", "data")))
 dir.create(file.path(here::here("analysis-survey", "figs")))
-dir.create(file.path(here::here("analysis-survey", "html")))
+dir.create(file.path(here::here("analysis-survey", "indices")))
 
+dir.create(file.path(here::here("analysis-survey", "html")))
 env <- new.env() # parent = baseenv()
 
 # initial coastwide trawl models
@@ -118,7 +119,7 @@ for (r_h in seq_along(list_regions)) {
   for (spp_i in seq_along(list_species)) {
     spp <- gsub(" ", "-", gsub("\\/", "-", tolower(list_species[spp_i])))
     name <- "-RW-no-covs" # string describing model covariates
-
+    region_name <- list_regions[r_h]
     try({
       rmarkdown::render("analysis-survey/1-index-standardization.Rmd",
         params = list(
@@ -128,7 +129,7 @@ for (r_h in seq_along(list_regions)) {
           update_index = TRUE
           # update_index = FALSE
         ),
-        output_file = paste0(spp, name, "-", region, ".html"),
+        output_file = paste0(spp, name, "-", region_name, ".html"),
         envir = env
       )
     })
@@ -136,79 +137,79 @@ for (r_h in seq_along(list_regions)) {
 }
 
 
-# full list from 2 years ago
-list_species <- c(
-"Aleutian Skate",
-"Big Skate",
-"Longnose Skate",
-"Sandpaper Skate",
-"North Pacific Spiny Dogfish",
-"Brown Cat Shark",
-"Spotted Ratfish",
-
-"Pacific Tomcod",
-"Walleye Pollock",
-"Pacific Cod",
-"Lingcod",
-"Pacific Hake",
-"Buffalo Sculpin",
-"Cabezon",
-#"Pacifc Staghorn Sculpin",
-"Red Irish Lord",
-"Sturgeon Poacher",
-"Bigmouth Sculpin",
-"Kelp Greenling",
-"Threadfin Sculpin",
-"Bigfin Eelpout",
-"Black Eelpout",
-"Wattled Eelpout",
-"Blackbelly Eelpout",
-"Shiner Perch",
-"Snake Prickleback",
-# "Wolf Eel"
-"Pacific Sand Lance",
-"Pacific Herring",
-"Sablefish",
-"Bocaccio",
-"Canary Rockfish",
-"Chilipepper",
-"Copper Rockfish", # small sample
-"Darkblotched Rockfish", # need predictions still
-"Dusky Rockfish",
-"Greenstriped Rockfish",
-"Harlequin Rockfish",
-"Pacific Ocean Perch",
-"Pygmy Rockfish",
-"Quillback Rockfish",
-"Redbanded Rockfish",
-"Redstripe Rockfish",
-"Rosethorn Rockfish",
-"Rougheye/Blackspotted Rockfish Complex",
-"Sharpchin Rockfish",
-"Shortbelly Rockfish", # small sample
-"Shortraker Rockfish",
-"Silvergray Rockfish",
-"Splitnose Rockfish",
-"Widow Rockfish", # schooling
-"Yellowmouth Rockfish",
-"Yellowtail Rockfish", # schooling
-"Yelloweye Rockfish",
-"Longspine Thornyhead",
-"Shortspine Thornyhead",
-
-"Pacific Halibut",
-"Arrowtooth Flounder",
-"Butter Sole",
-"C-O Sole",
-"Curlfin Sole",
-"Dover Sole",
-"English Sole",
-"Flathead Sole",
-"Pacific Sanddab",
-"Petrale Sole",
-"Rex Sole",
-"Southern Rock Sole",
-"Slender Sole",
-"Sand Sole",
-"Starry Flounder"
-)
+# # full list from 2 years ago
+# list_species <- c(
+# "Aleutian Skate",
+# "Big Skate",
+# "Longnose Skate",
+# "Sandpaper Skate",
+# "North Pacific Spiny Dogfish",
+# "Brown Cat Shark",
+# "Spotted Ratfish",
+#
+# "Pacific Tomcod",
+# "Walleye Pollock",
+# "Pacific Cod",
+# "Lingcod",
+# "Pacific Hake",
+# "Buffalo Sculpin",
+# "Cabezon",
+# #"Pacifc Staghorn Sculpin",
+# "Red Irish Lord",
+# "Sturgeon Poacher",
+# "Bigmouth Sculpin",
+# "Kelp Greenling",
+# "Threadfin Sculpin",
+# "Bigfin Eelpout",
+# "Black Eelpout",
+# "Wattled Eelpout",
+# "Blackbelly Eelpout",
+# "Shiner Perch",
+# "Snake Prickleback",
+# # "Wolf Eel"
+# "Pacific Sand Lance",
+# "Pacific Herring",
+# "Sablefish",
+# "Bocaccio",
+# "Canary Rockfish",
+# "Chilipepper",
+# "Copper Rockfish", # small sample
+# "Darkblotched Rockfish", # need predictions still
+# "Dusky Rockfish",
+# "Greenstriped Rockfish",
+# "Harlequin Rockfish",
+# "Pacific Ocean Perch",
+# "Pygmy Rockfish",
+# "Quillback Rockfish",
+# "Redbanded Rockfish",
+# "Redstripe Rockfish",
+# "Rosethorn Rockfish",
+# "Rougheye/Blackspotted Rockfish Complex",
+# "Sharpchin Rockfish",
+# "Shortbelly Rockfish", # small sample
+# "Shortraker Rockfish",
+# "Silvergray Rockfish",
+# "Splitnose Rockfish",
+# "Widow Rockfish", # schooling
+# "Yellowmouth Rockfish",
+# "Yellowtail Rockfish", # schooling
+# "Yelloweye Rockfish",
+# "Longspine Thornyhead",
+# "Shortspine Thornyhead",
+#
+# "Pacific Halibut",
+# "Arrowtooth Flounder",
+# "Butter Sole",
+# "C-O Sole",
+# "Curlfin Sole",
+# "Dover Sole",
+# "English Sole",
+# "Flathead Sole",
+# "Pacific Sanddab",
+# "Petrale Sole",
+# "Rex Sole",
+# "Southern Rock Sole",
+# "Slender Sole",
+# "Sand Sole",
+# "Starry Flounder"
+# )

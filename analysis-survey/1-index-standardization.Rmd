@@ -145,17 +145,12 @@ if (region == "QCS & WCVI") {
 
 if (region == "HBLL outside surveys") {
   nd_N <- gfplot::hbll_n_grid$grid %>% mutate(survey = "HBLL OUT N")
-  d_N <- all_data$survey_sets %>% filter(survey_abbrev == "HBLL OUT N") 
-  timeN <- sort(unique(d_N$year))
-  nd_N2 <- do.call("rbind", replicate(length(timeN), nd_N, simplify = FALSE))
-  nd_N2[["year"]] <- rep(timeN, each = nrow(nd_N))
-  
   nd_S <- gfplot::hbll_s_grid$grid %>% mutate(survey = "HBLL OUT S")
-  d_S <- all_data$survey_sets %>% filter(survey_abbrev == "HBLL OUT S") 
-  timeS <- sort(unique(d_S$year))
-  nd_S2 <- do.call("rbind", replicate(length(timeS), nd_S, simplify = FALSE))
-  nd_S2[["year"]] <- rep(timeS, each = nrow(nd_S))
-  nd_all <- bind_rows(nd_N2, nd_S2) %>% rename(longitude = X, latitude = Y) %>% mutate(area = 4)
+  nd_all1 <- bind_rows(nd_N, nd_S) %>% rename(longitude = X, latitude = Y) %>% mutate(area = 4)
+  d <- all_data$survey_sets %>% filter(survey_abbrev %in% c("HBLL OUT S", "HBLL OUT N")) 
+  time <- sort(unique(d$year))
+  nd_all <- do.call("rbind", replicate(length(time), nd_all1, simplify = FALSE))
+  nd_all[["year"]] <- rep(time, each = nrow(nd_all1))
   nd_all <- sdmTMB::add_utm_columns(nd_all, c("longitude", "latitude"))
   survey <- c("HBLL OUT N", "HBLL OUT S")
   type <- "hbll"
@@ -183,6 +178,8 @@ if (type == "trawl"){
   d$density <- d[[units]] * 1000000 # change from per m2 to per km2
   family <- tweedie(link = 'log')
 } else {
+  d <- all_data$survey_sets %>%
+  filter(survey_abbrev %in% survey) 
   units <- "density_ppkm2"
   d$density <- d[[units]] # change from per m2 to per km2
   family <- tweedie(link = 'log')
@@ -288,6 +285,16 @@ if (exists("m")) {
       filter(depth < depth_limit)
     nd <- na.omit(nd)
     nd$year <- as.integer(nd$year)
+    # nd_sum <- nd %>% group_by(year) %>% summarise()
+    # nd_sum <- melt(nd, measure.vars=c("year","survey"))
+
+    samples <- data %>% 
+      count(year, survey_abbrev) %>% 
+      group_by(year) %>%
+      mutate(freq = n / sum(n), total = sum(n)) %>% 
+      filter(n == max(n)) %>% 
+      select(year, dominant_surv = survey_abbrev, total, freq)
+        
 
     p <- predict(m, newdata = nd, nsim = 200)
     # saveRDS(p, file = paste0("data/p-", spp, "-", ssid_string, name, ".rds"))
@@ -302,7 +309,8 @@ if (exists("m")) {
       ssid_string = ssid_string, 
       max_grad = max(m$gradients)
       )
-    saveRDS(i, paste0("data/i-", spp, "-", ssid_string, name, ".rds"))
+    i <- left_join(i, samples)
+    saveRDS(i, paste0("indices/i-", spp, "-", ssid_string, name, ".rds"))
   }
   max(m$gradients)
 }
@@ -310,7 +318,7 @@ if (exists("m")) {
 
 ```{r}
 try({
-  i <- readRDS(paste0("data/i-", spp, "-", ssid_string, name, ".rds"))
+  i <- readRDS(paste0("indices/i-", spp, "-", ssid_string, name, ".rds"))
 })
 
 if (exists("i")) {
@@ -319,7 +327,7 @@ if (exists("i")) {
     geom_line() +
     geom_ribbon(aes(ymin = lwr / 1000, ymax = upr / 1000), alpha = 0.4) +
     coord_cartesian(ylim = c(0, ifelse(
-      max(i$upr) < 5 * max(i$est), max(i$upr) / 1000, max(i$est) * 2 / 1000
+      max(i$upr) < 5 * max(i$est), max(i$upr) / 1000, max(i$est) * 3 / 1000
     ))) +
     ylab("Biomass (tonnes)") +
     ggtitle(paste(species), subtitle = paste0(region, " (", surv_string, ")"))
