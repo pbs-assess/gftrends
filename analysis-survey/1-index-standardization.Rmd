@@ -1,0 +1,232 @@
+---
+title: "Spatiotemporal models of `r paste(params$species)` biomass with RW"
+author: "Philina English"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+    species: "Redbanded Rockfish"
+    # species: "North Pacific Spiny Dogfish"
+    # species: "Pacific Ocean Perch"
+    # species: "Bocaccio"
+    # species: "Yelloweye Rockfish"
+    # species: "Pacific Sand Lance"
+    # species: "Pacific Herring"
+    region: "All synoptic surveys"
+    # region: "Both even year surveys"
+    start_year: 2003
+    name: "-rw-no-covs" # covariate string used to name model rds
+    update_model: FALSE # TRUE will over write past models; will alway attempt a model if none exists
+    update_index: TRUE
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(
+  fig.width = 11, fig.height = 8.5,
+  # fig.path=paste0("figs/", spp, "/"),
+  echo = FALSE, warning = FALSE, message = FALSE
+)
+library(dplyr)
+library(ggplot2)
+library(gfplot)
+library(gfdata)
+library(sdmTMB)
+
+# options(scipen = 999)
+theme_set(
+  gfplot::theme_pbs(base_size = 14)
+)
+
+# clean up environment just in case
+rm(m)
+rm(p)
+rm(i)
+```
+
+```{r params}
+species <- params$species
+region <- params$region
+name <- params$name
+update_model <- params$update_model
+update_index <- params$update_index
+
+paste("region =", region)
+paste("model label =", name)
+```
+
+```{r, message=FALSE, warning=FALSE}
+spp <- gsub(" ", "-", gsub("\\/", "-", tolower(species)))
+
+if (region == "Both odd year surveys") {
+  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  survey <- c("SYN QCS", "SYN HS")
+  model_ssid <- c(1, 3)
+  ssid_string <- paste0(model_ssid, collapse = "n")
+  years <- NULL
+}
+
+if (region == "West Coast Vancouver Island") {
+  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  survey <- c("SYN WCVI")
+  model_ssid <- c(4)
+  ssid_string <- paste0(model_ssid, collapse = "n")
+  years <- NULL
+}
+
+if (region == "West Coast Haida Gwaii") {
+  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  survey <- c("SYN WCHG")
+  model_ssid <- c(16)
+  ssid_string <- paste0(model_ssid, collapse = "n")
+  years <- NULL
+}
+
+if (region == "All synoptic surveys") {
+  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  family <- tweedie(link = 'log')
+  survey <- c("SYN QCS", "SYN HS", "SYN WCVI", "SYN WCHG")
+  units <- "density_kgpm2"
+  model_ssid <- c(1, 3, 4, 16)
+  ssid_string <- paste0(model_ssid, collapse = "n")
+  years <- NULL
+}
+
+if (region == "HBLL outside surveys") {
+  # need a grid for HBLL outside
+  # nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  # family <- nbinom2(link = 'log') # could use this instead, but would need to add offset
+  family <- tweedie(link = 'log')
+  survey <- c("HBLL OUT N", "HBLL OUT S")
+  units <- "density_pcpm2"
+  model_ssid <- c(22, 36)
+  years <- NULL
+}
+
+if (region == "HBLL inside surveys") {
+  # need a grid for HBLL outside
+  # nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  # family <- nbinom2(link = 'log') # could use this instead, but would need to add offset
+  family <- tweedie(link = 'log')
+  survey <- c("HBLL IN N", "HBLL IN S")
+  units <- "density_pcpm2"
+  model_ssid <- c(39, 40)
+  years <- NULL
+}
+
+```
+
+
+Load and filter data 
+```{r}
+all_data <- readRDS(paste0("~/github/dfo/gfsynopsis/report/data-cache/", spp, ".rds"))
+d <- all_data$survey_sets %>%
+  filter(survey_abbrev %in% survey) %>%
+  filter(year >= params$start_year)
+d$density <- d[[units]] * 1000000 # change from per m2 to per km2
+positive_sets <- filter(d, density != 0)
+prop_pos <- round(nrow(positive_sets) / nrow(d), digits = 3)
+data <- d %>% filter(survey_abbrev %in% unique(positive_sets$survey_abbrev))
+ssid_string <- paste0( unique(data$survey_series_id.x), collapse = "n")
+surv_string <- paste0( unique(data$survey_abbrev), collapse = ", ")
+```
+
+# Check if a model already exists
+```{r}
+try({
+  m <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
+})
+if (!exists("m")) update_model <- TRUE
+```
+
+Make mesh
+```{r}
+data <- sdmTMB::add_utm_columns(data, c("longitude", "latitude"))
+
+if (prop_pos < 0.1) {
+  spde <- make_mesh(data, xy_cols = c("X", "Y"), cutoff = 25)
+  plot(spde)
+} else {
+  spde <- make_mesh(data, xy_cols = c("X", "Y"), cutoff = 15)
+  plot(spde)
+}
+```
+
+Run sdmTMB model
+
+```{r}
+if (update_model) {
+  tictoc::tic()
+  m <- sdmTMB(
+    density ~ 1,
+    data,
+    mesh = spde,
+    time = "year",
+    family = family,
+    spatial = "on",
+    spatiotemporal = "RW",
+    # reml = TRUE,
+    silent = TRUE
+  )
+
+  saveRDS(m, file = paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
+  tictoc::toc()
+}
+```
+
+```{r}
+try({
+  m <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
+})
+if (exists("m")) {
+  m
+}
+```
+
+Check depths of positive sets
+```{r}
+hist(data$depth_m)
+hist(positive_sets$depth_m)
+depth_limit <- ifelse(
+  max(positive_sets$depth_m, na.rm = T) > 500, max(positive_sets$depth_m, na.rm = T), max(positive_sets$depth_m, na.rm = T) + 100
+  )
+```
+
+Get simulated index
+```{r}
+if (exists("m") & update_index) {
+  if (max(m$gradients) < 0.001) {
+    nd <- nd_all %>%
+      filter(survey %in% unique(positive_sets$survey_abbrev)) %>%
+      filter(year %in% unique(m$data$year)) %>%
+      filter(depth < depth_limit)
+    nd <- na.omit(nd)
+    nd$year <- as.integer(nd$year)
+
+    p <- predict(m, newdata = nd, nsim = 200)
+    # saveRDS(p, file = paste0("data/p-", spp, "-", ssid_string, name, ".rds"))
+
+    i <- get_index_sims(p, area = nd$area) 
+    i <- i %>% mutate(max_grad = max(m$gradients))
+    saveRDS(i, paste0("data/i-", spp, "-", ssid_string, name, ".rds"))
+  }
+  max(m$gradients)
+}
+```
+
+```{r}
+try({
+  i <- readRDS(paste0("data/i-", spp, "-", ssid_string, name, ".rds"))
+})
+
+if (exists("i")) {
+  g <- ggplot(i, aes(year, est / 1000)) +
+    geom_line() +
+    geom_ribbon(aes(ymin = lwr / 1000, ymax = upr / 1000), alpha = 0.4) +
+    coord_cartesian(ylim = c(0, ifelse(
+      max(i$upr) < 5 * max(i$est), max(i$upr) / 1000, max(i$est) * 2 / 1000
+    ))) +
+    ylab("Biomass (tonnes)") +
+    ggtitle(paste(species), subtitle = paste(surv_string))
+  ggsave(paste0("figs/", spp, "-", ssid_string, name, ".png"), height = 4, width = 6)
+  g
+}
+```
