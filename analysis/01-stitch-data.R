@@ -104,7 +104,7 @@ g <- out %>%
   facet_wrap(~stock) +
   scale_y_log10() +
   geom_hline(yintercept = 1, lty = 2) +
-  coord_cartesian(xlim = c(1950, substr(Sys.Date(), 1, 4))) +
+  coord_cartesian(xlim = c(1950, as.numeric(substr(Sys.Date(), 1, 4)))) +
   ylab("B status ratio") +
   theme(axis.title.x = element_blank())
 print(g)

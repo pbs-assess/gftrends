@@ -8,9 +8,10 @@ source("analysis/utils.R")
 source("analysis/stock_df.R")
 dir.create("figs", showWarnings = FALSE)
 
-m <- readRDS("data-generated/b-ratio-fits.rds")
-d <- readRDS("data-generated/b-ratio-fits-data.rds")
+m <- readRDS("data-generated/b-ratio-fits-2022.rds")
+d <- readRDS("data-generated/b-ratio-fits-data-2022.rds")
 dat <- readRDS("data-generated/b-status-dat.rds")
+dm <- readRDS("data-generated/all-mcmc.rds")
 
 plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.95,
   # .type = c("Rockfish", "Flatfish", "Cod", "Cod allies"), # in case you want a subset
@@ -22,59 +23,36 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
       last_status = exp({{col_log_mean}})[n()]
     ) %>%
     ungroup() %>%
-    # mutate(stock = gsub("_", " ", stock)) %>%
     left_join(stock_df)
-
-  # last_dat <- filter(last_dat, type %in% .type)
 
   stock_ids <- distinct(select(.fitted_dat, stock)) %>%
     arrange(stock) %>%
     mutate(j = seq_len(n()))
   year_ids <- distinct(select(.fitted_dat, year)) %>%
-    filter(year >= 1950, year <= 2020) %>%
+    filter(year >= 1950) %>%
     arrange(year) %>%
     mutate(.t = seq(1, n()))
 
   .y_true <- left_join(.y_true, stock_ids) %>% left_join(year_ids)
-
-  # .y_true <- mutate(.y_true, stock = gsub("_", " ", stock)) %>%
   .y_true <- .y_true %>%
     left_join(stock_df)
 
-  # .y_true <- filter(.y_true, type %in% .type)
   .y_true <- left_join(.y_true, distinct(select(last_dat, stock_clean, last_status)))
 
   x_t <- x_t %>%
     mutate(.value = exp(.value)) %>%
     mutate(year = .t + 1949)
 
-  # summarized <- x_t %>%
-  #   mutate(.value = exp(.value)) %>%
-  #   mutate(year = .t + 1949) %>%
-  #   group_by(year) %>%
-  #   summarize(
-  #     lwr2 = quantile(.value, 0.975),
-  #     upr2 = quantile(.value, 0.025),
-  #     lwr1 = quantile(.value, 0.25),
-  #     upr1 = quantile(.value, 0.75),
-  #     lwr = quantile(.value, 0.1),
-  #     upr = quantile(.value, 0.9),
-  #     med = median(.value), .groups = "drop"
-  #   ) %>%
   set.seed(1234)
   .samples <- sample(unique(x_t$.draw), 100L)
   x_t %>%
     filter(.draw %in% .samples) %>%
     ggplot(aes(year, .value)) +
     geom_line(aes(y = .value, group = .draw), colour = "grey10", alpha = 0.04) +
-    # geom_ribbon(aes(ymin = lwr2, ymax = upr2), fill = "grey70", alpha = 0.6) +
-    # geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "grey55", alpha = 0.6) +
-    # geom_ribbon(aes(ymin = lwr1, ymax = upr1), fill = "grey40", alpha = 0.6) +
     geom_line(mapping = aes(x = year, y = exp(.value), group = .draw,
       colour = last_status
     ),
       alpha = 0.3, lwd = 0.15, data = .y_true, inherit.aes = FALSE) +
-    # geom_line(lwd = 0.7, alpha = 0.75) +
     geom_ribbon(aes(
       x = year,
       y = exp({{col_log_mean}}),
@@ -89,39 +67,26 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
       y = exp({{col_log_mean}}),
       colour = last_status
     ), alpha = 0.9, data = last_dat, lwd = 0.6) +
-    # scale_colour_gradient2(
-    #   low = "red", high = "green", mid="blue",
-    #   # midpoint = mean(.y_true$last_status)
-    #   midpoint = 1
-    #   ) +
-    # scale_fill_gradient2(
-    #   low = "red", high = "green", mid="blue",
-    #   # midpoint = mean(.y_true$last_status)
-    #   midpoint = 1
-    #   ) +
     scale_colour_viridis_c(direction = 1, option = "D", end = 0.82) +
     scale_fill_viridis_c(direction = 1, option = "D", end = 0.82) +
     ggsidekick::theme_sleek() +
-    coord_cartesian(xlim = c(1950, 2020), ylim = ylim, expand = FALSE) +
+    coord_cartesian(xlim = c(1950, 2022), ylim = ylim, expand = FALSE) +
     geom_hline(yintercept = 1, lty = 2, col = "grey40") +
     # scale_y_log10() +
-    facet_wrap(~stock_clean, ncol = 3) +
+    facet_wrap(~stock_clean, ncol = 5L) +
     ylab(ylab) +
     theme(
       axis.title.x = element_blank()
-      # panel.grid.major = element_line(colour = "grey92"),
-      # panel.grid.minor = element_line(colour = "grey98")
     ) +
     labs(fill = "Last\nstatus", colour = "Last\nstatus") +
-    guides(fill = FALSE, colour = FALSE) +
+    guides(fill = "none", colour = "none") +
     theme(plot.margin = margin(t = 4, r = 13, b = 1, l = 2, unit = "pt"))
-  # theme(legend.position = "none")
 }
 
 x_t <- lapply(m, function(.x) tidybayes::gather_draws(.x, x[.t]))
 y_true <- lapply(m, function(.x) {
-  result <- tidybayes::gather_draws(.x, y_true[.t, j], n = 30L)
-  filter(result, .value != 0) # fake
+  result <- tidybayes::gather_draws(.x, y_true[.t, j], ndraws = 30L)
+  dplyr::filter(result, .value != 0) # fake
 })
 
 # # change order of facets to group more like species together
@@ -143,7 +108,7 @@ stock_df <- stock_df %>% mutate(stock_clean = factor(stock_clean,
 
 dat2 <- dm %>%
   group_by(species, region) %>%
-  filter(year <= 2020) %>%
+  filter(year <= 2021) %>%
   filter(year == max(year)) %>%
   # sample_n(2000L, replace = TRUE) %>%
   mutate(
@@ -253,5 +218,5 @@ unique(data_plot$ratio)
 wrap_plots(g1, g2) +
   plot_layout(ncol = 2, widths = c(1, 2))
 
-ggsave("figs/combined.pdf", width = 10, height = 8)
+ggsave("figs/combined-2022.pdf", width = 10, height = 8)
 
