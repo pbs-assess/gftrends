@@ -6,7 +6,7 @@ dir.create(file.path(here::here("analysis-survey", "figs")))
 dir.create(file.path(here::here("analysis-survey", "indices")))
 
 dir.create(file.path(here::here("analysis-survey", "html")))
-env <- new.env() # parent = baseenv()
+
 
 # initial coastwide trawl models
 list_regions <- c("Coast-wide trawl surveys")
@@ -114,7 +114,7 @@ list_species <- c(
 
 # also need to come up with a list of other species of interest...
 
-
+env <- new.env() # parent = baseenv()
 for (r_h in seq_along(list_regions)) {
   for (spp_i in seq_along(list_species)) {
     spp <- gsub(" ", "-", gsub("\\/", "-", tolower(list_species[spp_i])))

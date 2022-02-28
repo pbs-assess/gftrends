@@ -40,4 +40,29 @@ ggplot(all_indices, aes(year, est / 1000), group = region, fill = type, colour =
   ylab("Biomass (tonnes)") +
   facet_wrap(~species, scales = "free")
 
-ggsave("analysis-survey/figs/pooled_survey_indices.pdf", width = 14, height = 8)
+ggsave("analysis-survey/figs/all_survey_indices.pdf", width = 14, height = 8)
+
+i_bc <- filter(all_indices, region %in% c("Coast-wide trawl surveys", "HBLL outside surveys"))
+
+
+ggplot(i_bc, aes(year, est / 1000), group = region, fill = type, colour = type) +
+  geom_line(aes(linetype = region, group = region, colour = type)) +
+  geom_ribbon(aes(ymin = lwr / 1000, ymax = upr / 1000,
+                  group = region, fill = type), alpha = 0.4) +
+  ylab("Biomass (tonnes)") +
+  facet_wrap(~species, scales = "free")
+
+ggsave("analysis-survey/figs/coastwide_survey_indices.pdf", width = 14, height = 8)
+
+
+i_stocks <- filter(all_indices, !(region %in% c("Coast-wide trawl surveys", "HBLL outside surveys")))
+
+ggplot(i_stocks, aes(year, est / 1000), group = region, fill = region, colour = region) +
+  geom_line(aes(linetype = region, group = region, colour = region)) +
+  geom_ribbon(aes(ymin = lwr / 1000, ymax = upr / 1000,
+                  group = region, fill = region), alpha = 0.4) +
+  ylab("Biomass (tonnes)") +
+  facet_grid(rows=vars(species), scales = "free")
+
+ggsave("analysis-survey/figs/stock_survey_indices.pdf", width = 14, height = 8)
+

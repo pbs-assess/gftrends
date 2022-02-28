@@ -8,12 +8,13 @@ params:
     # species: "Arrowtooth Flounder"
     # species: "North Pacific Spiny Dogfish"
     # species: "Pacific Ocean Perch"
-    species: "Bocaccio"
-    # species: "Yelloweye Rockfish"
+    # species: "Bocaccio"
+    species: "Yelloweye Rockfish"
     # species: "Pacific Sand Lance"
     # species: "Pacific Herring"
     # region: "Coast-wide trawl surveys"
     region: "HBLL outside surveys"
+    # region: "HBLL inside surveys"
     name: "-rw-no-covs" # covariate string used to name model rds
     update_model: FALSE # TRUE will over write past models; will alway attempt a model if none exists
     update_index: TRUE
@@ -55,7 +56,6 @@ paste("model label =", name)
 Load data
 ```{r, message=FALSE, warning=FALSE}
 spp <- gsub(" ", "-", gsub("\\/", "-", tolower(species)))
-all_data <- readRDS(paste0("~/github/dfo/gfsynopsis/report/data-cache/", spp, ".rds"))
 
 if (region == "Both odd year trawl surveys") {
   nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
@@ -144,20 +144,24 @@ if (region == "QCS & WCVI") {
 }
 
 if (region == "HBLL outside surveys") {
-  nd_all <- readRDS(paste0("data/nd_hbll_outside_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(paste0("data/nd_hbll_outside_index.rds")) 
   survey <- c("HBLL OUT N", "HBLL OUT S")
   type <- "hbll"
   model_ssid <- c(22, 36)
 }
 
 if (region == "HBLL inside surveys") {
-  # need a grid for HBLL outside
-  # nd_all <- readRDS(paste0("data/nd_hbll_inside_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(paste0("data/nd_hbll_inside_index.rds")) 
   survey <- c("HBLL IN N", "HBLL IN S")
   type <- "hbll"
   model_ssid <- c(39, 40)
 }
 
+if (region != "HBLL inside surveys"){
+all_data <- readRDS(paste0("~/github/dfo/gfsynopsis/report/data-cache/", spp, ".rds"))
+} else {
+# TODO
+}
 
 ```
 
@@ -194,8 +198,8 @@ if (region == "South 5 only (PMFC 5ABC)") {
 positive_sets <- filter(d, density != 0)
 prop_pos <- round(nrow(positive_sets) / nrow(d), digits = 3)
 data <- d %>% filter(survey_abbrev %in% unique(positive_sets$survey_abbrev))
-ssid_string <- paste0( unique(data$survey_series_id.x), collapse = "n")
-surv_string <- paste0( unique(data$survey_abbrev), collapse = ", ")
+ssid_string <- paste0(unique(data$survey_series_id.x), collapse = "n")
+surv_string <- paste0(unique(data$survey_abbrev), collapse = ", ")
 data <- sdmTMB::add_utm_columns(data, c("longitude", "latitude"))
 ```
 
@@ -273,9 +277,13 @@ Get simulated index
 if (exists("m")) {
   if (max(m$gradients) < 0.001 & update_index) {
     nd <- nd_all %>%
-      filter(survey %in% unique(positive_sets$survey_abbrev)) %>%
       filter(year %in% unique(m$data$year)) %>%
       filter(depth < depth_limit)
+    if(type == "trawl"){
+      nd <- filter(nd, survey %in% unique(positive_sets$survey_abbrev)) 
+    } else {
+      nd <- filter(nd, ssid %in% unique(positive_sets$survey_series_id.x)) 
+    }
     nd <- na.omit(nd)
     nd$year <- as.integer(nd$year)
     # nd_sum <- nd %>% group_by(year) %>% summarise()
