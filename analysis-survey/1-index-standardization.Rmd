@@ -158,7 +158,8 @@ if (region == "HBLL inside surveys") {
 }
 
 if (region != "HBLL inside surveys"){
-all_data <- readRDS(paste0("~/github/dfo/gfsynopsis/report/data-cache/", spp, ".rds"))
+all_data <- readRDS("~/github/dfo/gftrends/analysis-survey/data/all-survey-sets-2021.rds") %>% 
+  filter(species_common_name == tolower(species))
 } else {
 # TODO
 }

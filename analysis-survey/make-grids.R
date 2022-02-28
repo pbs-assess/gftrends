@@ -1,6 +1,6 @@
 # grab an example of survey data from synoptic report cache
-all_data <- readRDS(paste0("~/github/dfo/gfsynopsis/report/data-cache/yelloweye-rockfish.rds"))
-
+all_data <- readRDS("~/github/dfo/gftrends/analysis-survey/data/all-survey-sets-2021.rds") %>%
+  filter(species_common_name == tolower("Quillback Rockfish"))
 # grid for whole coast synoptic indices
 grid_locs <- gfplot::synoptic_grid %>%
       dplyr::select(X, Y, depth, survey)
