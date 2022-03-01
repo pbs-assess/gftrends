@@ -6,14 +6,15 @@ output: html_document
 params:
     # species: "Redbanded Rockfish"
     # species: "Arrowtooth Flounder"
-    # species: "North Pacific Spiny Dogfish"
+    species: "North Pacific Spiny Dogfish"
     # species: "Pacific Ocean Perch"
     # species: "Bocaccio"
-    species: "Yelloweye Rockfish"
+    # species: "Yelloweye Rockfish"
     # species: "Pacific Sand Lance"
     # species: "Pacific Herring"
     # region: "Coast-wide trawl surveys"
     region: "HBLL outside surveys"
+    delta_model: TRUE
     # region: "HBLL inside surveys"
     name: "-rw-no-covs" # covariate string used to name model rds
     update_model: FALSE # TRUE will over write past models; will alway attempt a model if none exists
@@ -38,19 +39,19 @@ theme_set(
 )
 
 # clean up environment just in case
-rm(m)
-rm(p)
-rm(i)
+rm(data, d, m, m1, m2, p, i, g)
 ```
 
 ```{r params}
 species <- params$species
 region <- params$region
 name <- params$name
+delta_model <- params$delta_model
 update_model <- params$update_model
 update_index <- params$update_index
 
 paste("region =", region)
+paste("delta =", delta_model)
 paste("model label =", name)
 ```
 Load data
@@ -60,42 +61,42 @@ spp <- gsub(" ", "-", gsub("\\/", "-", tolower(species)))
 if (region == "Both odd year trawl surveys") {
   nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN QCS", "SYN HS")
-  type <- "trawl"
+  type <- "Synoptic trawl"
   model_ssid <- c(1, 3)
 }
 
 if (region == "QCS only") {
   nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN QCS")
-  type <- "trawl"
+  type <- "Synoptic trawl"
   model_ssid <- c(1)
 }
 
 if (region == "HS only") {
   nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN HS")
-  type <- "trawl"
+  type <- "Synoptic trawl"
   model_ssid <- c(3)
 }
 
 if (region == "WCVI only") {
   nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN WCVI")
-  type <- "trawl"
+  type <- "Synoptic trawl"
   model_ssid <- c(4)
 }
 
 if (region == "WCHG only") {
   nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN WCHG")
-  type <- "trawl"
+  type <- "Synoptic trawl"
   model_ssid <- c(16)
 }
 
 if (region == "Coast-wide trawl surveys") {
   nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN QCS", "SYN HS", "SYN WCVI", "SYN WCHG")
-  type <- "trawl"
+  type <- "Synoptic trawl"
   model_ssid <- c(1, 3, 4, 16)
 }
 
@@ -105,7 +106,7 @@ if (region == "North (PMFC 5DE)") {
   nd_5E <- filter(nd_all, survey == "SYN WCHG") 
   nd_all <- bind_rows(nd_5D, nd_5E)
   survey <- c("SYN HS", "SYN WCHG")
-  type <- "trawl"
+  type <- "Synoptic trawl"
   model_ssid <- c(3, 16)
 }
 
@@ -115,7 +116,7 @@ if (region == "South (PMFC 3CD5ABC)") {
   nd_south <- filter(nd_all, survey %in% c("SYN QCS", "SYN WCVI")) 
   nd_all <- bind_rows(nd_5C, nd_south)
   survey <- c("SYN HS", "SYN QCS", "SYN WCVI")
-  type <- "trawl"
+  type <- "Synoptic trawl"
   model_ssid <- c(1, 3, 4)
 }
 
@@ -125,35 +126,35 @@ if (region == "South 5 only (PMFC 5ABC)") {
   nd_QCS <- filter(nd_all, survey %in% c("SYN QCS")) 
   nd_all <- bind_rows(nd_5C, nd_QCS)
   survey <- c("SYN HS", "SYN QCS")
-  type <- "trawl"
+  type <- "Synoptic trawl"
   model_ssid <- c(1, 3)
 }
 
 if (region == "HS & WCHG") {
   nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN HS", "SYN WCHG")
-  type <- "trawl"
+  type <- "Synoptic trawl"
   model_ssid <- c(3, 16)
 }
 
 if (region == "QCS & WCVI") {
   nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN QCS", "SYN WCVI")
-  type <- "trawl"
+  type <- "Synoptic trawl"
   model_ssid <- c(1, 4)
 }
 
 if (region == "HBLL outside surveys") {
   nd_all <- readRDS(paste0("data/nd_hbll_outside_index.rds")) 
   survey <- c("HBLL OUT N", "HBLL OUT S")
-  type <- "hbll"
+  type <- "HBLL (outside)"
   model_ssid <- c(22, 36)
 }
 
 if (region == "HBLL inside surveys") {
   nd_all <- readRDS(paste0("data/nd_hbll_inside_index.rds")) 
   survey <- c("HBLL IN N", "HBLL IN S")
-  type <- "hbll"
+  type <- "HBLL (inside)"
   model_ssid <- c(39, 40)
 }
 
@@ -169,14 +170,14 @@ all_data <- readRDS("~/github/dfo/gftrends/analysis-survey/data/all-survey-sets-
 
 Filter data 
 ```{r}
-if (type == "trawl"){
-  d <- all_data$survey_sets %>%
+if (type == "Synoptic trawl"){
+  d <- all_data %>%
   filter(survey_abbrev %in% survey) 
   units <- "density_kgpm2"  
   d$density <- d[[units]] * 1000000 # change from per m2 to per km2
   family <- tweedie(link = 'log')
 } else {
-  d <- all_data$survey_sets %>%
+  d <- all_data %>%
   filter(survey_abbrev %in% survey) 
   units <- "density_ppkm2"
   d$density <- d[[units]] # change from per m2 to per km2
@@ -207,10 +208,13 @@ data <- sdmTMB::add_utm_columns(data, c("longitude", "latitude"))
 
 ```{r}
 # Check if a model already exists
-try({
-  m <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
-})
-if (!exists("m")) update_model <- TRUE
+if (delta_model) {
+  try({ m2 <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, "-gamma.rds"))})
+  if (!exists("m2")) update_model <- TRUE
+}else{  
+  try({ m <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, ".rds"))})
+  if (!exists("m")) update_model <- TRUE
+}
 ```
 
 Make mesh
@@ -233,6 +237,52 @@ Run sdmTMB model
 
 ```{r}
 if (update_model) {
+  if (delta_model) {
+  tictoc::tic()
+  data <- data %>% mutate(present = ifelse(density > 0, 1, 0))  
+  
+  m1 <- sdmTMB(
+    present ~ 1,
+    data,
+    mesh = spde,
+    time = "year",
+    family = binomial(),
+    spatial = "on",
+    spatiotemporal = "RW",
+    # reml = TRUE,
+    silent = TRUE
+  )
+
+  saveRDS(m1, file = paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
+    
+  data2 <- dplyr::filter(data, density > 0)
+  if (prop_pos < 0.1) {
+    spde2 <- make_mesh(data2, xy_cols = c("X", "Y"), cutoff = 25)
+  } else {
+    if (prop_pos < 0.7) {
+      spde2 <- make_mesh(data2, xy_cols = c("X", "Y"), cutoff = 10)
+    } else {
+      spde2 <- make_mesh(data2, xy_cols = c("X", "Y"), cutoff = 15)
+    }
+  }
+  
+  m2 <- sdmTMB(
+    density ~ 1,
+    data2,
+    mesh = spde2,
+    time = "year",
+    family = Gamma(link = "log"),
+    spatial = "on",
+    spatiotemporal = "RW",
+    # reml = TRUE,
+    silent = TRUE
+  )
+
+  saveRDS(m2, file = paste0("models/m-", spp, "-", ssid_string, name, "-gamma.rds"))
+  tictoc::toc()
+  
+  } else {
+  
   tictoc::tic()
   m <- sdmTMB(
     density ~ 1,
@@ -248,20 +298,40 @@ if (update_model) {
 
   saveRDS(m, file = paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
   tictoc::toc()
+  }
 }
 ```
 
 ```{r}
-try({
-  m <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
-})
-if (max(m$gradients) > 0.001) {
-  m <- run_extra_optimization(m)
-  saveRDS(m, file = paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
-}
-if (exists("m")) {
-  m
-}
+if (delta_model) {
+    try({ m1 <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
+    if (max(m1$gradients) > 0.001) {
+      m1 <- run_extra_optimization(m1, newton_loops = 1L, nlminb_loops = 0L)
+      saveRDS(m1, file = paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
+    }
+    })
+    try({ m2 <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, "-gamma.rds"))
+    if (max(m2$gradients) > 0.001) {
+      m2 <- run_extra_optimization(m2, newton_loops = 1L, nlminb_loops = 0L)
+      saveRDS(m2, file = paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
+    }
+    })
+  } else {
+  
+    try({ m <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
+    if (max(m$gradients) > 0.001) {
+      m <- run_extra_optimization(m, newton_loops = 1L, nlminb_loops = 0L)
+      saveRDS(m, file = paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
+    }
+    })
+  }  
+
+try({m1})
+try({max(m1$gradients)})
+try({m2})
+try({max(m2$gradients)})
+try({m})
+try({max(m$gradients)})
 ```
 
 Check depths of positive sets
@@ -275,31 +345,50 @@ depth_limit <- ifelse(
 
 Get simulated index
 ```{r}
+nd <- nd_all %>%
+    filter(year %in% unique(data$year)) %>%
+    filter(depth < depth_limit)
+  if(type == "Synoptic trawl"){
+    nd <- filter(nd, survey %in% unique(positive_sets$survey_abbrev)) 
+  } else {
+    nd <- filter(nd, ssid %in% unique(positive_sets$survey_series_id.x)) 
+  }
+  nd <- na.omit(nd)
+  nd$year <- as.integer(nd$year)
+  
+samples <- data %>% 
+  count(year, survey_abbrev) %>% 
+  group_by(year) %>%
+  mutate(freq = n / sum(n), total = sum(n)) %>% 
+  filter(n == max(n)) %>% 
+  select(year, dominant_surv = survey_abbrev, total, freq)
+
+if (delta_model & exists("m1") & exists("m2")) {
+    if (max(m1$gradients) < 0.001 & max(m2$gradients) < 0.001 & update_index) {
+
+    p1 <- predict(m1, newdata = nd, nsim = 200)
+    p2 <- predict(m2, newdata = nd, nsim = 200)
+    p <- log(plogis(p1) * exp(p2))
+    
+    i <- get_index_sims(p, area = nd$area) 
+
+    i <- i %>% mutate(
+      species = species,
+      type = type, 
+      region = region,
+      surveys = paste(unique(positive_sets$survey_abbrev), collapse = ", "),
+      ssids = paste(unique(positive_sets$survey_series_id.x), collapse = ", "),
+      ssid_string = ssid_string, 
+      max_grad = max(max(m1$gradients),max(m2$gradients))
+      )
+    i <- left_join(i, samples)
+    saveRDS(i, paste0("indices/i-", spp, "-", ssid_string, name, "-delta.rds"))
+  }
+} else {
 if (exists("m")) {
   if (max(m$gradients) < 0.001 & update_index) {
-    nd <- nd_all %>%
-      filter(year %in% unique(m$data$year)) %>%
-      filter(depth < depth_limit)
-    if(type == "trawl"){
-      nd <- filter(nd, survey %in% unique(positive_sets$survey_abbrev)) 
-    } else {
-      nd <- filter(nd, ssid %in% unique(positive_sets$survey_series_id.x)) 
-    }
-    nd <- na.omit(nd)
-    nd$year <- as.integer(nd$year)
-    # nd_sum <- nd %>% group_by(year) %>% summarise()
-    # nd_sum <- melt(nd, measure.vars=c("year","survey"))
-
-    samples <- data %>% 
-      count(year, survey_abbrev) %>% 
-      group_by(year) %>%
-      mutate(freq = n / sum(n), total = sum(n)) %>% 
-      filter(n == max(n)) %>% 
-      select(year, dominant_surv = survey_abbrev, total, freq)
-        
-
+    
     p <- predict(m, newdata = nd, nsim = 200)
-    # saveRDS(p, file = paste0("data/p-", spp, "-", ssid_string, name, ".rds"))
 
     i <- get_index_sims(p, area = nd$area) 
     i <- i %>% mutate(
@@ -314,17 +403,22 @@ if (exists("m")) {
     i <- left_join(i, samples)
     saveRDS(i, paste0("indices/i-", spp, "-", ssid_string, name, ".rds"))
   }
-  max(m$gradients)
+}
 }
 ```
 
 ```{r}
+if (delta_model) {
+try({
+  i <- readRDS(paste0("indices/i-", spp, "-", ssid_string, name, "-delta.rds"))
+})
+} else {
 try({
   i <- readRDS(paste0("indices/i-", spp, "-", ssid_string, name, ".rds"))
 })
+}
 
 if (exists("i")) {
-  rm(g)
   g <- ggplot(i, aes(year, est / 1000)) +
     geom_line() +
     geom_ribbon(aes(ymin = lwr / 1000, ymax = upr / 1000), alpha = 0.4) +
@@ -335,5 +429,5 @@ if (exists("i")) {
     ggtitle(paste(species), subtitle = paste0(region, " (", surv_string, ")"))
   ggsave(paste0("figs/", spp, "-", ssid_string, name, ".png"), height = 4, width = 6)
   g
-}
+} 
 ```

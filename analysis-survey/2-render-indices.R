@@ -11,6 +11,7 @@ dir.create(file.path(here::here("analysis-survey", "html")))
 # initial coastwide trawl models
 list_regions <- c("Coast-wide trawl surveys")
 list_species <- c(
+  "North Pacific Spiny Dogfish",
   "Arrowtooth Flounder",
   "Bocaccio",
   "Sablefish",
@@ -18,18 +19,18 @@ list_species <- c(
   "Silvergray Rockfish",
   "Widow Rockfish",
   "Yellowtail Rockfish",
-  "Yellowmouth Rockfish",
-  "Quillback Rockfish", # outside and WCVI_Inside?
+  "Yellowmouth Rockfish"
+  # "Quillback Rockfish", # outside and WCVI_Inside?
 
   # redo with specific subsets of surveys?
-  "Pacific Ocean Perch", #3CD (WCVI), 5ABC, 5DE (Both odd year + HG)
-  "Pacific Cod", #3CD (WCVI), 5ABCD (Both odd year)
-  "Southern Rock Sole", # 5AB (QCS),  5CD (HS)
+  # "Pacific Ocean Perch", #3CD (WCVI), 5ABC, 5DE (Both odd year + HG)
+  # "Pacific Cod", #3CD (WCVI), 5ABCD (Both odd year)
+  # "Southern Rock Sole", # 5AB (QCS),  5CD (HS)
 
   # redo with N-S split?
-  "Walleye Pollock", # N and S?
-  "Redstripe Rockfish", # N and S?
-  "Rougheye/Blackspotted Rockfish Complex"# N and S?
+  # "Walleye Pollock", # N and S?
+  # "Redstripe Rockfish", # N and S?
+  # "Rougheye/Blackspotted Rockfish Complex"# N and S?
 )
 
 list_regions <- c("WCVI only")
@@ -85,14 +86,15 @@ list_species <- c(
 
 list_regions <- c("HBLL outside surveys")
 list_species <- c(
-  "Arrowtooth Flounder",
-  "Bocaccio",
+  "North Pacific Spiny Dogfish",
+  # "Arrowtooth Flounder",
+  # "Bocaccio",
   "Sablefish",
-  "Shortspine Thornyhead",
-  "Silvergray Rockfish",
-  "Widow Rockfish",
-  "Yellowtail Rockfish",
-  "Yellowmouth Rockfish",
+  # "Shortspine Thornyhead",
+  # "Silvergray Rockfish",
+  # "Widow Rockfish",
+  # "Yellowtail Rockfish",
+  # "Yellowmouth Rockfish",
   ## ones with potentially awkward splits
   # "Walleye Pollock", # N and S?
   # "Pacific Cod", #3CD (WCVI), 5ABCD (Both odd year)
@@ -100,21 +102,23 @@ list_species <- c(
   # "Redstripe Rockfish", # N and S?
   # "Rougheye/Blackspotted Rockfish Complex",# N and S?
   # "Lingcod", #4B = inside
-  "Quillback Rockfish" # outside and WCVI_Inside?
-  # "Yelloweye Rockfish" # 4B = inside
+  "Quillback Rockfish", # outside and WCVI_Inside?
+  "Yelloweye Rockfish" # 4B = inside and outside
 )
 
 
-# list_regions <- c("HBLL inside surveys")
-# list_species <- c(
-# "Lingcod", #4B = inside
-# "Quillback Rockfish", # outside and WCVI_Inside?
-# "yelloweye" # 4B = inside
-# )
+list_regions <- c("HBLL inside surveys")
+list_species <- c(
+  "North Pacific Spiny Dogfish",
+  "Lingcod", #4B = inside
+  "Quillback Rockfish", # outside and WCVI_Inside?
+  "Yelloweye Rockfish" # 4B = inside
+)
 
 # also need to come up with a list of other species of interest...
 
 env <- new.env() # parent = baseenv()
+
 for (r_h in seq_along(list_regions)) {
   for (spp_i in seq_along(list_species)) {
     spp <- gsub(" ", "-", gsub("\\/", "-", tolower(list_species[spp_i])))
@@ -125,11 +129,12 @@ for (r_h in seq_along(list_regions)) {
         params = list(
           species = list_species[spp_i],
           region = list_regions[r_h],
+          delta_model = TRUE,
           update_model = FALSE,
           update_index = TRUE
           # update_index = FALSE
         ),
-        output_file = paste0(spp, name, "-", region_name, ".html"),
+        output_file = paste0(spp, name, "-", region_name, "-delta.html"),
         envir = env
       )
     })
