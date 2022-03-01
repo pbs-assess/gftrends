@@ -13,13 +13,13 @@ list_regions <- c("Coast-wide trawl surveys")
 list_species <- c(
   "North Pacific Spiny Dogfish",
   "Arrowtooth Flounder",
-  "Bocaccio",
+  "Bocaccio", # not quite converging with delta model
   "Sablefish",
   "Shortspine Thornyhead",
   "Silvergray Rockfish",
   "Widow Rockfish",
   "Yellowtail Rockfish",
-  "Yellowmouth Rockfish"
+  "Yellowmouth Rockfish" # not quite converging with delta model
   # "Quillback Rockfish", # outside and WCVI_Inside?
 
   # redo with specific subsets of surveys?

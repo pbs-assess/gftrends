@@ -305,7 +305,7 @@ if (update_model) {
 ```{r}
 if (delta_model) {
     try({ m1 <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
-    if (max(m1$gradients) > 0.001) {
+    if (max(m1$gradients) > 0.005) {
       m1 <- run_extra_optimization(m1, newton_loops = 1L, nlminb_loops = 0L)
       saveRDS(m1, file = paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
     }
@@ -328,10 +328,15 @@ if (delta_model) {
 
 try({m1})
 try({max(m1$gradients)})
+try({tidy(m1, effects = "ran_pars", conf.int = TRUE)})
+
 try({m2})
 try({max(m2$gradients)})
+try({tidy(m2, effects = "ran_pars", conf.int = TRUE)})
+
 try({m})
 try({max(m$gradients)})
+try({tidy(m, effects = "ran_pars", conf.int = TRUE)})
 ```
 
 Check depths of positive sets
