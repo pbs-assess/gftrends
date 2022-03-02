@@ -116,7 +116,7 @@ fit_index <- function(region, species) {
         species = species,
         region = region,
         delta_model = TRUE,
-        update_model = TRUE,
+        update_model = FALSE,
         update_index = TRUE
         # update_index = FALSE
       ),
@@ -125,10 +125,22 @@ fit_index <- function(region, species) {
   })
 }
 
-purrr::pwalk(to_fit[1,,drop=FALSE], fit_index)
+# purrr::pwalk(to_fit[31,,drop=FALSE], fit_index)
+
+set.seed(1)
+i <- sample(seq_len(nrow(to_fit)), nrow(to_fit))
+to_fit <- to_fit[i, ]
+
+if (Sys.info()[["user"]] == "seananderson") {
+  to_fit <- to_fit[1:28, ]
+} else {
+  to_fit <- to_fit[29:nrow(to_fit), ]
+}
 
 future::plan(future::multisession, workers = 4L)
-furrr::future_pwalk(to_fit[1,,drop = FALSE], fit_index)
+options(future.rng.onMisuse = "ignore")
+# furrr::future_pwalk(to_fit[c(36, 26),,drop = FALSE], fit_index)
+furrr::future_pwalk(to_fit, fit_index)
 
 # # full list from 2 years ago
 # list_species <- c(
