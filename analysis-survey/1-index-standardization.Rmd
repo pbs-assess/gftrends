@@ -214,48 +214,40 @@ data <- sdmTMB::add_utm_columns(data, c("longitude", "latitude"), utm_crs = 3260
 
 Make mesh
 ```{r}
-if (prop_pos < 0.1) {
-  cutoff <- 25
-} else {
-  if (prop_pos < 0.7) {
-    cutoff <- 10
-  } else {
-    # update_model <- TRUE
-    cutoff <- 15
-  }
-}
-if(region %in% c("WCHG only")) {
+cutoff <- 10
+if (region %in% c("WCHG only", "HBLL inside surveys")) {
   cutoff <- 5
-  update_model <- TRUE
-}
-if(region %in% c("HBLL inside surveys")) {
-  cutoff <- 10
-  update_model <- TRUE
 }
 
 spde <- make_mesh(data, xy_cols = c("X", "Y"), cutoff = cutoff)
+
 plot(spde)
+
 if (delta_model) {
   data <- data %>% mutate(present = ifelse(density > 0, 1, 0))
   data2 <- dplyr::filter(data, density > 0)
-spde2 <- make_mesh(data2, xy_cols = c("X", "Y"), cutoff = cutoff)
-plot(spde2)
+  spde2 <- make_mesh(data2, xy_cols = c("X", "Y"), cutoff = cutoff)
+  plot(spde2)
 }
 ```
+
 ```{r}
 # Check if a model already exists
-
 dir.create(here::here("data-generated/models"), showWarnings = FALSE)
 if (delta_model) {
-  try({
-    m2 <- readRDS(here::here("data-generated/models/m-", spp, "-", ssid_string, name, "-gamma.rds"))
-  })
-  if (!exists("m2")) update_model <- TRUE
+  f <- here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-gamma.rds"))
+  if (file.exists(f)) {
+    m2 <- readRDS(f)
+  } else {
+    update_model <- TRUE
+  }
 } else {
-  try({
-    m <- readRDS(here::here("data-generated/models/m-", spp, "-", ssid_string, name, ".rds"))
-  })
-  if (!exists("m")) update_model <- TRUE
+  f <- readRDS(here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
+  if (file.exists(f)) {
+    m <- readRDS(f)
+  } else {
+    update_model <- TRUE
+  }
 }
 ```
 
@@ -266,11 +258,10 @@ if (update_model) {
   year_range <- range(data$year)
   all_years <- data.frame(year = year_range[1]:year_range[2])
   missing_years <- anti_join(all_years, data, by = "year") %>%
-     select(year) %>%
-     unique()
+    select(year) %>%
+    unique()
   missing_years <- missing_years$year
-      
-   
+
   if (delta_model) {
     tictoc::tic()
 
@@ -284,11 +275,10 @@ if (update_model) {
       spatial = "on",
       spatiotemporal = "RW",
       anisotropy = anisotropy,
-      # reml = TRUE,
       silent = TRUE
     )
     tictoc::toc()
-    saveRDS(m1, file = here::here("data-generated/models/m-", spp, "-", ssid_string, name, "-presence.rds"))
+    saveRDS(m1, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-presence.rds")))
 
     if (m1$sd_report$pdHess & !m1$bad_eig) {
 
@@ -315,11 +305,10 @@ if (update_model) {
         spatial = "on",
         spatiotemporal = "RW",
         anisotropy = anisotropy,
-        # reml = TRUE,
         silent = TRUE
       )
       tictoc::toc()
-      saveRDS(m2, file = paste0("models/m-", spp, "-", ssid_string, name, "-gamma.rds"))
+      saveRDS(m2, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-gamma.rds")))
     } else {
       delta_model <- FALSE
     }
@@ -330,7 +319,6 @@ if (update_model) {
   }
 
   if (!delta_model) {
- 
     tictoc::tic()
     m <- sdmTMB(
       density ~ 1,
@@ -342,11 +330,10 @@ if (update_model) {
       spatial = "on",
       spatiotemporal = "RW",
       anisotropy = anisotropy,
-      # reml = TRUE,
       silent = TRUE
     )
 
-    saveRDS(m, file = here::here("data-generated/models/m-", spp, "-", ssid_string, name, ".rds"))
+    saveRDS(m, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
     tictoc::toc()
   }
 }
@@ -355,14 +342,14 @@ if (update_model) {
 ```{r}
 # if (delta_model) {
 try({
-  m1 <- readRDS(here::here("data-generated/models/m-", spp, "-", ssid_string, name, "-presence.rds"))
+  m1 <- readRDS(here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-presence.rds")))
   if (max(m1$gradients) > 0.01) {
     m1 <- run_extra_optimization(m1, newton_loops = 1L, nlminb_loops = 0L)
     saveRDS(m1, file = paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
   }
 })
 try({
-  m2 <- readRDS(here::here("data-generated/models/m-", spp, "-", ssid_string, name, "-gamma.rds"))
+  m2 <- readRDS(here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-gamma.rds")))
   if (max(m2$gradients) > 0.01) {
     m2 <- run_extra_optimization(m2, newton_loops = 1L, nlminb_loops = 0L)
     saveRDS(m2, file = paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
@@ -371,7 +358,7 @@ try({
 # } else {
 
 try({
-  m <- readRDS(here::here("data-generated/models/m-", spp, "-", ssid_string, name, ".rds"))
+  m <- readRDS(here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
   if (max(m$gradients) > 0.01) {
     m <- run_extra_optimization(m, newton_loops = 1L, nlminb_loops = 0L)
     saveRDS(m, file = here::here("data-generated/models/m-", spp, "-", ssid_string, name, ".rds"))
@@ -436,7 +423,6 @@ hist(positive_sets$depth_m)
 depth_limit <- ifelse(
   max(positive_sets$depth_m, na.rm = T) > 500, max(positive_sets$depth_m, na.rm = T), max(positive_sets$depth_m, na.rm = T) + 100
 )
-
 ```
 
 Get simulated index
@@ -486,7 +472,7 @@ if (delta_model & exists("m1") & exists("m2")) {
       max_grad = max(max(m1$gradients), max(m2$gradients))
     )
     i <- left_join(i, samples)
-    saveRDS(i, here::here("data-generated/indices/i-", spp, "-", ssid_string, name, "-delta.rds"))
+    saveRDS(i, here::here(paste0("data-generated/indices/i-", spp, "-", ssid_string, name, "-delta.rds")))
   }
 } else {
   if (exists("m")) {
@@ -505,7 +491,7 @@ if (delta_model & exists("m1") & exists("m2")) {
         max_grad = max(m$gradients)
       )
       i <- left_join(i, samples)
-      saveRDS(i, here::here("data-generated/indices/i-", spp, "-", ssid_string, name, ".rds"))
+      saveRDS(i, here::here(paste0("data-generated/indices/i-", spp, "-", ssid_string, name, ".rds")))
     }
   }
 }
@@ -514,11 +500,11 @@ if (delta_model & exists("m1") & exists("m2")) {
 ```{r}
 if (delta_model) {
   try({
-    i <- readRDS(here::here("data-generated/indices/i-", spp, "-", ssid_string, name, "-delta.rds"))
+    i <- readRDS(here::here(paste0("data-generated/indices/i-", spp, "-", ssid_string, name, "-delta.rds")))
   })
 } else {
   try({
-    i <- readRDS(here::here("data-generated/indices/i-", spp, "-", ssid_string, name, ".rds"))
+    i <- readRDS(here::here(paste0("data-generated/indices/i-", spp, "-", ssid_string, name, ".rds")))
   })
 }
 
@@ -541,5 +527,3 @@ if (exists("i")) {
   g
 }
 ```
-
-

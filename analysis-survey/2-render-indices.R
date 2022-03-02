@@ -1,5 +1,5 @@
 # getwd()
-
+library(dplyr)
 
 dir.create(file.path(here::here("analysis-survey", "data")))
 dir.create(file.path(here::here("analysis-survey", "figs")))
@@ -10,16 +10,16 @@ dir.create(file.path(here::here("analysis-survey", "html")))
 
 list_regions <- c("Both odd year trawl surveys", "WCVI only")
 list_species <- c(
-  "Pacific Cod" #3CD (WCVI), 5ABCD (Both odd year)
+  "Pacific Cod" # 3CD (WCVI), 5ABCD (Both odd year)
 )
 
-list_regions <- c("WCHG only", "QCS & WCVI") #"North (PMFC 5DE)", "South (PMFC 3CD5ABC)",
+list_regions <- c("WCHG only", "QCS & WCVI") # "North (PMFC 5DE)", "South (PMFC 3CD5ABC)",
 list_species <- c(
   "Redstripe Rockfish", # N (PMFC 5DE) and South (PMFC 3CD5ABC)
-  "Rougheye/Blackspotted Rockfish Complex"# N = HS (technically only north half) and WCHG, and S + QCS and WCVI
+  "Rougheye/Blackspotted Rockfish Complex" # N = HS (technically only north half) and WCHG, and S + QCS and WCVI
 )
 
-list_regions <- c("QCS only", "WCVI only", "WCHG only") #"North (PMFC 5DE)", "South 5 only (PMFC 5ABC)",
+list_regions <- c("QCS only", "WCVI only", "WCHG only") # "North (PMFC 5DE)", "South 5 only (PMFC 5ABC)",
 list_species <- c(
   "Pacific Ocean Perch"
 )
@@ -94,17 +94,17 @@ list_species <- c(
 
 list_regions <- c("Coast-wide trawl surveys")
 list_species <- c(
-"Big Skate",
-"Longnose Skate",
-"Spotted Ratfish",
-"Lingcod",
-"Petrale Sole",
-"Rex Sole",
-"Dover Sole",
-"English Sole",
-"Canary Rockfish",
-# "Shortbelly Rockfish",
-"Shortraker Rockfish"
+  "Big Skate",
+  "Longnose Skate",
+  "Spotted Ratfish",
+  "Lingcod",
+  "Petrale Sole",
+  "Rex Sole",
+  "Dover Sole",
+  "English Sole",
+  "Canary Rockfish",
+  # "Shortbelly Rockfish",
+  "Shortraker Rockfish"
 )
 
 list_regions <- c("HBLL outside surveys", "HBLL inside surveys")
@@ -121,27 +121,129 @@ list_species <- c("Big Skate", "Longnose Skate", "Lingcod")
 
 env <- new.env() # parent = baseenv()
 
-for (r_h in seq_along(list_regions)) {
-  for (spp_i in seq_along(list_species)) {
-    spp <- gsub(" ", "-", gsub("\\/", "-", tolower(list_species[spp_i])))
-    name <- "-RW-no-covs" # string describing model covariates
-    region_name <- list_regions[r_h]
-    try({
-      rmarkdown::render("analysis-survey/1-index-standardization.Rmd",
-        params = list(
-          species = list_species[spp_i],
-          region = list_regions[r_h],
-          delta_model = FALSE,
-          update_model = FALSE,
-          update_index = TRUE
-          # update_index = FALSE
-        ),
-        output_file = paste0(spp, name, "-", region_name, "-delta.html"),
-        envir = env
-      )
-    })
-  }
+to_fit1 <- tribble(
+  ~species, ~region,
+  "North Pacific Spiny Dogfish", "Coast-wide trawl surveys",
+  "Arrowtooth Flounder", "Coast-wide trawl surveys",
+  "Bocaccio", "Coast-wide trawl surveys",
+  "Sablefish", "Coast-wide trawl surveys",
+  "Shortspine Thornyhead", "Coast-wide trawl surveys",
+  "Silvergray Rockfish", "Coast-wide trawl surveys",
+  "Widow Rockfish", "Coast-wide trawl surveys",
+  "Yellowmouth Rockfish", "Coast-wide trawl surveys",
+  "Yellowtail Rockfish", "Coast-wide trawl surveys",
+  "Big Skate", "Coast-wide trawl surveys",
+  "Longnose Skate", "Coast-wide trawl surveys",
+  "Spotted Ratfish", "Coast-wide trawl surveys",
+  "Lingcod", "Coast-wide trawl surveys",
+  "Petrale Sole", "Coast-wide trawl surveys",
+  "Rex Sole", "Coast-wide trawl surveys",
+  "Dover Sole", "Coast-wide trawl surveys",
+  "English Sole", "Coast-wide trawl surveys",
+  "Canary Rockfish", "Coast-wide trawl surveys",
+  "Shortraker Rockfish", "Coast-wide trawl surveys"
+)
+
+to_fit2 <- tribble(
+  ~species, ~region,
+  "North Pacific Spiny Dogfish", "HBLL outside surveys",
+  "Big Skate", "HBLL outside surveys",
+  "Longnose Skate", "HBLL outside surveys",
+  "Lingcod", "HBLL outside surveys",
+  "Quillback Rockfish", "HBLL outside surveys",
+  "Yelloweye Rockfish", "HBLL outside surveys"
+)
+
+to_fit3 <- to_fit2
+to_fit3$region <- "HBLL inside surveys"
+
+to_fit4 <- expand.grid(
+  species = c(
+    "Redstripe Rockfish",
+    "Rougheye/Blackspotted Rockfish Complex"
+  ),
+  region = c("WCHG only", "QCS & WCVI"), stringsAsFactors = FALSE
+)
+
+to_fit4 <- expand.grid(
+  species = c(
+    "Walleye Pollock"
+  ),
+  region = c("HS & WCHG", "QCS & WCVI"),
+  stringsAsFactors = FALSE
+)
+
+make_dat <- function(r, s) {
+  expand.grid(
+    species = s,
+    region = r,
+    stringsAsFactors = FALSE
+  )
 }
+
+list_regions <- c("Both odd year trawl surveys", "WCVI only")
+list_species <- c(
+  "Pacific Cod"
+)
+to_fit5 <- make_dat(list_regions, list_species)
+
+list_regions <- c("WCHG only", "QCS & WCVI")
+list_species <- c(
+  "Redstripe Rockfish",
+  "Rougheye/Blackspotted Rockfish Complex"
+)
+to_fit5 <- bind_rows(to_fit5, make_dat(list_regions, list_species))
+
+list_regions <- c("QCS only", "WCVI only", "WCHG only")
+list_species <- c(
+  "Pacific Ocean Perch"
+)
+to_fit5 <- bind_rows(to_fit5, make_dat(list_regions, list_species))
+
+list_regions <- c("QCS only", "HS only")
+list_species <- c(
+  "Southern Rock Sole"
+)
+to_fit5 <- bind_rows(to_fit5, make_dat(list_regions, list_species))
+
+list_regions <- c("HS & WCHG", "QCS & WCVI")
+list_species <- c(
+  "Walleye Pollock"
+)
+to_fit5 <- bind_rows(to_fit5, make_dat(list_regions, list_species))
+
+to_fit <- bind_rows(
+  list(
+    to_fit1,
+    to_fit2,
+    to_fit3,
+    to_fit4,
+    to_fit5
+  )
+)
+
+list_species <-
+  for (r_h in seq_along(list_regions)) {
+    for (spp_i in seq_along(list_species)) {
+      spp <- gsub(" ", "-", gsub("\\/", "-", tolower(list_species[spp_i])))
+      name <- "-RW-no-covs" # string describing model covariates
+      region_name <- list_regions[r_h]
+      try({
+        rmarkdown::render("analysis-survey/1-index-standardization.Rmd",
+          params = list(
+            species = list_species[spp_i],
+            region = list_regions[r_h],
+            delta_model = FALSE,
+            update_model = FALSE,
+            update_index = TRUE
+            # update_index = FALSE
+          ),
+          output_file = paste0(spp, name, "-", region_name, "-delta.html"),
+          envir = env
+        )
+      })
+    }
+  }
 
 
 # # full list from 2 years ago
