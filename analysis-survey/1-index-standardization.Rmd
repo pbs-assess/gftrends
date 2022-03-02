@@ -165,11 +165,11 @@ if (region == "HBLL inside surveys") {
 }
 
 if (region != "HBLL inside surveys") {
-  all_data <- readRDS(here::here("data-generated/all-survey-sets-2021.rds")) %>%
+  all_data <- readRDS(here::here("data-raw/all-survey-sets-2021.rds")) %>%
     filter(species_common_name == tolower(species)) %>%
     rename(survey_series_id = survey_series_id.x)
 } else {
-  all_data <- readRDS(here::here("data-generated/all-inside-hbll-2021.rds")) %>%
+  all_data <- readRDS(here::here("data-raw/all-inside-hbll-2021.rds")) %>%
     filter(species_common_name == tolower(species))
 }
 ```
