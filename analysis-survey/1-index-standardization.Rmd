@@ -209,7 +209,7 @@ prop_pos <- round(nrow(positive_sets) / nrow(d), digits = 3)
 data <- d %>% filter(survey_abbrev %in% unique(positive_sets$survey_abbrev))
 ssid_string <- paste0(unique(data$survey_series_id), collapse = "n")
 surv_string <- paste0(unique(data$survey_abbrev), collapse = ", ")
-data <- sdmTMB::add_utm_columns(data, c("longitude", "latitude"))
+data <- sdmTMB::add_utm_columns(data, c("longitude", "latitude"), utm_crs = 32609)
 ```
 
 Make mesh
