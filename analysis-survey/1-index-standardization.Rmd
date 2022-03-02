@@ -7,17 +7,17 @@ params:
     # species: "Redbanded Rockfish"
     # species: "Arrowtooth Flounder"
     # species: "Big Skate"
-    species: "North Pacific Spiny Dogfish"
-    # species: "Pacific Ocean Perch"
+    # species: "North Pacific Spiny Dogfish"
+    species: "Pacific Ocean Perch"
     # species: "Bocaccio"
     # species: "Rougheye/Blackspotted Rockfish Complex"
     # species: "Pacific Sand Lance"
     # species: "Pacific Herring"
     # region: "Coast-wide trawl surveys"
-    region: "HBLL outside surveys"
+    # region: "HBLL outside surveys"
     # region: "HBLL inside surveys"
-    # region: "North (PMFC 5DE)"
-    delta_model: TRUE
+    region: "WCHG only"
+    delta_model: FALSE
     # region: "HBLL inside surveys"
     name: "-rw-no-covs" # covariate string used to name model rds
     update_model: FALSE # TRUE will over write past models; will alway attempt a model if none exists
@@ -211,32 +211,26 @@ data <- sdmTMB::add_utm_columns(data, c("longitude", "latitude"))
 Make mesh
 ```{r}
 if (prop_pos < 0.1) {
-  spde <- make_mesh(data, xy_cols = c("X", "Y"), cutoff = 25)
-  plot(spde)
+  cutoff <- 25
 } else {
   if (prop_pos < 0.7) {
-    spde <- make_mesh(data, xy_cols = c("X", "Y"), cutoff = 10)
-    plot(spde)
+    cutoff <- 10
   } else {
-    spde <- make_mesh(data, xy_cols = c("X", "Y"), cutoff = 15)
-    plot(spde)
+    # update_model <- TRUE
+    cutoff <- 15
   }
 }
-
+if(region == "WCHG only") {
+  cutoff <- 5
+  update_model <- TRUE
+}
+spde <- make_mesh(data, xy_cols = c("X", "Y"), cutoff = cutoff)
+plot(spde)
 if (delta_model) {
   data <- data %>% mutate(present = ifelse(density > 0, 1, 0))
   data2 <- dplyr::filter(data, density > 0)
-
-  if (prop_pos < 0.1) {
-    spde2 <- make_mesh(data2, xy_cols = c("X", "Y"), cutoff = 25)
-  } else {
-    if (prop_pos < 0.7) {
-      spde2 <- make_mesh(data2, xy_cols = c("X", "Y"), cutoff = 10)
-    } else {
-      spde2 <- make_mesh(data2, xy_cols = c("X", "Y"), cutoff = 15)
-    }
-  }
-  # }
+spde2 <- make_mesh(data2, xy_cols = c("X", "Y"), cutoff = cutoff)
+plot(spde2)
 }
 ```
 ```{r}
@@ -417,6 +411,7 @@ hist(positive_sets$depth_m)
 depth_limit <- ifelse(
   max(positive_sets$depth_m, na.rm = T) > 500, max(positive_sets$depth_m, na.rm = T), max(positive_sets$depth_m, na.rm = T) + 100
 )
+
 ```
 
 Get simulated index
@@ -500,7 +495,7 @@ if (delta_model) {
   })
 }
 
-if (region == "North (PMFC 5DE)") {
+if (region %in% c("North (PMFC 5DE)", "WCHG only")) {
   y_threshold <- max(i$upr)
 } else {
   y_threshold <- 5
@@ -519,3 +514,5 @@ if (exists("i")) {
   g
 }
 ```
+
+
