@@ -64,35 +64,35 @@ spp <- gsub(" ", "-", gsub("\\/", "-", tolower(species)))
 anisotropy <- FALSE
 
 if (region == "Both odd year trawl surveys") {
-  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN QCS", "SYN HS")
   type <- "Synoptic trawl"
   model_ssid <- c(1, 3)
 }
 
 if (region == "QCS only") {
-  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN QCS")
   type <- "Synoptic trawl"
   model_ssid <- c(1)
 }
 
 if (region == "HS only") {
-  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN HS")
   type <- "Synoptic trawl"
   model_ssid <- c(3)
 }
 
 if (region == "WCVI only") {
-  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN WCVI")
   type <- "Synoptic trawl"
   model_ssid <- c(4)
 }
 
 if (region == "WCHG only") {
-  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN WCHG")
   type <- "Synoptic trawl"
   model_ssid <- c(16)
@@ -100,14 +100,14 @@ if (region == "WCHG only") {
 }
 
 if (region == "Coast-wide trawl surveys") {
-  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN QCS", "SYN HS", "SYN WCVI", "SYN WCHG")
   type <- "Synoptic trawl"
   model_ssid <- c(1, 3, 4, 16)
 }
 
 if (region == "North (PMFC 5DE)") {
-  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   nd_5D <- filter(nd_all, survey == "SYN HS") %>% filter(Y > 5907.814)
   nd_5E <- filter(nd_all, survey == "SYN WCHG")
   nd_all <- bind_rows(nd_5D, nd_5E)
@@ -117,7 +117,7 @@ if (region == "North (PMFC 5DE)") {
 }
 
 if (region == "South (PMFC 3CD5ABC)") {
-  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   nd_5C <- filter(nd_all, survey == "SYN HS") %>% filter(Y < 5907.814)
   nd_south <- filter(nd_all, survey %in% c("SYN QCS", "SYN WCVI"))
   nd_all <- bind_rows(nd_5C, nd_south)
@@ -127,7 +127,7 @@ if (region == "South (PMFC 3CD5ABC)") {
 }
 
 if (region == "South 5 only (PMFC 5ABC)") {
-  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   nd_5C <- filter(nd_all, survey == "SYN HS") %>% filter(Y < 5907.814)
   nd_QCS <- filter(nd_all, survey %in% c("SYN QCS"))
   nd_all <- bind_rows(nd_5C, nd_QCS)
@@ -137,39 +137,39 @@ if (region == "South 5 only (PMFC 5ABC)") {
 }
 
 if (region == "HS & WCHG") {
-  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN HS", "SYN WCHG")
   type <- "Synoptic trawl"
   model_ssid <- c(3, 16)
 }
 
 if (region == "QCS & WCVI") {
-  nd_all <- readRDS(paste0("data/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
   survey <- c("SYN QCS", "SYN WCVI")
   type <- "Synoptic trawl"
   model_ssid <- c(1, 4)
 }
 
 if (region == "HBLL outside surveys") {
-  nd_all <- readRDS(paste0("data/nd_hbll_outside_index.rds"))
+  nd_all <- readRDS(here::here("data-generated/nd_hbll_outside_index.rds"))
   survey <- c("HBLL OUT N", "HBLL OUT S")
   type <- "HBLL (outside)"
   model_ssid <- c(22, 36)
 }
 
 if (region == "HBLL inside surveys") {
-  nd_all <- readRDS(paste0("data/nd_hbll_inside_index.rds"))
+  nd_all <- readRDS(here::here("data-generated/nd_hbll_inside_index.rds"))
   survey <- c("HBLL INS N", "HBLL INS S")
   type <- "HBLL (inside)"
   model_ssid <- c(39, 40)
 }
 
 if (region != "HBLL inside surveys") {
-  all_data <- readRDS("~/github/dfo/gftrends/analysis-survey/data/all-survey-sets-2021.rds") %>%
+  all_data <- readRDS(here::here("data-generated/all-survey-sets-2021.rds")) %>%
     filter(species_common_name == tolower(species)) %>%
     rename(survey_series_id = survey_series_id.x)
 } else {
-  all_data <- readRDS("~/github/dfo/gftrends/analysis-survey/data/all-inside-hbll-2021.rds") %>%
+  all_data <- readRDS(here::here("data-generated/all-inside-hbll-2021.rds")) %>%
     filter(species_common_name == tolower(species))
 }
 ```
@@ -244,14 +244,16 @@ plot(spde2)
 ```
 ```{r}
 # Check if a model already exists
+
+dir.create(here::here("data-generated/models"), showWarnings = FALSE)
 if (delta_model) {
   try({
-    m2 <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, "-gamma.rds"))
+    m2 <- readRDS(here::here("data-generated/models/m-", spp, "-", ssid_string, name, "-gamma.rds"))
   })
   if (!exists("m2")) update_model <- TRUE
 } else {
   try({
-    m <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
+    m <- readRDS(here::here("data-generated/models/m-", spp, "-", ssid_string, name, ".rds"))
   })
   if (!exists("m")) update_model <- TRUE
 }
@@ -286,7 +288,7 @@ if (update_model) {
       silent = TRUE
     )
     tictoc::toc()
-    saveRDS(m1, file = paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
+    saveRDS(m1, file = here::here("data-generated/models/m-", spp, "-", ssid_string, name, "-presence.rds"))
 
     if (m1$sd_report$pdHess & !m1$bad_eig) {
 
@@ -344,7 +346,7 @@ if (update_model) {
       silent = TRUE
     )
 
-    saveRDS(m, file = paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
+    saveRDS(m, file = here::here("data-generated/models/m-", spp, "-", ssid_string, name, ".rds"))
     tictoc::toc()
   }
 }
@@ -353,14 +355,14 @@ if (update_model) {
 ```{r}
 # if (delta_model) {
 try({
-  m1 <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
+  m1 <- readRDS(here::here("data-generated/models/m-", spp, "-", ssid_string, name, "-presence.rds"))
   if (max(m1$gradients) > 0.01) {
     m1 <- run_extra_optimization(m1, newton_loops = 1L, nlminb_loops = 0L)
     saveRDS(m1, file = paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
   }
 })
 try({
-  m2 <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, "-gamma.rds"))
+  m2 <- readRDS(here::here("data-generated/models/m-", spp, "-", ssid_string, name, "-gamma.rds"))
   if (max(m2$gradients) > 0.01) {
     m2 <- run_extra_optimization(m2, newton_loops = 1L, nlminb_loops = 0L)
     saveRDS(m2, file = paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
@@ -369,10 +371,10 @@ try({
 # } else {
 
 try({
-  m <- readRDS(paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
+  m <- readRDS(here::here("data-generated/models/m-", spp, "-", ssid_string, name, ".rds"))
   if (max(m$gradients) > 0.01) {
     m <- run_extra_optimization(m, newton_loops = 1L, nlminb_loops = 0L)
-    saveRDS(m, file = paste0("models/m-", spp, "-", ssid_string, name, ".rds"))
+    saveRDS(m, file = here::here("data-generated/models/m-", spp, "-", ssid_string, name, ".rds"))
   }
 })
 # }
@@ -439,6 +441,8 @@ depth_limit <- ifelse(
 
 Get simulated index
 ```{r}
+dir.create("data-generated/indices", showWarnings = FALSE)
+
 nd <- nd_all %>%
   filter(year %in% unique(data$year)) %>%
   filter(depth < depth_limit)
@@ -482,7 +486,7 @@ if (delta_model & exists("m1") & exists("m2")) {
       max_grad = max(max(m1$gradients), max(m2$gradients))
     )
     i <- left_join(i, samples)
-    saveRDS(i, paste0("indices/i-", spp, "-", ssid_string, name, "-delta.rds"))
+    saveRDS(i, here::here("data-generated/indices/i-", spp, "-", ssid_string, name, "-delta.rds"))
   }
 } else {
   if (exists("m")) {
@@ -501,7 +505,7 @@ if (delta_model & exists("m1") & exists("m2")) {
         max_grad = max(m$gradients)
       )
       i <- left_join(i, samples)
-      saveRDS(i, paste0("indices/i-", spp, "-", ssid_string, name, ".rds"))
+      saveRDS(i, here::here("data-generated/indices/i-", spp, "-", ssid_string, name, ".rds"))
     }
   }
 }
@@ -510,11 +514,11 @@ if (delta_model & exists("m1") & exists("m2")) {
 ```{r}
 if (delta_model) {
   try({
-    i <- readRDS(paste0("indices/i-", spp, "-", ssid_string, name, "-delta.rds"))
+    i <- readRDS(here::here("data-generated/indices/i-", spp, "-", ssid_string, name, "-delta.rds"))
   })
 } else {
   try({
-    i <- readRDS(paste0("indices/i-", spp, "-", ssid_string, name, ".rds"))
+    i <- readRDS(here::here("data-generated/indices/i-", spp, "-", ssid_string, name, ".rds"))
   })
 }
 
