@@ -427,7 +427,7 @@ depth_limit <- ifelse(
 
 Get simulated index
 ```{r}
-dir.create(here::here("data-generated/indices", showWarnings = FALSE))
+dir.create(here::here("data-generated/indices"), showWarnings = FALSE)
 
 nd <- nd_all %>%
   filter(year %in% unique(data$year)) %>%
@@ -498,7 +498,7 @@ if (delta_model & exists("m1") & exists("m2")) {
 ```
 
 ```{r}
-dir.create(here::here("figs", showWarnings = FALSE))
+dir.create(here::here("figs"), showWarnings = FALSE)
 if (delta_model) {
   try({
     i <- readRDS(here::here(paste0("data-generated/indices/i-", spp, "-", ssid_string, name, "-delta.rds")))
