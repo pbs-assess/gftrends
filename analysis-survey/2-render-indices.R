@@ -107,7 +107,16 @@ list_species <- c(
 )
 
 list_regions <- c("HBLL outside surveys", "HBLL inside surveys")
-list_species <- c("Big Skate", "Longnose Skate", "Lingcod", "Canary Rockfish")
+list_regions <- c("HBLL inside surveys")
+list_species <- c("Big Skate", "Longnose Skate", "Lingcod",
+                  "Canary Rockfish")
+
+#HBLL surveyed species
+list_regions <- c("Coast-wide trawl surveys")
+list_species <- c(
+    "Quillback Rockfish", # outside and WCVI_Inside?
+    "Yelloweye Rockfish" # 4B = inside and outside
+)
 
 
 env <- new.env() # parent = baseenv()
@@ -122,7 +131,7 @@ for (r_h in seq_along(list_regions)) {
         params = list(
           species = list_species[spp_i],
           region = list_regions[r_h],
-          delta_model = TRUE,
+          delta_model = FALSE,
           update_model = FALSE,
           update_index = TRUE
           # update_index = FALSE

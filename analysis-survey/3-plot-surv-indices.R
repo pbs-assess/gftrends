@@ -88,7 +88,7 @@ ggplot(aes(year, est / mean_est, group = model)) +
     ymin = lwr / mean_est, ymax = upr / mean_est, fill = model_type
   ), alpha = 0.4) +
   ylab("Relative Biomass") +
-  # scale_linetype_manual(values = c(2, 3, 1)) +
+  scale_linetype_manual(name = "Survey", values = c(2, 3, 1)) +
   scale_color_brewer(palette = "Dark2") +
   scale_fill_brewer(palette = "Dark2") +
   facet_wrap(~species, scales = "free_y") +
@@ -96,3 +96,26 @@ ggplot(aes(year, est / mean_est, group = model)) +
   theme(axis.text.y = element_blank())
 
 ggsave("figs/tweedie-vs-delta.pdf", width = 14, height = 8)
+
+d %>% filter(model_type == "delta-gamma") %>%
+  ggplot(aes(year, est / mean_est, group = model)) +
+  geom_line(aes(linetype = index, colour = gear)) +
+  geom_ribbon(aes(
+    ymin = lwr / mean_est, ymax = upr / mean_est, fill = gear
+  ), alpha = 0.4, data = filter(d, model_type == "delta-gamma")) +
+  ylab("Relative Biomass") +
+
+  geom_line(aes(linetype = index, colour = gear)) +
+  geom_ribbon(aes(
+    ymin = lwr / mean_est, ymax = upr / mean_est, fill = gear
+  ), alpha = 0.4, data = filter(d, model_type == "Tweedie" & species == "Big Skate" & index = "HBLL inside surveys")) +
+  ylab("Relative Biomass") +
+
+  # scale_linetype_manual(name = "Survey", values = c(2, 3, 1)) +
+  scale_color_brewer(name = "Survey", palette = "Dark2") +
+  scale_fill_brewer(name = "Survey", palette = "Dark2") +
+  facet_wrap(~species, scales = "free_y") +
+  ggsidekick::theme_sleek() +
+  theme(axis.text.y = element_blank())
+
+ggsave("figs/all-fish-delta-gamma.pdf", width = 14, height = 8)
