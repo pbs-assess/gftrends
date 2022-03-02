@@ -132,11 +132,11 @@ set.seed(1)
 i <- sample(seq_len(nrow(to_fit)), nrow(to_fit))
 to_fit <- to_fit[i, ]
 
-if (Sys.info()[["user"]] == "seananderson") {
-  to_fit <- to_fit[1:28, ]
-} else {
-  to_fit <- to_fit[29:nrow(to_fit), ]
-}
+# if (Sys.info()[["user"]] == "seananderson") {
+#   to_fit <- to_fit[1:28, ]
+# } else {
+#   to_fit <- to_fit[29:nrow(to_fit), ]
+# }
 
 
 is_rstudio <- !is.na(Sys.getenv("RSTUDIO", unset = NA))
