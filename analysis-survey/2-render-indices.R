@@ -8,6 +8,33 @@ dir.create(file.path(here::here("analysis-survey", "indices")))
 dir.create(file.path(here::here("analysis-survey", "html")))
 
 
+list_regions <- c("Both odd year trawl surveys", "WCVI only")
+list_species <- c(
+  "Pacific Cod" #3CD (WCVI), 5ABCD (Both odd year)
+)
+
+list_regions <- c("WCHG only", "QCS & WCVI") #"North (PMFC 5DE)", "South (PMFC 3CD5ABC)",
+list_species <- c(
+  "Redstripe Rockfish", # N (PMFC 5DE) and South (PMFC 3CD5ABC)
+  "Rougheye/Blackspotted Rockfish Complex"# N = HS (technically only north half) and WCHG, and S + QCS and WCVI
+)
+
+list_regions <- c("QCS only", "WCVI only", "WCHG only") #"North (PMFC 5DE)", "South 5 only (PMFC 5ABC)",
+list_species <- c(
+  "Pacific Ocean Perch"
+)
+
+list_regions <- c("QCS only", "HS only")
+list_species <- c(
+  "Southern Rock Sole" # 5AB (QCS),  5CD (HS) low density along boundary so close enough
+)
+
+list_regions <- c("HS & WCHG", "QCS & WCVI")
+list_species <- c(
+  "Walleye Pollock" # N = HS and WCHG, and S + QCS and WCVI
+)
+
+
 # initial coastwide trawl models
 list_regions <- c("Coast-wide trawl surveys")
 list_species <- c(
@@ -30,32 +57,6 @@ list_species <- c(
   # "Walleye Pollock", # N and S?
   # "Redstripe Rockfish", # N and S?
   # "Rougheye/Blackspotted Rockfish Complex"# N and S?
-)
-
-list_regions <- c("Both odd year trawl surveys", "WCVI only")
-list_species <- c(
-  "Pacific Cod" #3CD (WCVI), 5ABCD (Both odd year)
-)
-
-list_regions <- c("South (PMFC 3CD5ABC)", "WCHG only") #"North (PMFC 5DE)",
-list_species <- c(
-  "Redstripe Rockfish", # N (PMFC 5DE) and South (PMFC 3CD5ABC)
-  "Rougheye/Blackspotted Rockfish Complex"# N = HS (technically only north half) and WCHG, and S + QCS and WCVI
-)
-
-list_regions <- c("South 5 only (PMFC 5ABC)", "WCVI only",  "WCHG only") #"North (PMFC 5DE)",
-list_species <- c(
-  "Pacific Ocean Perch"
-)
-
-list_regions <- c("QCS only", "HS only")
-list_species <- c(
-  "Southern Rock Sole" # 5AB (QCS),  5CD (HS) low density along boundary so close enough
-)
-
-list_regions <- c("HS & WCHG", "QCS & WCVI")
-list_species <- c(
-"Walleye Pollock" # N = HS and WCHG, and S + QCS and WCVI
 )
 
 # list_regions <- c("HBLL outside surveys")
@@ -102,21 +103,20 @@ list_species <- c(
 "Dover Sole",
 "English Sole",
 "Canary Rockfish",
-"Shortbelly Rockfish",
+# "Shortbelly Rockfish",
 "Shortraker Rockfish"
 )
 
 list_regions <- c("HBLL outside surveys", "HBLL inside surveys")
 list_regions <- c("HBLL inside surveys")
-list_species <- c("Big Skate", "Longnose Skate", "Lingcod",
-                  "Canary Rockfish")
+list_species <- c("Big Skate", "Longnose Skate", "Lingcod")
 
-#HBLL surveyed species
-list_regions <- c("Coast-wide trawl surveys")
-list_species <- c(
-    "Quillback Rockfish", # outside and WCVI_Inside?
-    "Yelloweye Rockfish" # 4B = inside and outside
-)
+# #HBLL surveyed species
+# list_regions <- c("Coast-wide trawl surveys")
+# list_species <- c(
+#     "Quillback Rockfish", # outside and WCVI_Inside?
+#     "Yelloweye Rockfish" # 4B = inside and outside
+# )
 
 
 env <- new.env() # parent = baseenv()
