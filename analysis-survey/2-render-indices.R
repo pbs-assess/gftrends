@@ -1,34 +1,5 @@
 library(dplyr)
 
-list_regions <- c("Coast-wide trawl surveys")
-list_species <- c(
-  "Big Skate",
-  "Longnose Skate",
-  "Spotted Ratfish",
-  "Lingcod",
-  "Petrale Sole",
-  "Rex Sole",
-  "Dover Sole",
-  "English Sole",
-  "Canary Rockfish",
-  # "Shortbelly Rockfish",
-  "Shortraker Rockfish"
-)
-
-list_regions <- c("HBLL outside surveys", "HBLL inside surveys")
-list_regions <- c("HBLL inside surveys")
-list_species <- c("Big Skate", "Longnose Skate", "Lingcod")
-
-# #HBLL surveyed species
-# list_regions <- c("Coast-wide trawl surveys")
-# list_species <- c(
-#     "Quillback Rockfish", # outside and WCVI_Inside?
-#     "Yelloweye Rockfish" # 4B = inside and outside
-# )
-
-
-env <- new.env() # parent = baseenv()
-
 to_fit1 <- tribble(
   ~species, ~region,
   "North Pacific Spiny Dogfish", "Coast-wide trawl surveys",
@@ -155,6 +126,9 @@ fit_index <- function(region, species) {
 }
 
 purrr::pwalk(to_fit[1,,drop=FALSE], fit_index)
+
+future::plan(future::multisession, workers = 4L)
+furrr::future_pwalk(to_fit[1,,drop = FALSE], fit_index)
 
 # # full list from 2 years ago
 # list_species <- c(
