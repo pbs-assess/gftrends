@@ -23,6 +23,7 @@ params:
     # update_model: FALSE
     update_model: TRUE # TRUE will over write past models; will alway attempt a model if none exists
     update_index: TRUE
+    silent: TRUE
 ---
 
 ```{r global_options, include=FALSE}
@@ -275,7 +276,7 @@ if (update_model) {
       spatial = "on",
       spatiotemporal = "RW",
       anisotropy = anisotropy,
-      silent = TRUE
+      silent = params$silent
     )
     tictoc::toc()
     saveRDS(m1, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-presence.rds")))
@@ -305,7 +306,7 @@ if (update_model) {
         spatial = "on",
         spatiotemporal = "RW",
         anisotropy = anisotropy,
-        silent = TRUE
+        silent = params$silent
       )
       tictoc::toc()
       saveRDS(m2, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-gamma.rds")))
@@ -330,7 +331,7 @@ if (update_model) {
       spatial = "on",
       spatiotemporal = "RW",
       anisotropy = anisotropy,
-      silent = TRUE
+      silent = params$silent
     )
 
     saveRDS(m, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
@@ -345,14 +346,14 @@ try({
   m1 <- readRDS(here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-presence.rds")))
   if (max(m1$gradients) > 0.01) {
     m1 <- run_extra_optimization(m1, newton_loops = 1L, nlminb_loops = 0L)
-    saveRDS(m1, file = paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
+    saveRDS(m1, file = here::here(paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds")))
   }
 })
 try({
   m2 <- readRDS(here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-gamma.rds")))
   if (max(m2$gradients) > 0.01) {
     m2 <- run_extra_optimization(m2, newton_loops = 1L, nlminb_loops = 0L)
-    saveRDS(m2, file = paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds"))
+    saveRDS(m2, file = here::here(paste0("models/m-", spp, "-", ssid_string, name, "-presence.rds")))
   }
 })
 # } else {
@@ -361,7 +362,7 @@ try({
   m <- readRDS(here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
   if (max(m$gradients) > 0.01) {
     m <- run_extra_optimization(m, newton_loops = 1L, nlminb_loops = 0L)
-    saveRDS(m, file = here::here("data-generated/models/m-", spp, "-", ssid_string, name, ".rds"))
+    saveRDS(m, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
   }
 })
 # }
