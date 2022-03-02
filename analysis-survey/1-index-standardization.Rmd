@@ -43,7 +43,7 @@ theme_set(
 )
 
 # clean up environment just in case
-rm(data, d, m, m1, m2, p, i, g)
+# rm(data, d, m, m1, m2, p, i, g)
 ```
 
 ```{r params}
@@ -498,6 +498,7 @@ if (delta_model & exists("m1") & exists("m2")) {
 ```
 
 ```{r}
+dir.create(here::here("figs", showWarnings = FALSE))
 if (delta_model) {
   try({
     i <- readRDS(here::here(paste0("data-generated/indices/i-", spp, "-", ssid_string, name, "-delta.rds")))
