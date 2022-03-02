@@ -4,7 +4,7 @@ all_data <- readRDS("~/github/dfo/gftrends/analysis-survey/data/all-survey-sets-
 # grid for whole coast synoptic indices
 grid_locs <- gfplot::synoptic_grid %>%
       dplyr::select(X, Y, depth, survey)
-d <- all_data$survey_sets %>% filter(survey_abbrev %in% c("SYN QCS", "SYN HS", "SYN WCVI", "SYN WCHG"))
+d <- all_data %>% filter(survey_abbrev %in% c("SYN QCS", "SYN HS", "SYN WCVI", "SYN WCHG"))
 original_time <- sort(unique(d$year))
 nd_whole_coast_index <- do.call("rbind",
   replicate(length(original_time), grid_locs, simplify = FALSE))
@@ -42,7 +42,8 @@ saveRDS(nd_all, file = paste0("analysis-survey/data/nd_hbll_outside_index.rds"))
 # grid for inside HBLL indices
 nd_in <- filter(grid_locs, ssid %in% c(39, 40))
 # grab an example of inside HBLL data
-d <- readRDS("~/github/dfo/gftrends/analysis-survey/data/quillback_insideHBLL_hook_adjusted_Jan2022.rds")
+d <- readRDS("~/github/dfo/gftrends/analysis-survey/data/all-survey-sets-2021.rds") %>%
+  filter(species_common_name == tolower("Quillback Rockfish"))
 time <- sort(unique(d$year))
 nd_all <- do.call("rbind", replicate(length(time), nd_in, simplify = FALSE))
 nd_all[["year"]] <- rep(time, each = nrow(nd_in))
