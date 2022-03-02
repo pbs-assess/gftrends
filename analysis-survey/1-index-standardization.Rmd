@@ -7,23 +7,23 @@ params:
     # species: "Canary Rockfish"
     # species: "Arrowtooth Flounder"
     # species: "Big Skate"
-    # species: "North Pacific Spiny Dogfish"
-    species: "Pacific Ocean Perch"
+    species: "North Pacific Spiny Dogfish"
+    # species: "Pacific Ocean Perch"
     # species: "Bocaccio"
     # species: "Rougheye/Blackspotted Rockfish Complex"
     # species: "Pacific Sand Lance"
     # species: "Pacific Herring"
-    # region: "Coast-wide trawl surveys"
+    region: "Coast-wide trawl surveys"
     # region: "HBLL outside surveys"
     # region: "HBLL inside surveys"
-    region: "WCHG only"
+    # region: "WCHG only"
     delta_model: TRUE
     # region: "HBLL inside surveys"
     name: "-rw-no-covs" # covariate string used to name model rds
     # update_model: FALSE
     update_model: TRUE # TRUE will over write past models; will alway attempt a model if none exists
     update_index: TRUE
-    silent: TRUE
+    silent: FALSE
 ---
 
 ```{r global_options, include=FALSE}
@@ -215,9 +215,9 @@ data <- sdmTMB::add_utm_columns(data, c("longitude", "latitude"), utm_crs = 3260
 
 Make mesh
 ```{r}
-cutoff <- 10
-if (region %in% c("WCHG only", "HBLL inside surveys")) {
-  cutoff <- 5
+cutoff <- 15
+if (region %in% c("WCHG only", "HBLL inside surveys", "QCS only", "HS only", "WCVI only")) {
+  cutoff <- 10
 }
 
 spde <- make_mesh(data, xy_cols = c("X", "Y"), cutoff = cutoff)
