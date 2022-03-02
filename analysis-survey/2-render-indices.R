@@ -117,7 +117,8 @@ fit_index <- function(region, species) {
         region = region,
         delta_model = TRUE,
         update_model = FALSE,
-        update_index = TRUE
+        update_index = TRUE,
+        silent = TRUE
         # update_index = FALSE
       ),
       output_file = paste0(spp, name, "-", region_name, "-delta.html")

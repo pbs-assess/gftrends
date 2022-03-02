@@ -23,7 +23,7 @@ params:
     # update_model: FALSE
     update_model: TRUE # TRUE will over write past models; will alway attempt a model if none exists
     update_index: TRUE
-    silent: FALSE
+    silent: TRUE
 ---
 
 ```{r global_options, include=FALSE}
