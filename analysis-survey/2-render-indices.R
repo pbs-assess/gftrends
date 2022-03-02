@@ -142,6 +142,8 @@ options(future.rng.onMisuse = "ignore")
 # furrr::future_pwalk(to_fit[c(36, 26),,drop = FALSE], fit_index)
 furrr::future_pwalk(to_fit, fit_index)
 
+future::plan(future::sequential)
+
 # # full list from 2 years ago
 # list_species <- c(
 # "Aleutian Skate",
