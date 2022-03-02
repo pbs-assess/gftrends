@@ -37,13 +37,13 @@ list_species <- c(
   "Pacific Cod" #3CD (WCVI), 5ABCD (Both odd year)
 )
 
-list_regions <- c("North (PMFC 5DE)", "South (PMFC 3CD5ABC)")
+list_regions <- c("South (PMFC 3CD5ABC)", "WCHG only") #"North (PMFC 5DE)",
 list_species <- c(
   "Redstripe Rockfish", # N (PMFC 5DE) and South (PMFC 3CD5ABC)
   "Rougheye/Blackspotted Rockfish Complex"# N = HS (technically only north half) and WCHG, and S + QCS and WCVI
 )
 
-list_regions <- c("South 5 only (PMFC 5ABC)", "WCVI only", "North (PMFC 5DE)")
+list_regions <- c("South 5 only (PMFC 5ABC)", "WCVI only",  "WCHG only") #"North (PMFC 5DE)",
 list_species <- c(
   "Pacific Ocean Perch"
 )
@@ -90,6 +90,25 @@ list_species <- c(
 # )
 
 # also need to come up with a list of other species of interest...
+
+list_regions <- c("Coast-wide trawl surveys")
+list_species <- c(
+"Big Skate",
+"Longnose Skate",
+"Spotted Ratfish",
+"Lingcod",
+"Petrale Sole",
+"Rex Sole",
+"Dover Sole",
+"English Sole",
+"Canary Rockfish",
+"Shortbelly Rockfish",
+"Shortraker Rockfish"
+)
+
+list_regions <- c("HBLL outside surveys", "HBLL inside surveys")
+list_species <- c("Big Skate", "Longnose Skate", "Lingcod", "Canary Rockfish")
+
 
 env <- new.env() # parent = baseenv()
 
