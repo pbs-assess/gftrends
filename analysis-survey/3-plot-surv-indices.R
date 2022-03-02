@@ -21,18 +21,22 @@ dat <- readRDS("data-generated/b-status-dat.rds") %>%
   rename(dfo_area = region) %>%
   select(-species) %>%
   group_by(stock) %>%
-  mutate(mean_blrp = mean(exp(log_blrp), na.rm = T)) %>%
+  mutate(mean_blrp = mean(exp(log_blrp), na.rm = T),
+         ratio_ci = q0.95_blrp/q0.05_blrp ) %>%
   ungroup()
+
 dat <- left_join(dat, stock_df)
+
 d <- left_join(all_indices, stock_df, by = c("species", "region")) %>%
   rename(index = region, model_type = model) %>%
-  mutate(model = paste(index, model_type))
-d <- full_join(dat, d)
-
-d1 <- filter(d, !is.na(stock_clean)) %>%
-  group_by(stock_clean, index, gear, model) %>%
+  mutate(model = paste(index, model_type))%>%
+  group_by(species, index, model_type, model) %>%
   mutate(mean_est = mean(est, na.rm = T)) %>%
   ungroup()
+
+d1 <- full_join(dat, d)
+
+d1 <- filter(d1, !is.na(stock_clean))
 
 # # change order of facets to group more like species together
 d2 <- d1 %>% arrange(desc(type), stock) # for grouping by taxa/type first
@@ -41,7 +45,14 @@ d2 <- d2 %>% mutate(stock_clean = factor(stock_clean,
   levels = as.character(unique(stock_df$stock_clean))
 ))
 
-ggplot(d2) +
+# clean up CI that were too wide?
+d2$upr[is.na(d2$se) ] <- NA
+d2$upr[d2$se > 0.7 ] <- NA
+d2$q0.95_blrp[d2$ratio_ci > 15 ] <- NA
+
+# range(d2$sd_log_blrp, na.rm = T)
+d2 %>% filter(model_type == "delta-gamma") %>%
+ggplot() +
   geom_ribbon(aes(year,
     ymin = q0.05_blrp / mean_blrp, ymax = q0.95_blrp / mean_blrp,
     group = stock_clean
@@ -49,7 +60,8 @@ ggplot(d2) +
   geom_line(aes(year, exp(log_blrp) / mean_blrp, group = stock_clean),
     linetype = 3, alpha = 0.4, colour = "black"
   ) +
-  geom_line(aes(year, est / mean_est, group = model, colour = gear)) + # linetype = gear,
+  geom_line(aes(year, est / mean_est, #linetype = model_type, # linetype = gear,
+                group = model, colour = gear)) +
   geom_ribbon(aes(year,
     ymin = lwr / mean_est, ymax = upr / mean_est,
     group = model, fill = gear
@@ -58,7 +70,7 @@ ggplot(d2) +
   # scale_linetype_manual(name = "Index type", values = c(2,3,1,4)) +
   scale_color_brewer(name = "Index type", palette = "Dark2") +
   scale_fill_brewer(name = "Index type", palette = "Dark2") +
-  facet_wrap(~stock_clean, ncol = 5, scales = "free_y") +
+  facet_wrap(~stock_clean, ncol = 5, scales = "free_y") + #
   ggsidekick::theme_sleek() +
   theme(
     axis.text.y = element_blank(),
@@ -70,17 +82,17 @@ ggsave("figs/stock_vs_indices.png", width = 12, height = 10)
 
 
 
-ggplot(d2, aes(year, est / mean_est), group = index, fill = gear, colour = gear) +
-  geom_line(aes(linetype = gear, group = index, colour = gear)) +
+ggplot(d,
+       aes(year, est / mean_est, group = model)) +
+  geom_line(aes(linetype = gear, colour = model_type)) +
   geom_ribbon(aes(
-    ymin = lwr / mean_est, ymax = upr / mean_est,
-    group = index, fill = gear
+    ymin = lwr / mean_est, ymax = upr / mean_est, fill = model_type
   ), alpha = 0.4) +
   ylab("Biomass (tonnes)") +
-  scale_linetype_manual(values = c(2, 3, 1)) +
+  # scale_linetype_manual(values = c(2, 3, 1)) +
   scale_color_brewer(palette = "Dark2") +
   scale_fill_brewer(palette = "Dark2") +
-  facet_wrap(~stock_clean, scales = "free_y") +
+  facet_wrap(~species, scales = "free_y") +
   ggsidekick::theme_sleek() +
   theme(axis.text.y = element_blank())
 
