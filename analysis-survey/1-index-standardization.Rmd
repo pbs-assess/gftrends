@@ -441,7 +441,7 @@ depth_limit <- ifelse(
 
 Get simulated index
 ```{r}
-dir.create("data-generated/indices", showWarnings = FALSE)
+dir.create(here::here("data-generated/indices", showWarnings = FALSE))
 
 nd <- nd_all %>%
   filter(year %in% unique(data$year)) %>%
