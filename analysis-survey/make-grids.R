@@ -31,7 +31,7 @@ grid_locs <- readRDS("~/github/dfo/gftrends/analysis-survey/data/All_HBLL_Blocks
 
 # grid for outside HBLL indices
 nd_out <- filter(grid_locs, ssid %in% c(22, 36))
-d <- all_data$survey_sets %>% filter(survey_abbrev %in% c("HBLL OUT S", "HBLL OUT N"))
+d <- all_data %>% filter(survey_abbrev %in% c("HBLL OUT S", "HBLL OUT N"))
 time <- sort(unique(d$year))
 nd_all <- do.call("rbind", replicate(length(time), nd_out, simplify = FALSE))
 nd_all[["year"]] <- rep(time, each = nrow(nd_out))
