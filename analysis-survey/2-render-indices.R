@@ -13,107 +13,81 @@ list_regions <- c("Coast-wide trawl surveys")
 list_species <- c(
   "North Pacific Spiny Dogfish",
   "Arrowtooth Flounder",
-  "Bocaccio", # not quite converging with delta model
+  "Bocaccio",
   "Sablefish",
   "Shortspine Thornyhead",
   "Silvergray Rockfish",
   "Widow Rockfish",
-  "Yellowtail Rockfish",
-  "Yellowmouth Rockfish" # not quite converging with delta model
-  # "Quillback Rockfish", # outside and WCVI_Inside?
+  "Yellowmouth Rockfish",
+  "Yellowtail Rockfish"
 
+  # "Quillback Rockfish", # outside and WCVI_Inside?
   # redo with specific subsets of surveys?
   # "Pacific Ocean Perch", #3CD (WCVI), 5ABC, 5DE (Both odd year + HG)
   # "Pacific Cod", #3CD (WCVI), 5ABCD (Both odd year)
   # "Southern Rock Sole", # 5AB (QCS),  5CD (HS)
-
   # redo with N-S split?
   # "Walleye Pollock", # N and S?
   # "Redstripe Rockfish", # N and S?
   # "Rougheye/Blackspotted Rockfish Complex"# N and S?
 )
 
-list_regions <- c("WCVI only")
-list_species <- c(
-  "Pacific Ocean Perch", #3CD (WCVI), 5ABC, 5DE (Both odd year + HG)
-  "Pacific Cod" #3CD (WCVI), 5ABCD (Both odd year)
-)
-
-list_regions <- c("Both odd year trawl surveys")
+list_regions <- c("Both odd year trawl surveys", "WCVI only")
 list_species <- c(
   "Pacific Cod" #3CD (WCVI), 5ABCD (Both odd year)
 )
 
-
-list_regions <- c("North (PMFC 5DE)")
-list_species <- c(
-  "Pacific Ocean Perch", #3CD (WCVI), 5ABC, 5DE (Both odd year + HG)
-  "Redstripe Rockfish", # N (PMFC 5DE) and South (PMFC 3CD5ABC)
-  "Rougheye/Blackspotted Rockfish Complex"# N = HS (technically only north half) and WCHG, and S + QCS and WCVI
-)
-
-list_regions <- c("South (PMFC 3CD5ABC)")
+list_regions <- c("North (PMFC 5DE)", "South (PMFC 3CD5ABC)")
 list_species <- c(
   "Redstripe Rockfish", # N (PMFC 5DE) and South (PMFC 3CD5ABC)
   "Rougheye/Blackspotted Rockfish Complex"# N = HS (technically only north half) and WCHG, and S + QCS and WCVI
 )
 
-list_regions <- c("South 5 only (PMFC 5ABC)")
+list_regions <- c("South 5 only (PMFC 5ABC)", "WCVI only", "North (PMFC 5DE)")
 list_species <- c(
   "Pacific Ocean Perch"
 )
 
-
-list_regions <- c("QCS only")
+list_regions <- c("QCS only", "HS only")
 list_species <- c(
   "Southern Rock Sole" # 5AB (QCS),  5CD (HS) low density along boundary so close enough
 )
 
-list_regions <- c("HS only")
-list_species <- c(
-  "Southern Rock Sole" # 5AB (QCS),  5CD (HS) low density along boundary so close enough
-)
-
-list_regions <- c("HS & WCHG")
+list_regions <- c("HS & WCHG", "QCS & WCVI")
 list_species <- c(
 "Walleye Pollock" # N = HS and WCHG, and S + QCS and WCVI
 )
 
-list_regions <- c("QCS & WCVI")
-list_species <- c(
-  "Walleye Pollock" # N = HS and WCHG, and S + QCS and WCVI
-)
-
-list_regions <- c("HBLL outside surveys")
-list_species <- c(
-  "North Pacific Spiny Dogfish",
-  # "Arrowtooth Flounder",
-  # "Bocaccio",
-  "Sablefish",
-  # "Shortspine Thornyhead",
-  # "Silvergray Rockfish",
-  # "Widow Rockfish",
-  # "Yellowtail Rockfish",
-  # "Yellowmouth Rockfish",
-  ## ones with potentially awkward splits
-  # "Walleye Pollock", # N and S?
-  # "Pacific Cod", #3CD (WCVI), 5ABCD (Both odd year)
-  # "Southern Rock Sole", # 5AB (QCS),  5CD (HS)
-  # "Redstripe Rockfish", # N and S?
-  # "Rougheye/Blackspotted Rockfish Complex",# N and S?
-  # "Lingcod", #4B = inside
-  "Quillback Rockfish", # outside and WCVI_Inside?
-  "Yelloweye Rockfish" # 4B = inside and outside
-)
-
-
-list_regions <- c("HBLL inside surveys")
-list_species <- c(
-  "North Pacific Spiny Dogfish",
-  "Lingcod", #4B = inside
-  "Quillback Rockfish", # outside and WCVI_Inside?
-  "Yelloweye Rockfish" # 4B = inside
-)
+# list_regions <- c("HBLL outside surveys")
+# list_species <- c(
+#   "North Pacific Spiny Dogfish",
+#   # "Arrowtooth Flounder",
+#   # "Bocaccio",
+#   "Sablefish",
+#   # "Shortspine Thornyhead",
+#   # "Silvergray Rockfish",
+#   # "Widow Rockfish",
+#   # "Yellowtail Rockfish",
+#   # "Yellowmouth Rockfish",
+#   ## ones with potentially awkward splits
+#   # "Walleye Pollock", # N and S?
+#   # "Pacific Cod", #3CD (WCVI), 5ABCD (Both odd year)
+#   # "Southern Rock Sole", # 5AB (QCS),  5CD (HS)
+#   # "Redstripe Rockfish", # N and S?
+#   # "Rougheye/Blackspotted Rockfish Complex",# N and S?
+#   # "Lingcod", #4B = inside
+#   "Quillback Rockfish", # outside and WCVI_Inside?
+#   "Yelloweye Rockfish" # 4B = inside and outside
+# )
+#
+# list_regions <- c("HBLL inside surveys")
+# list_species <- c(
+#   "North Pacific Spiny Dogfish",
+#   "Lingcod", #4B = inside
+#   "Quillback Rockfish", # outside and WCVI_Inside?
+#   "Yelloweye Rockfish" # 4B = inside
+#   # "Big Skate"
+# )
 
 # also need to come up with a list of other species of interest...
 
