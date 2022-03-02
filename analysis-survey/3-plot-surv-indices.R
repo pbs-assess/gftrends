@@ -95,4 +95,4 @@ ggplot(aes(year, est / mean_est, group = model)) +
   ggsidekick::theme_sleek() +
   theme(axis.text.y = element_blank())
 
-ggsave("analysis-survey/figs/stock_indices.pdf", width = 14, height = 8)
+ggsave("figs/tweedie-vs-delta.pdf", width = 14, height = 8)
