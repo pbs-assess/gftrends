@@ -138,8 +138,16 @@ if (Sys.info()[["user"]] == "seananderson") {
   to_fit <- to_fit[29:nrow(to_fit), ]
 }
 
-future::plan(future::multisession, workers = 4L)
+
+is_rstudio <- !is.na(Sys.getenv("RSTUDIO", unset = NA))
+is_unix <- .Platform$OS.type == "unix"
+if (is_unix && !is_rstudio) {
+  future::plan(future::multicore, workers = 4L)
+} else {
+  future::plan(future::multisession, workers = 4L)
+}
 options(future.rng.onMisuse = "ignore")
+
 # furrr::future_pwalk(to_fit[c(36, 26),,drop = FALSE], fit_index)
 furrr::future_pwalk(to_fit, fit_index)
 
