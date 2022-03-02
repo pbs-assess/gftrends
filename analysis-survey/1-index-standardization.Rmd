@@ -96,7 +96,7 @@ if (region == "WCHG only") {
   survey <- c("SYN WCHG")
   type <- "Synoptic trawl"
   model_ssid <- c(16)
-  anisotropy <- TRUE
+  # anisotropy <- TRUE
 }
 
 if (region == "Coast-wide trawl surveys") {
