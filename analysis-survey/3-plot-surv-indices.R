@@ -47,7 +47,7 @@ d2 <- d2 %>% mutate(stock_clean = factor(stock_clean,
 
 # clean up CI that were too wide?
 d2$upr[is.na(d2$se) ] <- NA
-d2$upr[d2$se > 0.7 ] <- NA
+# d2$upr[d2$se > 1.2 ] <- NA
 d2$q0.95_blrp[d2$ratio_ci > 15 ] <- NA
 
 # range(d2$sd_log_blrp, na.rm = T)
@@ -81,14 +81,13 @@ ggsave("figs/stock_vs_indices.pdf", width = 12, height = 10)
 ggsave("figs/stock_vs_indices.png", width = 12, height = 10)
 
 
-
-ggplot(d,
-       aes(year, est / mean_est, group = model)) +
+d %>% filter(index == "Coast-wide trawl surveys") %>%
+ggplot(aes(year, est / mean_est, group = model)) +
   geom_line(aes(linetype = gear, colour = model_type)) +
   geom_ribbon(aes(
     ymin = lwr / mean_est, ymax = upr / mean_est, fill = model_type
   ), alpha = 0.4) +
-  ylab("Biomass (tonnes)") +
+  ylab("Relative Biomass") +
   # scale_linetype_manual(values = c(2, 3, 1)) +
   scale_color_brewer(palette = "Dark2") +
   scale_fill_brewer(palette = "Dark2") +
