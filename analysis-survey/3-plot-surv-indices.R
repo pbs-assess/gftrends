@@ -187,4 +187,9 @@ g <- d2 %>%
   labs(colour = "Type", fill = "Type")
 
 ggsave("figs/stock-vs-indices.pdf", width = 12, height = 12)
-ggsave("figs/stock-vs-indices.png", width = 10, height = 12)
+ggsave("figs/stock-vs-indices.png", width = 12, height = 12)
+
+g2 <- g + coord_cartesian(expand = FALSE, xlim = c(2000, 2021))
+
+ggsave("figs/stock-vs-indices-recent.pdf", width = 10, height = 12)
+ggsave("figs/stock-vs-indices-recent.png", width = 10, height = 12)
