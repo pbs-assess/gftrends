@@ -34,7 +34,6 @@ ggplot(all_indices, aes(year, est, group = model)) +
   ), alpha = 0.4) +
   ylab("Relative Biomass") +
   scale_y_log10()+
-  # scale_linetype_manual(name = "Survey", values = c(2, 3, 1)) +
   scale_color_brewer(palette = "Dark2") +
   scale_fill_brewer(palette = "Dark2") +
   facet_wrap(vars(paste(species, region)), scales = "free_y") +
@@ -61,14 +60,37 @@ ggplot(all_indices, aes(year, est, group = model)) +
     ymin = lwr, ymax = upr, fill = model
   ), alpha = 0.4) +
   ylab("Relative Biomass") +
-  # scale_y_log10()+
-  # scale_linetype_manual(name = "Survey", values = c(2, 3, 1)) +
+  scale_y_log10()+
   scale_color_brewer(palette = "Dark2") +
   scale_fill_brewer(palette = "Dark2") +
   facet_wrap(vars(paste(species, region)), scales = "free_y") +
   ggsidekick::theme_sleek() +
   theme(axis.text.y = element_blank())
 ggsave("figs/delta-vs-tweedie-best.pdf", width = 17, height = 12)
+
+slopes <- all_indices %>% group_by(species, region) %>%
+  group_split() %>%
+  purrr::map_dfr(function(.x) {
+    .x <- filter(.x, year >= 2010)
+    m <- lm(log(est) ~ year, data = .x)
+    data.frame(slope = coef(m)[2], species = .x$species[1], region = .x$region[1])
+  })
+
+all_indices %>% left_join(slopes) %>%
+  mutate(id = paste(species, region)) %>%
+  # mutate(id = forcats::fct_reorder(id, slope)) %>%
+  ggplot(aes(year, est, group = model)) +
+  geom_line(aes(colour = model)) +
+  geom_ribbon(aes(
+    ymin = lwr, ymax = upr, fill = model
+  ), alpha = 0.4) +
+  ylab("Relative Biomass") +
+  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  facet_wrap(vars(forcats::fct_reorder(id, -slope)), scales = "free_y") +
+  ggsidekick::theme_sleek() +
+  theme(axis.text.y = element_blank())
+ggsave("figs/index-best-by-slope.pdf", width = 17, height = 12)
 
 d <- left_join(all_indices, stock_df, by = c("species", "region")) %>%
   rename(index = region, model_type = model) %>%
@@ -88,11 +110,6 @@ d2$stock_clean <- ifelse(!is.na(d2$stock_clean), d2$stock_clean, paste(d2$specie
 # d2 <- d2 %>% mutate(stock_clean = factor(stock_clean,
 #   levels = as.character(unique(stock_df$stock_clean))
 # ))
-
-# clean up CI that were too wide?
-# d2$upr[is.na(d2$se) ] <- NA
-# # d2$upr[d2$se > 1.2 ] <- NA
-# d2$q0.95_blrp[d2$ratio_ci > 15 ] <- NA
 
 # range(d2$sd_log_blrp, na.rm = T)
 d2 %>%
@@ -121,43 +138,3 @@ d2 %>%
 
 ggsave("figs/stock_vs_indices.pdf", width = 14, height = 14)
 ggsave("figs/stock_vs_indices.png", width = 14, height = 14)
-
-#
-# d %>% filter(index == "Coast-wide trawl surveys") %>%
-# ggplot(aes(year, est / mean_est, group = model)) +
-#   geom_line(aes(linetype = gear, colour = model_type)) +
-#   geom_ribbon(aes(
-#     ymin = lwr / mean_est, ymax = upr / mean_est, fill = model_type
-#   ), alpha = 0.4) +
-#   ylab("Relative Biomass") +
-#   scale_linetype_manual(name = "Survey", values = c(2, 3, 1)) +
-#   scale_color_brewer(palette = "Dark2") +
-#   scale_fill_brewer(palette = "Dark2") +
-#   facet_wrap(~species, scales = "free_y") +
-#   ggsidekick::theme_sleek() +
-#   theme(axis.text.y = element_blank())
-#
-# ggsave("figs/tweedie-vs-delta.pdf", width = 14, height = 8)
-#
-# d %>% filter(model_type == "delta-gamma") %>%
-#   ggplot(aes(year, est / mean_est, group = model)) +
-#   geom_line(aes(linetype = index, colour = gear)) +
-#   geom_ribbon(aes(
-#     ymin = lwr / mean_est, ymax = upr / mean_est, fill = gear
-#   ), alpha = 0.4, data = filter(d, model_type == "delta-gamma")) +
-#   ylab("Relative Biomass") +
-#
-#   geom_line(aes(linetype = index, colour = gear)) +
-#   geom_ribbon(aes(
-#     ymin = lwr / mean_est, ymax = upr / mean_est, fill = gear
-#   ), alpha = 0.4, data = filter(d, model_type == "Tweedie" & species == "Big Skate" & index = "HBLL inside surveys")) +
-#   ylab("Relative Biomass") +
-#
-#   # scale_linetype_manual(name = "Survey", values = c(2, 3, 1)) +
-#   scale_color_brewer(name = "Survey", palette = "Dark2") +
-#   scale_fill_brewer(name = "Survey", palette = "Dark2") +
-#   facet_wrap(~species, scales = "free_y") +
-#   ggsidekick::theme_sleek() +
-#   theme(axis.text.y = element_blank())
-#
-# ggsave("figs/all-fish-delta-gamma.pdf", width = 14, height = 8)
