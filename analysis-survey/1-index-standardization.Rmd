@@ -442,16 +442,20 @@ Get simulated index
 ```{r}
 dir.create(here::here("data-generated/indices"), showWarnings = FALSE)
 
-# nd <- nd_all %>%
-  # filter(year %in% unique(data$year)) %>%
-  # filter(depth < depth_limit)
-
-if (delta_model) {
-  fitted_yrs <- union(unique(m1$data$year), unique(m2$data$year))
-} else {
-  fitted_yrs <- unique(m$data$year)
+make_grid <- function(x, years) {
+  .x <- filter(x, year == min(year)) # take one
+  years <- sort(unique(years))
+  .nd <- do.call("rbind",
+    replicate(length(years), .x, simplify = FALSE))
+  .nd[["year"]] <- rep(years, each = nrow(.x))
+  .nd
 }
-nd <- nd_all %>% filter(year %in% fitted_yrs)
+if (delta_model) {
+  fitted_yrs <- sort(union(unique(m1$data$year), unique(m2$data$year)))
+} else {
+  fitted_yrs <- sort(unique(m$data$year))
+}
+nd <- make_grid(nd_all, years = fitted_yrs)
 
 if (type == "Synoptic trawl") {
   nd <- filter(nd, survey %in% unique(positive_sets$survey_abbrev))
