@@ -178,7 +178,7 @@ g <- d2 %>%
     axis.text.y = element_blank(),  axis.title.x = element_blank(),
     axis.ticks.y = element_blank(),
     panel.grid.major.x = element_line(colour = "grey85", linetype = 2),
-    panel.spacing.x = unit(13, "points"),
+    panel.spacing.x = unit(15, "points"),
     panel.spacing.y = unit(3, "points")
   ) +
   coord_cartesian(expand = FALSE) +
