@@ -15,15 +15,10 @@ params:
     # species: "Pacific Herring"
     region: "Coast-wide trawl surveys"
     # region: "HBLL outside surveys"
-<<<<<<< HEAD
     # region: "HBLL inside surveys"
     # region: "WCHG only"
-    delta_model: FALSE
-=======
-    region: "HBLL inside surveys"
-    # region: "WCHG only"
     delta_model: TRUE
->>>>>>> @{u}
+
     # region: "HBLL inside surveys"
     name: "-rw-no-covs" # covariate string used to name model rds
     # update_model: FALSE
