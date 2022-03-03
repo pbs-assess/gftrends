@@ -259,8 +259,8 @@ if (delta_model) {
 Run sdmTMB model
 
 ```{r}
+year_range <- range(data$year)
 if (update_model) {
-  year_range <- range(data$year)
   all_years <- data.frame(year = year_range[1]:year_range[2])
   missing_years <- anti_join(all_years, data, by = "year") %>%
     select(year) %>%
@@ -437,6 +437,10 @@ dir.create(here::here("data-generated/indices"), showWarnings = FALSE)
 # nd <- nd_all %>%
   # filter(year %in% unique(data$year)) %>%
   # filter(depth < depth_limit)
+
+nd <- nd_all %>% 
+  filter(year >= min(year_range) & year <= max(year_range))
+
 if (type == "Synoptic trawl") {
   nd <- filter(nd, survey %in% unique(positive_sets$survey_abbrev))
 } else {
