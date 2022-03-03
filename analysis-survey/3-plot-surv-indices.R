@@ -17,7 +17,7 @@ saveRDS(all_indices, file = paste0("data-generated/sopo-2021-indices.rds"))
 all_indices <- readRDS(paste0("data-generated/sopo-2021-indices.rds")) %>%
   rename(gear = type)
 dat <- readRDS("data-generated/b-status-dat.rds") %>%
-  filter(year >= 1990) %>%
+  filter(year >= 1960) %>%
   rename(dfo_area = region) %>%
   select(-species) %>%
   group_by(stock) %>%
@@ -51,6 +51,7 @@ group_by(se_check, species, gear, region, surveys) %>%
 keep <- group_by(se_check, species, gear, region, surveys) %>%
   filter(avg_se == min(avg_se))
 nrow(keep)
+# keep$model[keep$species == "Redstripe Rockfish" & keep$region == "WCHG only"] <- "Tweedie"
 
 all_indices <- left_join(keep, all_indices)
 
@@ -130,6 +131,21 @@ cols <- RColorBrewer::brewer.pal(3, name = "Dark2")
 cols <- c("#00000050", cols)
 names(cols) <- c("Assessment", "HBLL (inside)", "HBLL (outside)", "Synoptic trawl")
 
+# trim off high uncertainty on outdated Quillback assessment
+# this allows the index to show up
+# d2$q0.95_blrp[d2$ratio_ci > 15 ] <- NA
+# d2$upr[d2$stock == "redstripe_rockfish_BC_North"] <- NA
+
+# d2$short_index <- stringr::str_remove_all(d2$index, " surveys")
+
+# d2$q0.95_blrp[d2$stock == "quillback_BC_Outside"] <- NA
+
+e <- d2$log_blrp[d2$stock == "quillback_BC_Outside"]
+d2$upr[d2$stock == "quillback_BC_Outside" & d2$q0.95_blrp > max(e, na.rm = T) * 2] <- max(e, na.rm = T) * 2
+
+e <- d2$est[d2$stock == "redstripe_rockfish_BC_North"]
+d2$upr[d2$stock == "redstripe_rockfish_BC_North" & d2$upr > max(e, na.rm = T) * 2] <- max(e, na.rm = T) * 2
+
 g <- d2 %>%
   mutate(stock_clean = gsub("([a-zA-Z]+ [a-zA-Z]+) ", "\\1\\\n", stock_clean)) %>%
   mutate(gear = ifelse(is.na(gear), "Assessment", gear)) %>%
@@ -162,9 +178,9 @@ g <- d2 %>%
     panel.spacing.y = unit(0, "points")
   ) +
   coord_cartesian(expand = FALSE) +
-  scale_y_continuous(limits = c(0, NA), expand = c(0, NA)) +
+  scale_y_continuous(limits = c(0, NA), expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
   labs(colour = "Type", fill = "Type")
 
-ggsave("figs/stock-vs-indices.pdf", width = 10, height = 12)
+ggsave("figs/stock-vs-indices.pdf", width = 12, height = 12)
 ggsave("figs/stock-vs-indices.png", width = 10, height = 12)
