@@ -346,8 +346,6 @@ if (update_model) {
     )
     saveRDS(m, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
     tictoc::toc()
-    simulate(m, nsim = 200) %>%
-      dharma_residuals(m)
   }
 }
 ```
@@ -426,6 +424,10 @@ try({
 })
 try({
   tidy(m, effects = "ran_pars", conf.int = TRUE)
+})
+try({
+ simulate(m, nsim = 200) %>%
+      dharma_residuals(m)
 })
 ```
 
