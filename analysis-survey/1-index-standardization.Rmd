@@ -266,6 +266,7 @@ if (update_model) {
     select(year) %>%
     unique()
   missing_years <- missing_years$year
+  if (length(missing_years) == 0L) missing_years <- NULL
 
   if (delta_model) {
     tictoc::tic()
@@ -297,6 +298,8 @@ if (update_model) {
       } else {
         missing_years2 <- missing_years
       }
+      
+      if (length(missing_years2) == 0L) missing_years <- NULL
 
       tictoc::tic()
 
