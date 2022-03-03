@@ -291,7 +291,7 @@ if (update_model) {
     if (m1$sd_report$pdHess & !m1$bad_eig) {
 
       # check if positive sets are found in all years
-      if (!all(sort(unique(data$year)) == sort(unique(data2$year)))) {
+      if (!identical(sort(unique(data$year)), sort(unique(data2$year)))) {
         pos_years <- data2 %>% select(year)
         missing_years <- anti_join(all_years, data2, by = "year") %>%
           select(year) %>%
