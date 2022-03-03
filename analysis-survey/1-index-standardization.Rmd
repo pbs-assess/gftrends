@@ -288,7 +288,7 @@ if (update_model) {
     simulate(m1, nsim = 200) %>%
       dharma_residuals(m1)
     
-    if (m1$sd_report$pdHess & !m1$bad_eig) {
+    if (m1$sd_report$pdHess && !m1$bad_eig) {
 
       # check if positive sets are found in all years
       if (!identical(sort(unique(data$year)), sort(unique(data2$year)))) {
@@ -323,7 +323,7 @@ if (update_model) {
       delta_model <- FALSE
     }
 
-    if (!m2$sd_report$pdHess | m2$bad_eig) {
+    if (!m2$sd_report$pdHess || m2$bad_eig) {
       delta_model <- FALSE
     }
     simulate(m2, nsim = 200) %>%
@@ -472,14 +472,14 @@ samples <- data %>%
   filter(n == max(n)) %>%
   select(year, dominant_surv = survey_abbrev, total, freq)
 
-if (delta_model & exists("m1") & exists("m2")) {
+if (delta_model && exists("m1") && exists("m2")) {
   both_converged <- all(
     (max(m1$gradients) < 0.005), (max(m2$gradients) < 0.005),
     !m1$bad_eig, !m2$bad_eig,
     m1$sd_report$pdHess, m2$sd_report$pdHess # old way
     # m1$pos_def_hessian, m2$pos_def_hessian # new way
   )
-  if (both_converged & update_index) {
+  if (both_converged && update_index) {
     p1 <- predict(m1, newdata = nd, nsim = 1000)
     p2 <- predict(m2, newdata = nd, nsim = 1000)
     p <- log(plogis(p1) * exp(p2))
@@ -501,7 +501,7 @@ if (delta_model & exists("m1") & exists("m2")) {
   }
 } else {
   if (exists("m")) {
-    if (max(m$gradients) < 0.1 & !m$bad_eig & m$sd_report$pdHess & update_index) {
+    if (max(m$gradients) < 0.1 && !m$bad_eig && m$sd_report$pdHess && update_index) {
       p <- predict(m, newdata = nd, nsim = 1000)
       i <- get_index_sims(p, area = nd$area)
       i <- i %>% mutate(
