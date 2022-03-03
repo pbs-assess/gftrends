@@ -105,13 +105,20 @@ d1 <- full_join(dat, d)
 
 # # change order of facets to group more like species together
 d2 <- d1 %>% arrange(desc(type), stock) # for grouping by taxa/type first
-d2$stock_clean <- ifelse(!is.na(d2$stock_clean), d2$stock_clean, paste(d2$species, d2$index))
+d2$short_index <- stringr::str_remove_all(d2$index, " surveys")
+d2$stock_clean <- ifelse(!is.na(d2$stock_clean), d2$stock_clean, paste(d2$species, d2$short_index))
+
 # stock_df <- stock_df %>% arrange(stock) # for alphabetical order
 # d2 <- d2 %>% mutate(stock_clean = factor(stock_clean,
 #   levels = as.character(unique(stock_df$stock_clean))
 # ))
 
 # range(d2$sd_log_blrp, na.rm = T)
+
+# trim off high uncertainty on outdated Quillback assessment
+# this allows the index to show up
+d2$q0.95_blrp[d2$ratio_ci > 15 ] <- NA
+
 d2 %>%
   ggplot() +
   geom_ribbon(aes(year,
