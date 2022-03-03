@@ -326,9 +326,9 @@ if (update_model) {
     if (!m2$sd_report$pdHess | m2$bad_eig) {
       delta_model <- FALSE
     }
-  }
-  simulate(m2, nsim = 200) %>%
+    simulate(m2, nsim = 200) %>%
     dharma_residuals(m2)
+  }
 
   if (!delta_model) {
     tictoc::tic()
