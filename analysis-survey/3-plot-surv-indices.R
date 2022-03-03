@@ -72,7 +72,7 @@ ggsave("figs/delta-vs-tweedie-best.pdf", width = 17, height = 12)
 slopes <- all_indices %>% group_by(species, gear) %>%
   group_split() %>%
   purrr::map_dfr(function(.x) {
-    .x <- filter(.x, year >= 2010)
+    .x <- filter(.x, year >= 2003)
     m <- lm(log(est) ~ year, data = .x)
     data.frame(slope = coef(m)[2], species = .x$species[1], gear = .x$gear[1])
   })
@@ -140,14 +140,18 @@ names(cols) <- c("Assessment", "HBLL (inside)", "HBLL (outside)", "Synoptic traw
 
 # d2$q0.95_blrp[d2$stock == "quillback_BC_Outside"] <- NA
 
-e <- d2$log_blrp[d2$stock == "quillback_BC_Outside"]
-d2$upr[d2$stock == "quillback_BC_Outside" & d2$q0.95_blrp > max(e, na.rm = T) * 2] <- max(e, na.rm = T) * 2
+e <- exp(d2$log_blrp[d2$stock == "quillback_BC_Outside"])
+d2$q0.95_blrp[d2$stock == "quillback_BC_Outside" & d2$q0.95_blrp > max(e, na.rm = T) * 1.2] <- max(e, na.rm = T) * 1.2
 
 e <- d2$est[d2$stock == "redstripe_rockfish_BC_North"]
 d2$upr[d2$stock == "redstripe_rockfish_BC_North" & d2$upr > max(e, na.rm = T) * 2] <- max(e, na.rm = T) * 2
 
+d2$est[d2$stock == "sablefish_BC"] <- NA # not trap survey
+d2$lwr[d2$stock == "sablefish_BC"] <- NA # not trap survey
+d2$upr[d2$stock == "sablefish_BC"] <- NA # not trap survey
+
 g <- d2 %>%
-  mutate(stock_clean = gsub("([a-zA-Z]+ [a-zA-Z]+) ", "\\1\\\n", stock_clean)) %>%
+  mutate(stock_clean = gsub("([a-zA-Z]+ [a-zA-Z]+) ([a-zA-Z 0-9]+)", "\\1\\\n\\2", stock_clean)) %>%
   mutate(gear = ifelse(is.na(gear), "Assessment", gear)) %>%
   ggplot() +
   geom_ribbon(aes(year,
@@ -175,7 +179,7 @@ g <- d2 %>%
     axis.ticks.y = element_blank(),
     panel.grid.major.x = element_line(colour = "grey85", linetype = 2),
     panel.spacing.x = unit(13, "points"),
-    panel.spacing.y = unit(0, "points")
+    panel.spacing.y = unit(3, "points")
   ) +
   coord_cartesian(expand = FALSE) +
   scale_y_continuous(limits = c(0, NA), expand = c(0, 0)) +
