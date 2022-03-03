@@ -13,11 +13,12 @@ params:
     # species: "Rougheye/Blackspotted Rockfish Complex"
     # species: "Pacific Sand Lance"
     # species: "Pacific Herring"
-    # region: "Coast-wide trawl surveys"
+    region: "Coast-wide trawl surveys"
     # region: "HBLL outside surveys"
     # region: "HBLL inside surveys"
     region: "WCHG only"
     delta_model: TRUE
+
     # region: "HBLL inside surveys"
     name: "-rw-no-covs" # covariate string used to name model rds
     # update_model: FALSE
@@ -247,7 +248,7 @@ if (delta_model) {
     update_model <- TRUE
   }
 } else {
-  f <- readRDS(here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
+  f <- here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds"))
   if (file.exists(f)) {
     m <- readRDS(f)
   } else {
