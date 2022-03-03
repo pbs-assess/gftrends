@@ -548,7 +548,7 @@ if (exists("i")) {
     ))) +
     ylab("Biomass (tonnes)") +
     ggtitle(paste(species), subtitle = paste0(region, " (", surv_string, ")"))
-  ggsave(paste0("figs/", spp, "-", ssid_string, name, ".png"), height = 4, width = 6)
+  ggsave(here::here(paste0("figs/", spp, "-", ssid_string, name, if (delta_model) "-delta", ".png")), height = 4, width = 6)
   g
 }
 ```
