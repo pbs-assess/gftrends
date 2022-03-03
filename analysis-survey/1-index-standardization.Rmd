@@ -293,10 +293,10 @@ if (update_model) {
       # check if positive sets are found in all years
       if (!identical(sort(unique(data$year)), sort(unique(data2$year)))) {
         pos_years <- data2 %>% select(year)
-        missing_years <- anti_join(all_years, data2, by = "year") %>%
+        .missing_years <- anti_join(all_years, data2, by = "year") %>%
           select(year) %>%
           unique()
-        missing_years2 <- missing_years$year
+        missing_years2 <- .missing_years$year
       } else {
         missing_years2 <- missing_years
       }
