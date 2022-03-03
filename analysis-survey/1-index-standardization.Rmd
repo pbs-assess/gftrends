@@ -15,9 +15,15 @@ params:
     # species: "Pacific Herring"
     region: "Coast-wide trawl surveys"
     # region: "HBLL outside surveys"
+<<<<<<< HEAD
     # region: "HBLL inside surveys"
     # region: "WCHG only"
     delta_model: FALSE
+=======
+    region: "HBLL inside surveys"
+    # region: "WCHG only"
+    delta_model: TRUE
+>>>>>>> @{u}
     # region: "HBLL inside surveys"
     name: "-rw-no-covs" # covariate string used to name model rds
     # update_model: FALSE
@@ -259,13 +265,14 @@ if (delta_model) {
 Run sdmTMB model
 
 ```{r}
+year_range <- range(data$year)
 if (update_model) {
-  year_range <- range(data$year)
   all_years <- data.frame(year = year_range[1]:year_range[2])
   missing_years <- anti_join(all_years, data, by = "year") %>%
     select(year) %>%
     unique()
   missing_years <- missing_years$year
+  if (length(missing_years) == 0L) missing_years <- NULL
 
   if (delta_model) {
     tictoc::tic()
@@ -284,7 +291,10 @@ if (update_model) {
     )
     tictoc::toc()
     saveRDS(m1, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-presence.rds")))
-
+    
+    simulate(m1, nsim = 200) %>%
+      dharma_residuals(m1)
+    
     if (m1$sd_report$pdHess & !m1$bad_eig) {
 
       # check if positive sets are found in all years
@@ -297,6 +307,8 @@ if (update_model) {
       } else {
         missing_years2 <- missing_years
       }
+      
+      if (length(missing_years2) == 0L) missing_years <- NULL
 
       tictoc::tic()
 
@@ -322,6 +334,8 @@ if (update_model) {
       delta_model <- FALSE
     }
   }
+  simulate(m2, nsim = 200) %>%
+    dharma_residuals(m2)
 
   if (!delta_model) {
     tictoc::tic()
@@ -337,9 +351,10 @@ if (update_model) {
       anisotropy = anisotropy,
       silent = params$silent
     )
-
     saveRDS(m, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
     tictoc::toc()
+    simulate(m, nsim = 200) %>%
+      dharma_residuals(m)
   }
 }
 ```
@@ -425,18 +440,22 @@ Check depths of positive sets
 ```{r}
 hist(data$depth_m)
 hist(positive_sets$depth_m)
-depth_limit <- ifelse(
-  max(positive_sets$depth_m, na.rm = T) > 500, max(positive_sets$depth_m, na.rm = T), max(positive_sets$depth_m, na.rm = T) + 100
-)
+# depth_limit <- ifelse(
+  # max(positive_sets$depth_m, na.rm = T) > 500, max(positive_sets$depth_m, na.rm = T), max(positive_sets$depth_m, na.rm = T) + 100
+# )
 ```
 
 Get simulated index
 ```{r}
 dir.create(here::here("data-generated/indices"), showWarnings = FALSE)
 
-nd <- nd_all %>%
-  filter(year %in% unique(data$year)) %>%
-  filter(depth < depth_limit)
+# nd <- nd_all %>%
+  # filter(year %in% unique(data$year)) %>%
+  # filter(depth < depth_limit)
+
+nd <- nd_all %>% 
+  filter(year >= min(year_range) & year <= max(year_range))
+
 if (type == "Synoptic trawl") {
   nd <- filter(nd, survey %in% unique(positive_sets$survey_abbrev))
 } else {
@@ -483,7 +502,6 @@ if (delta_model & exists("m1") & exists("m2")) {
   if (exists("m")) {
     if (max(m$gradients) < 0.1 & !m$bad_eig & m$sd_report$pdHess & update_index) {
       p <- predict(m, newdata = nd, nsim = 1000)
-
       i <- get_index_sims(p, area = nd$area)
       i <- i %>% mutate(
         species = species,
