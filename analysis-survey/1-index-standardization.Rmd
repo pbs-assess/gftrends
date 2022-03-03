@@ -285,7 +285,10 @@ if (update_model) {
     )
     tictoc::toc()
     saveRDS(m1, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-presence.rds")))
-
+    
+    simulate(m1, nsim = 200) %>%
+      dharma_residuals(m1)
+    
     if (m1$sd_report$pdHess & !m1$bad_eig) {
 
       # check if positive sets are found in all years
@@ -325,6 +328,8 @@ if (update_model) {
       delta_model <- FALSE
     }
   }
+  simulate(m2, nsim = 200) %>%
+    dharma_residuals(m2)
 
   if (!delta_model) {
     tictoc::tic()
@@ -340,9 +345,10 @@ if (update_model) {
       anisotropy = anisotropy,
       silent = params$silent
     )
-
     saveRDS(m, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
     tictoc::toc()
+    simulate(m, nsim = 200) %>%
+      dharma_residuals(m)
   }
 }
 ```
