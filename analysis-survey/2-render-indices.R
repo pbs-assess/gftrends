@@ -143,7 +143,7 @@ is_unix <- .Platform$OS.type == "unix"
 if (is_unix && !is_rstudio) {
   future::plan(future::multicore, workers = 6L)
 } else {
-  future::plan(future::multisession, workers = 6L)
+  future::plan(future::multisession, workers = 3L)
 }
 options(future.rng.onMisuse = "ignore")
 
