@@ -116,7 +116,7 @@ fit_index <- function(region, species) {
         species = species,
         region = region,
         delta_model = TRUE,
-        update_model = FALSE,
+        update_model = TRUE,
         update_index = TRUE,
         silent = TRUE
         # update_index = FALSE
