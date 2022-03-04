@@ -174,6 +174,17 @@ d3$stock_clean <- gsub("HBLL \\(inside\\)", "4B (VI Inside)", d3$stock_clean)
 d3$stock_clean <- gsub("HBLL \\(outside\\)", "BC (Outside)", d3$stock_clean)
 # d3$stock_clean <- gsub("Dogfish BC", "DogfishBC", d3$stock_clean)
 
+d3$type[d3$species %in% c("North Pacific Spiny Dogfish",
+                          "Big Skate",
+                          "Longnose Skate",
+                          "Spotted Ratfish")] <- "Sharks and allies"
+d3$type[d3$species %in% c("Petrale Sole",
+                          "Rex Sole",
+                          "Dover Sole",
+                          "English Sole")] <- "Flatfish"
+d3$type[d3$species %in% c("Canary Rockfish", "Shortraker Rockfish")] <- "Rockfish"
+d3$type[d3$species %in% c("Walleye Pollock", "Pacific Cod", "Sablefish", "Lingcod")] <- "Cods and allies"
+
 make_surv_assess_plot <- function(dat) {
   dat %>%
     mutate(
