@@ -101,6 +101,12 @@ to_fit <- bind_rows(
   )
 )
 
+# # add missing species
+# to_fit <- tribble(
+#   ~species, ~region,
+#   "Shortbelly Rockfish","Coast-wide trawl surveys"
+#   )
+
 # https://github.com/rstudio/rmarkdown/issues/1673
 render_separately <- function(...) callr::r(
   function(...) rmarkdown::render(..., envir = globalenv()),

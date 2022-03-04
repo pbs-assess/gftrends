@@ -128,6 +128,10 @@ d2$q0.95_blrp[d2$stock == "quillback_BC_Outside" & d2$q0.95_blrp > max(e, na.rm 
 e <- d2$est[d2$stock == "redstripe_rockfish_BC_North"]
 d2$upr[d2$stock == "redstripe_rockfish_BC_North" & d2$upr > max(e, na.rm = T) * 2] <- max(e, na.rm = T) * 2
 
+e <- d2$est[d2$species == "Shortbelly Rockfish"]
+d2$upr[d2$species == "Shortbelly Rockfish" & d2$upr > max(e, na.rm = T) * 1.5] <- max(e, na.rm = T) * 1.5
+
+
 d2$est[d2$stock == "sablefish_BC"] <- NA # not trap survey
 d2$lwr[d2$stock == "sablefish_BC"] <- NA # not trap survey
 d2$upr[d2$stock == "sablefish_BC"] <- NA # not trap survey
@@ -182,7 +186,7 @@ d3$type[d3$species %in% c("Petrale Sole",
                           "Rex Sole",
                           "Dover Sole",
                           "English Sole")] <- "Flatfish"
-d3$type[d3$species %in% c("Canary Rockfish", "Shortraker Rockfish")] <- "Rockfish"
+d3$type[d3$species %in% c("Canary Rockfish", "Shortraker Rockfish", "Shortbelly Rockfish")] <- "Rockfish"
 d3$type[d3$species %in% c("Walleye Pollock", "Pacific Cod", "Sablefish", "Lingcod")] <- "Cods and allies"
 
 make_surv_assess_plot <- function(dat, ncol = 5) {
@@ -280,5 +284,4 @@ g <- d3 %>%
   make_surv_assess_plot()
 ggsave("figs/stock-vs-indices-recent.pdf", width = 10, height = 12)
 ggsave("figs/stock-vs-indices-recent.png", width = 10, height = 12)
-
 

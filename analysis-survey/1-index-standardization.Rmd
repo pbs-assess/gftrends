@@ -172,6 +172,10 @@ if (region != "HBLL inside surveys") {
   all_data <- readRDS(here::here("data-raw/all-inside-hbll-2021.rds")) %>%
     filter(species_common_name == tolower(species))
 }
+
+if(species=="Shortbelly Rockfish"){
+  all_data <- readRDS(here::here("data-raw/shortbelly.rds")) 
+}
 ```
 
 
