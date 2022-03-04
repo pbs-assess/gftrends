@@ -185,7 +185,7 @@ d3$type[d3$species %in% c("Petrale Sole",
 d3$type[d3$species %in% c("Canary Rockfish", "Shortraker Rockfish")] <- "Rockfish"
 d3$type[d3$species %in% c("Walleye Pollock", "Pacific Cod", "Sablefish", "Lingcod")] <- "Cods and allies"
 
-make_surv_assess_plot <- function(dat) {
+make_surv_assess_plot <- function(dat, ncol = 5) {
   dat %>%
     mutate(
       stock_clean =
@@ -209,7 +209,7 @@ make_surv_assess_plot <- function(dat) {
     scale_colour_manual(values = cols) +
     scale_fill_manual(values = cols) +
     facet_wrap(vars(forcats::fct_reorder(stock_clean, -slope)),
-      ncol = 5, scales = "free_y"
+      ncol = ncol, scales = "free_y"
     ) + #
     ggsidekick::theme_sleek() +
     theme(
@@ -227,7 +227,9 @@ make_surv_assess_plot <- function(dat) {
   # geom_vline(aes(xintercept = max_geo_mean), lty = 1) # testing
 }
 
+
 g <- make_surv_assess_plot(d3)
+g
 ggsave("figs/stock-vs-indices.pdf", width = 12, height = 12)
 ggsave("figs/stock-vs-indices.png", width = 12, height = 12)
 
@@ -236,3 +238,5 @@ g <- d3 %>%
   make_surv_assess_plot()
 ggsave("figs/stock-vs-indices-recent.pdf", width = 10, height = 12)
 ggsave("figs/stock-vs-indices-recent.png", width = 10, height = 12)
+
+
