@@ -227,6 +227,48 @@ make_surv_assess_plot <- function(dat, ncol = 5) {
   # geom_vline(aes(xintercept = max_geo_mean), lty = 1) # testing
 }
 
+# # plot just sablefish before survey removed
+# g <- d3 %>%
+#   filter(species == "Sablefish") %>%
+#   make_surv_assess_plot() +
+#   xlim(1960, 2021) +
+#   theme(legend.position = "none", axis.title.y = element_blank())
+# g
+# ggsave("figs/stock-vs-indices-sablefish.pdf", width = 2.5, height = 1.5)
+# ggsave("figs/stock-vs-indices-sablefish.png", width = 2.5, height = 1.5)
+
+d3$est[d3$stock == "sablefish_BC"] <- NA # not trap survey
+d3$lwr[d3$stock == "sablefish_BC"] <- NA # not trap survey
+d3$upr[d3$stock == "sablefish_BC"] <- NA # not trap survey
+
+
+# just rockfish
+g <- d3 %>%
+  filter(type == "Rockfish") %>%
+  make_surv_assess_plot(ncol = 5)
+g
+ggsave("figs/stock-vs-indices-rockfish.pdf", width = 10, height = 5)
+ggsave("figs/stock-vs-indices-rockfish.png", width = 10, height = 5)
+
+# just sharks and allies
+g <- d3 %>%
+  filter(type == "Sharks and allies") %>%
+  make_surv_assess_plot(ncol = 3)
+g
+ggsave("figs/stock-vs-indices-sharkco.pdf", width = 7, height = 4.5)
+ggsave("figs/stock-vs-indices-sharkco.png", width = 7, height = 4.5)
+
+# just cods and allies
+g <- d3 %>%
+  filter(type == "Cods and allies" & species != "Sablefish") %>%
+  make_surv_assess_plot()+
+  facet_wrap(vars(stock_clean), ncol=2,
+             scales = "free_y"
+  )
+g
+ggsave("figs/stock-vs-indices-cods.pdf", width = 5, height = 4)
+ggsave("figs/stock-vs-indices-cods.png", width = 5, height = 4)
+
 
 g <- make_surv_assess_plot(d3)
 g
