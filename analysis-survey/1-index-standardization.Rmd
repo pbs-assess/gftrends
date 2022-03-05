@@ -17,10 +17,9 @@ params:
     # region: "HBLL outside surveys"
     # region: "HBLL inside surveys"
     delta_model: TRUE
-    # region: "HBLL inside surveys"
     name: "-rw-no-covs" # covariate string used to name model rds
     # update_model: FALSE
-    update_model: TRUE # TRUE will over write past models; will alway attempt a model if none exists
+    update_model: TRUE # will over write past models; will always attempt a model if none exists
     update_index: TRUE
     silent: FALSE
 ---

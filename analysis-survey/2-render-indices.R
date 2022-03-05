@@ -101,10 +101,12 @@ to_fit <- bind_rows(
   )
 )
 
-# # add missing species
+# # # add interesting (possibly expanding north?) species
 # to_fit <- tribble(
 #   ~species, ~region,
-#   "Shortbelly Rockfish","Coast-wide trawl surveys"
+# #   "Shortbelly Rockfish", "Coast-wide trawl surveys",
+#   "Chilipepper", "QCS & WCVI",
+#     "Pacific Sand Lance", "Coast-wide trawl surveys"
 #   )
 
 # https://github.com/rstudio/rmarkdown/issues/1673
