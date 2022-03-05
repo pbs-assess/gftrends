@@ -128,9 +128,8 @@ d2$q0.95_blrp[d2$stock == "quillback_BC_Outside" & d2$q0.95_blrp > max(e, na.rm 
 e <- d2$est[d2$stock == "redstripe_rockfish_BC_North"]
 d2$upr[d2$stock == "redstripe_rockfish_BC_North" & d2$upr > max(e, na.rm = T) * 2] <- max(e, na.rm = T) * 2
 
-e <- d2$est[d2$species == "Shortbelly Rockfish"]
-d2$upr[d2$species == "Shortbelly Rockfish" & d2$upr > max(e, na.rm = T) * 1.5] <- max(e, na.rm = T) * 1.5
-
+# e <- d2$est[d2$species == "Shortbelly Rockfish"]
+# d2$upr[d2$species == "Shortbelly Rockfish" & d2$upr > max(e, na.rm = T) * 1.5] <- max(e, na.rm = T) * 1.5
 
 d2$est[d2$stock == "sablefish_BC"] <- NA # not trap survey
 d2$lwr[d2$stock == "sablefish_BC"] <- NA # not trap survey
@@ -238,19 +237,30 @@ make_surv_assess_plot <- function(dat, ncol = 5) {
 #   xlim(1960, 2021) +
 #   theme(legend.position = "none", axis.title.y = element_blank())
 # g
-# ggsave("figs/stock-vs-indices-sablefish.pdf", width = 2.5, height = 1.5)
-# ggsave("figs/stock-vs-indices-sablefish.png", width = 2.5, height = 1.5)
+# ggsave("figs/stock-vs-indices-sablefish.pdf", width = 1.9, height = 1.35)
+# ggsave("figs/stock-vs-indices-sablefish.png", width = 1.9, height = 1.35)
+#
+# d3$est[d3$stock == "sablefish_BC"] <- NA # not trap survey
+# d3$lwr[d3$stock == "sablefish_BC"] <- NA # not trap survey
+# d3$upr[d3$stock == "sablefish_BC"] <- NA # not trap survey
 
-d3$est[d3$stock == "sablefish_BC"] <- NA # not trap survey
-d3$lwr[d3$stock == "sablefish_BC"] <- NA # not trap survey
-d3$upr[d3$stock == "sablefish_BC"] <- NA # not trap survey
+# plot just possible range expansion
+g <- d3 %>%
+  filter(species %in% c("Shortbelly Rockfish", "Chilipepper")) %>%
+  make_surv_assess_plot() +
+  # xlim(1960, 2021) +
+  theme(legend.position = "none", axis.title.y = element_blank())
+ggsave("figs/range-expansion.pdf", width = 4.5, height = 1.5)
+ggsave("figs/range-expansion.png", width = 4.5, height = 1.5)
+
+d3 <- d3 %>%
+  filter(!species %in% c("Shortbelly Rockfish", "Chilipepper"))
 
 
 # just rockfish
 g <- d3 %>%
   filter(type == "Rockfish") %>%
   make_surv_assess_plot(ncol = 5)
-g
 ggsave("figs/stock-vs-indices-rockfish.pdf", width = 10, height = 5)
 ggsave("figs/stock-vs-indices-rockfish.png", width = 10, height = 5)
 
@@ -258,7 +268,6 @@ ggsave("figs/stock-vs-indices-rockfish.png", width = 10, height = 5)
 g <- d3 %>%
   filter(type == "Sharks and allies") %>%
   make_surv_assess_plot(ncol = 3)
-g
 ggsave("figs/stock-vs-indices-sharkco.pdf", width = 7, height = 4.5)
 ggsave("figs/stock-vs-indices-sharkco.png", width = 7, height = 4.5)
 
@@ -269,15 +278,12 @@ g <- d3 %>%
   facet_wrap(vars(stock_clean), ncol=2,
              scales = "free_y"
   )
-g
 ggsave("figs/stock-vs-indices-cods.pdf", width = 5, height = 4)
 ggsave("figs/stock-vs-indices-cods.png", width = 5, height = 4)
 
-
-g <- make_surv_assess_plot(d3)
-g
-ggsave("figs/stock-vs-indices.pdf", width = 12, height = 12)
-ggsave("figs/stock-vs-indices.png", width = 12, height = 12)
+g <- make_surv_assess_plot(d3, ncol = 7)
+ggsave("figs/stock-vs-indices.pdf", width = 18, height = 12)
+ggsave("figs/stock-vs-indices.png", width = 18, height = 12)
 
 g <- d3 %>%
   filter(year >= 2000) %>%
