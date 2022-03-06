@@ -188,11 +188,11 @@ d3$type[d3$species %in% c("Petrale Sole",
 d3$type[d3$species %in% c("Canary Rockfish", "Shortraker Rockfish", "Shortbelly Rockfish")] <- "Rockfish"
 d3$type[d3$species %in% c("Walleye Pollock", "Pacific Cod", "Sablefish", "Lingcod")] <- "Cods and allies"
 
-make_surv_assess_plot <- function(dat, ncol = 5) {
+make_surv_assess_plot <- function(dat, ylab = "Relative biomass or abundance estimate", ncol = 5L) {
   dat %>%
     mutate(
       stock_clean =
-        gsub("([a-zA-Z]+ [a-zA-Z]+) ([a-zA-Z 0-9]+)", "\\1\\\n\\2", stock_clean)
+        gsub("([a-zA-Z]+ [0-9a-zA-Z]+) ([a-zA-Z 0-9]+)", "\\1\\\n\\2", stock_clean)
     ) %>%
     mutate(gear = ifelse(is.na(gear), "Assessment", gear)) %>%
     ggplot() +
@@ -208,7 +208,7 @@ make_surv_assess_plot <- function(dat, ncol = 5) {
       ymin = lwr / mean_est, ymax = upr / mean_est,
       fill = gear
     ), alpha = 0.3) +
-    ylab("Relative biomass or abundance estimate") +
+    ylab(ylab) +
     scale_colour_manual(values = cols) +
     scale_fill_manual(values = cols) +
     facet_wrap(vars(forcats::fct_reorder(stock_clean, -slope)),
@@ -291,3 +291,12 @@ g <- d3 %>%
 ggsave("figs/stock-vs-indices-recent.pdf", width = 10, height = 12)
 ggsave("figs/stock-vs-indices-recent.png", width = 10, height = 12)
 
+# g <- d3 %>%
+#   mutate(stock_clean = gsub("Quillback 4B \\(VI Inside\\)", "Quillback 4B Inside", stock_clean)) %>%
+#   filter(year >= 2000) %>%
+#   mutate(q0.05_blrp = NA, q0.95_blrp = NA, log_blrp = NA) %>%
+#   filter(stock %in% c("quillback_BC_Outside", "quillback_WCVI_Inside")) %>%
+#   make_surv_assess_plot(ylab = "Relative abundance estimate")
+# g
+ggsave("figs/stock-vs-indices-recent.pdf", width = 10, height = 12)
+ggsave("figs/stock-vs-indices-recent.png", width = 10, height = 12)
