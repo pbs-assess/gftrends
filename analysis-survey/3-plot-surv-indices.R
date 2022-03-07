@@ -66,12 +66,12 @@ g <- ggplot(all_indices, aes(year, est, group = model)) +
 ggsave("figs/delta-vs-tweedie-best.pdf", width = 17, height = 12)
 
 slopes <- all_indices %>%
-  group_by(species, gear) %>%
+  group_by(species, region) %>%
   group_split() %>%
   purrr::map_dfr(function(.x) {
     .x <- filter(.x, year >= 2000)
     m <- lm(log(est) ~ year, data = .x)
-    data.frame(slope = coef(m)[2], species = .x$species[1], gear = .x$gear[1])
+    data.frame(slope = coef(m)[2], species = .x$species[1], region = .x$region[1])
   })
 
 g <- all_indices %>%
@@ -91,6 +91,8 @@ g <- all_indices %>%
   theme(axis.text.y = element_blank())
 ggsave("figs/index-best-by-slope.pdf", width = 17, height = 12)
 
+all_indices <- left_join(all_indices, slopes)
+
 d <- left_join(all_indices, stock_df, by = c("species", "region")) %>%
   rename(index = region, model_type = model) %>%
   mutate(model = paste(index, model_type)) %>%
@@ -102,7 +104,6 @@ unique(dat$stock_clean)
 d1 <- full_join(dat, d)
 unique(d1$stock_clean)
 
-d1 <- left_join(d1, slopes)
 
 # # change order of facets to group more like species together
 d2 <- d1 %>% arrange(desc(type), stock) # for grouping by taxa/type first
@@ -114,7 +115,7 @@ d2 <- d2 %>%
   group_by(stock_clean) %>%
   mutate(slope = ifelse(is.na(slope), mean(slope, na.rm = TRUE), slope)) # fill in assessment rows
 
-select(d2, species, gear, slope) %>% distinct()
+select(d2, species, region, slope) %>% distinct()
 
 cols <- RColorBrewer::brewer.pal(3, name = "Dark2")
 cols <- c("#00000050", cols)
@@ -287,6 +288,15 @@ g
 # ggsave("figs/stock-vs-indices-rockfish.pdf", width = 10, height = 5)
 ggsave("figs/stock-vs-indices-rockfish.png", width = 10, height = 5)
 
+g <- d3 %>%
+  filter(type == "Rockfish") %>%
+  make_surv_assess_plot(ncol = 5, arrange_by = "slope")
+g
+# ggsave("figs/stock-vs-indices-rockfish-by-slope.pdf", width = 10, height = 5)
+ggsave("figs/stock-vs-indices-rockfish-by-slope.png", width = 10, height = 5)
+
+
+
 # just sharks and allies
 g <- d3 %>%
   filter(type == "Sharks and allies") %>%
@@ -295,6 +305,15 @@ g <- d3 %>%
 g
 # ggsave("figs/stock-vs-indices-sharkco.pdf", width = 7, height = 4.5)
 ggsave("figs/stock-vs-indices-sharkco.png", width = 7, height = 4.5)
+
+# just sharks and allies
+g <- d3 %>%
+  filter(type == "Sharks and allies") %>%
+  make_surv_assess_plot(ncol = 3) +
+  xlim(range(d3$year))
+g
+# ggsave("figs/stock-vs-indices-sharkco-by-slope.pdf", width = 7, height = 4.5)
+ggsave("figs/stock-vs-indices-sharkco-by-slope.png", width = 7, height = 4.5)
 
 # just cods and allies
 g <- d3 %>%
@@ -315,6 +334,13 @@ g <- d3 %>%
 # g
 # ggsave("figs/stock-vs-indices-flatfish.pdf", width = 5, height = 4)
 ggsave("figs/stock-vs-indices-flatfish.png", width = 7, height = 4)
+
+g <- d3 %>%
+  filter(type == "Flatfish") %>%
+  make_surv_assess_plot(ncol = 3)
+# g
+# ggsave("figs/stock-vs-indices-flatfish-by-slope.pdf", width = 5, height = 4)
+ggsave("figs/stock-vs-indices-flatfish-by-slope.png", width = 7, height = 4.5)
 
 g <- make_surv_assess_plot(d3, ncol = 7)
 # ggsave("figs/stock-vs-indices.pdf", width = 18, height = 12)
