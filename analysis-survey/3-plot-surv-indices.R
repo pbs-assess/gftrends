@@ -177,19 +177,35 @@ d3$stock_clean <- gsub("HBLL \\(inside\\)", "4B (VI Inside)", d3$stock_clean)
 d3$stock_clean <- gsub("HBLL \\(outside\\)", "BC (Outside)", d3$stock_clean)
 # d3$stock_clean <- gsub("Dogfish BC", "DogfishBC", d3$stock_clean)
 
-d3$type[d3$species %in% c("North Pacific Spiny Dogfish",
-                          "Big Skate",
-                          "Longnose Skate",
-                          "Spotted Ratfish")] <- "Sharks and allies"
-d3$type[d3$species %in% c("Petrale Sole",
-                          "Rex Sole",
-                          "Dover Sole",
-                          "English Sole")] <- "Flatfish"
+d3$type[d3$species %in% c(
+  "North Pacific Spiny Dogfish",
+  "Big Skate",
+  "Longnose Skate",
+  "Spotted Ratfish"
+)] <- "Sharks and allies"
+d3$type[d3$species %in% c(
+  "Petrale Sole",
+  "Rex Sole",
+  "Dover Sole",
+  "English Sole"
+)] <- "Flatfish"
 d3$type[d3$species %in% c("Canary Rockfish", "Shortraker Rockfish", "Shortbelly Rockfish")] <- "Rockfish"
 d3$type[d3$species %in% c("Walleye Pollock", "Pacific Cod", "Sablefish", "Lingcod")] <- "Cods and allies"
 
-make_surv_assess_plot <- function(dat, ylab = "Relative biomass or abundance estimate", ncol = 5L) {
-  dat %>%
+d3$species_common_name <- tolower(d3$species)
+d3 <- left_join(d3, select(gfsynopsis::get_spp_names(), species_common_name, species_code))
+
+make_surv_assess_plot <- function(dat, ylab = "Relative biomass or abundance estimate", ncol = 5L, arrange_by = c("slope", "code")) {
+
+  arrange_by <- match.arg(arrange_by)
+
+  if (arrange_by == "code") {
+    dat <- arrange(dat, species_code, region) #%>%
+      # mutate(.order = as.numeric((forcats::fct_inorder(species_code))))
+  }
+  # browser()
+
+  gg <- dat %>%
     mutate(
       stock_clean =
         gsub("([a-zA-Z]+ [0-9a-zA-Z]+) ([a-zA-Z 0-9]+)", "\\1\\\n\\2", stock_clean)
@@ -211,9 +227,6 @@ make_surv_assess_plot <- function(dat, ylab = "Relative biomass or abundance est
     ylab(ylab) +
     scale_colour_manual(values = cols) +
     scale_fill_manual(values = cols) +
-    facet_wrap(vars(forcats::fct_reorder(stock_clean, -slope)),
-      ncol = ncol, scales = "free_y"
-    ) + #
     ggsidekick::theme_sleek() +
     theme(
       axis.text.y = element_blank(), axis.title.x = element_blank(),
@@ -226,6 +239,15 @@ make_surv_assess_plot <- function(dat, ylab = "Relative biomass or abundance est
     scale_y_continuous(limits = c(0, NA), expand = c(0, 0)) +
     scale_x_continuous(expand = c(0, 0)) +
     labs(colour = "Type", fill = "Type")
+
+  if (arrange_by == "slope") {
+    gg <- gg + facet_wrap(vars(forcats::fct_reorder(stock_clean, -slope)),
+      ncol = ncol, scales = "free_y")
+  } else {
+    gg <- gg + facet_wrap(vars(forcats::fct_inorder(stock_clean)),
+      ncol = ncol, scales = "free_y")
+  }
+  gg
   # geom_vline(aes(xintercept = min_geo_mean), lty = 1) + # testing
   # geom_vline(aes(xintercept = max_geo_mean), lty = 1) # testing
 }
@@ -245,50 +267,63 @@ make_surv_assess_plot <- function(dat, ylab = "Relative biomass or abundance est
 # d3$upr[d3$stock == "sablefish_BC"] <- NA # not trap survey
 
 # plot just possible range expansion
-g <- d3 %>%
-  filter(species %in% c("Shortbelly Rockfish", "Chilipepper")) %>%
-  make_surv_assess_plot() +
-  # xlim(1960, 2021) +
-  theme(legend.position = "none", axis.title.y = element_blank())
-ggsave("figs/range-expansion.pdf", width = 4.5, height = 1.5)
-ggsave("figs/range-expansion.png", width = 4.5, height = 1.5)
+# g <- d3 %>%
+#   filter(species %in% c("Shortbelly Rockfish", "Chilipepper")) %>%
+#   make_surv_assess_plot() +
+#   # xlim(1960, 2021) +
+#   theme(legend.position = "none", axis.title.y = element_blank())
+# ggsave("figs/range-expansion.pdf", width = 4.5, height = 1.5)
+# ggsave("figs/range-expansion.png", width = 4.5, height = 1.5)
 
 d3 <- d3 %>%
   filter(!species %in% c("Shortbelly Rockfish", "Chilipepper"))
 
-
+# TODO: split this up by slope and shelf?
 # just rockfish
 g <- d3 %>%
   filter(type == "Rockfish") %>%
-  make_surv_assess_plot(ncol = 5)
-ggsave("figs/stock-vs-indices-rockfish.pdf", width = 10, height = 5)
+  make_surv_assess_plot(ncol = 5, arrange_by = "code")
+g
+# ggsave("figs/stock-vs-indices-rockfish.pdf", width = 10, height = 5)
 ggsave("figs/stock-vs-indices-rockfish.png", width = 10, height = 5)
 
 # just sharks and allies
 g <- d3 %>%
   filter(type == "Sharks and allies") %>%
-  make_surv_assess_plot(ncol = 3)
-ggsave("figs/stock-vs-indices-sharkco.pdf", width = 7, height = 4.5)
+  make_surv_assess_plot(ncol = 3, arrange_by = "code") +
+  xlim(range(d3$year))
+g
+# ggsave("figs/stock-vs-indices-sharkco.pdf", width = 7, height = 4.5)
 ggsave("figs/stock-vs-indices-sharkco.png", width = 7, height = 4.5)
 
 # just cods and allies
 g <- d3 %>%
   filter(type == "Cods and allies" & species != "Sablefish") %>%
-  make_surv_assess_plot()+
-  facet_wrap(vars(stock_clean), ncol=2,
-             scales = "free_y"
-  )
-ggsave("figs/stock-vs-indices-cods.pdf", width = 5, height = 4)
+  make_surv_assess_plot(arrange_by = "code", ncol = 2)
+  # facet_wrap(vars(stock_clean),
+  #   ncol = 2,
+  #   scales = "free_y"
+  # )
+g
+# ggsave("figs/stock-vs-indices-cods.pdf", width = 5, height = 4)
 ggsave("figs/stock-vs-indices-cods.png", width = 5, height = 4)
 
+# just flatfish
+g <- d3 %>%
+  filter(type == "Flatfish") %>%
+  make_surv_assess_plot(arrange_by = "code", ncol = 3)
+# g
+# ggsave("figs/stock-vs-indices-flatfish.pdf", width = 5, height = 4)
+ggsave("figs/stock-vs-indices-flatfish.png", width = 7, height = 4)
+
 g <- make_surv_assess_plot(d3, ncol = 7)
-ggsave("figs/stock-vs-indices.pdf", width = 18, height = 12)
+# ggsave("figs/stock-vs-indices.pdf", width = 18, height = 12)
 ggsave("figs/stock-vs-indices.png", width = 18, height = 12)
 
 g <- d3 %>%
   filter(year >= 2000) %>%
   make_surv_assess_plot()
-ggsave("figs/stock-vs-indices-recent.pdf", width = 10, height = 12)
+# ggsave("figs/stock-vs-indices-recent.pdf", width = 10, height = 12)
 ggsave("figs/stock-vs-indices-recent.png", width = 10, height = 12)
 
 # g <- d3 %>%
