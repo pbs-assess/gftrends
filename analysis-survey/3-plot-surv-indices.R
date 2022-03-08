@@ -296,6 +296,51 @@ g
 ggsave("figs/stock-vs-indices-rockfish-by-slope.png", width = 10, height = 5)
 
 
+g <- d3 %>%
+  filter(type == "Rockfish") %>%
+  filter(species %in% c(
+  "Canary Rockfish",
+  "Quillback Rockfish",
+  "Yelloweye Rockfish"
+  )) %>%
+  make_surv_assess_plot(ncol = 2, arrange_by = "slope")
+g
+# ggsave("figs/stock-vs-indices-rockfish-inshore.pdf", width = 10, height = 5)
+ggsave("figs/stock-vs-indices-rockfish-inshore.png", width = 5, height = 4)
+
+g <- d3 %>%
+  filter(type == "Rockfish") %>%
+  filter(species %in% c(
+    "Bocaccio",
+    "Redstripe Rockfish",
+    "Silvergray Rockfish",
+    "widow Rockfish",
+    "Yellowtail Rockfish"
+  )) %>%
+  make_surv_assess_plot(ncol = 2, arrange_by = "slope")
+g
+# ggsave("figs/stock-vs-indices-rockfish-shelf.pdf", width = 10, height = 5)
+ggsave("figs/stock-vs-indices-rockfish-shelf.png", width = 5, height = 4)
+
+g <- d3 %>%
+  filter(type == "Rockfish") %>%
+  filter(!species %in% c(
+    "Canary Rockfish",
+    "Quillback Rockfish",
+    "Yelloweye Rockfish"
+  )) %>%
+  filter(!species %in% c(
+    "Bocaccio",
+    "Redstripe Rockfish",
+    "Silvergray Rockfish",
+    "widow Rockfish",
+    "Yellowtail Rockfish"
+  )) %>%
+  make_surv_assess_plot(ncol = 3, arrange_by = "slope")
+g
+# ggsave("figs/stock-vs-indices-rockfish-shelf.pdf", width = 10, height = 5)
+ggsave("figs/stock-vs-indices-rockfish-slope.png", width = 7, height = 4.5)
+
 
 # just sharks and allies
 g <- d3 %>%
