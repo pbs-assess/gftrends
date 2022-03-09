@@ -178,6 +178,16 @@ d3$stock_clean <- gsub("HBLL \\(inside\\)", "4B (VI Inside)", d3$stock_clean)
 d3$stock_clean <- gsub("HBLL \\(outside\\)", "BC (Outside)", d3$stock_clean)
 # d3$stock_clean <- gsub("Dogfish BC", "DogfishBC", d3$stock_clean)
 
+lh <- d3$slope[d3$stock_clean == "Big Skate BC"]
+lt <- d3$slope[d3$stock_clean == "Big Skate BC (Outside)"]
+d3$slope[d3$stock_clean == "Big Skate BC (Outside)"] <- mean(c(mean(lh), mean(lt)))
+d3$stock_clean <- gsub("^Big Skate BC$", "Big Skate BC (Outside)", d3$stock_clean)
+
+lh <- d3$slope[d3$stock_clean == "Longnose Skate BC"]
+lt <- d3$slope[d3$stock_clean == "Longnose Skate BC (Outside)"]
+d3$slope[d3$stock_clean == "Longnose Skate BC (Outside)"] <- mean(c(mean(lh), mean(lt)))
+d3$stock_clean <- gsub("^Longnose Skate BC$", "Longnose Skate BC (Outside)", d3$stock_clean)
+
 d3$type[d3$species %in% c(
   "North Pacific Spiny Dogfish",
   "Big Skate",
@@ -299,28 +309,33 @@ ggsave("figs/stock-vs-indices-rockfish-by-slope.png", width = 10, height = 5)
 g <- d3 %>%
   filter(type == "Rockfish") %>%
   filter(species %in% c(
-  "Canary Rockfish",
+  # "Canary Rockfish",
   "Quillback Rockfish",
   "Yelloweye Rockfish"
   )) %>%
-  make_surv_assess_plot(ncol = 2, arrange_by = "slope")
+  make_surv_assess_plot(ncol = 2, arrange_by = "slope") +
+  facet_wrap(vars(stock_clean),
+    ncol = 2L,
+    scales = "free_y"
+  )
 g
 # ggsave("figs/stock-vs-indices-rockfish-inshore.pdf", width = 10, height = 5)
-ggsave("figs/stock-vs-indices-rockfish-inshore.png", width = 5, height = 4)
+ggsave("figs/stock-vs-indices-rockfish-inshore.png", width = 5, height = 3, dpi = 400)
 
 g <- d3 %>%
   filter(type == "Rockfish") %>%
   filter(species %in% c(
+    "Canary Rockfish",
     "Bocaccio",
     "Redstripe Rockfish",
     "Silvergray Rockfish",
-    "widow Rockfish",
+    "Widow Rockfish",
     "Yellowtail Rockfish"
   )) %>%
   make_surv_assess_plot(ncol = 2, arrange_by = "slope")
 g
 # ggsave("figs/stock-vs-indices-rockfish-shelf.pdf", width = 10, height = 5)
-ggsave("figs/stock-vs-indices-rockfish-shelf.png", width = 5, height = 4)
+ggsave("figs/stock-vs-indices-rockfish-shelf.png", width = 5, height = 5)
 
 g <- d3 %>%
   filter(type == "Rockfish") %>%
@@ -333,7 +348,7 @@ g <- d3 %>%
     "Bocaccio",
     "Redstripe Rockfish",
     "Silvergray Rockfish",
-    "widow Rockfish",
+    "Widow Rockfish",
     "Yellowtail Rockfish"
   )) %>%
   make_surv_assess_plot(ncol = 3, arrange_by = "slope")
@@ -354,7 +369,7 @@ ggsave("figs/stock-vs-indices-sharkco.png", width = 7, height = 4.5)
 # just sharks and allies
 g <- d3 %>%
   filter(type == "Sharks and allies") %>%
-  make_surv_assess_plot(ncol = 3) +
+  make_surv_assess_plot(ncol = 3L) +
   xlim(range(d3$year))
 g
 # ggsave("figs/stock-vs-indices-sharkco-by-slope.pdf", width = 7, height = 4.5)
