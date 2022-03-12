@@ -19,3 +19,4 @@ figs/
 *.pdf
 *.aux
 .DS_Store
+data-generated

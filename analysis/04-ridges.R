@@ -8,7 +8,7 @@ d <- readRDS("data-generated/all-mcmc.rds")
 
 dat <- d %>%
   group_by(species, region) %>%
-  filter(year <= 2020) %>%
+  filter(year <= 2021) %>%
   filter(year == max(year)) %>%
   # sample_n(2000L, replace = TRUE) %>%
   mutate(
