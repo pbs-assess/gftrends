@@ -289,7 +289,6 @@ make_surv_assess_plot <- function(dat, ylab = "Relative biomass or abundance est
 d3 <- d3 %>%
   filter(!species %in% c("Shortbelly Rockfish", "Chilipepper"))
 
-# TODO: split this up by slope and shelf?
 # just rockfish
 g <- d3 %>%
   filter(type == "Rockfish") %>%
@@ -402,9 +401,11 @@ g <- d3 %>%
 # ggsave("figs/stock-vs-indices-flatfish-by-slope.pdf", width = 5, height = 4)
 ggsave("figs/stock-vs-indices-flatfish-by-slope.png", width = 7, height = 4.5)
 
-g <- make_surv_assess_plot(d3, ncol = 7)
-# ggsave("figs/stock-vs-indices.pdf", width = 18, height = 12)
-ggsave("figs/stock-vs-indices.png", width = 18, height = 12)
+g <- make_surv_assess_plot(d3, ncol = 5)
+ggsave("figs/stock-vs-indices.pdf", width = 10, height = 12)
+
+# g <- make_surv_assess_plot(d3, ncol = 7)
+# ggsave("figs/stock-vs-indices.png", width = 18, height = 12)
 
 g <- d3 %>%
   filter(year >= 2000) %>%
