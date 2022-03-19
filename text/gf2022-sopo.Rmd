@@ -7,7 +7,7 @@ output:
       toc: false
       number_sections: false
       fig_caption: true
-csl: mee.csl
+csl: csas.csl
 bibliography: refs.bib
 link-citations: yes
 urlcolor: niceblue
@@ -71,7 +71,7 @@ Based on @dfo2009.
 Dark lines represent the median, shaded ribbons represent 95% quantile credible intervals, and thin lines represent 25 illustrative draws from the posterior distribution.
 
 ```{r pa-framework, fig.cap="(ref:fig-pa)", out.width="5.2in", fig.align="center", fig.pos="ht"}
-# include_graphics(here("figs/fig1-preprint.pdf"))
+include_graphics(here("figs/ts-summary.png"))
 ```
 
 Assessment scientists conduct regular stock assessment for major fish stocks in BC.
@@ -128,7 +128,7 @@ The full posteriors were not available for Quillback Rockfish stocks, which are 
 <!-- TODO: SOME HAVE PROJECTIONS? -->
 
 ```{r ridges, fig.cap = "(ref:fig-ridges)", out.width="4.2in", fig.align="center", fig.pos="ht"}
-include_graphics(here("figs/ridges.pdf"))
+include_graphics(here("figs/ridges.png"))
 ```
 
 (ref:stock-vs-indices) Trends in BC groundfish stocks with assessments in the last ~15 years or outstanding requests for Science Advice.
@@ -138,7 +138,7 @@ Survey trends are scaled to existing assessments based on geometric mean in over
 
 
 ```{r stock-vs-indices, fig.cap = "(ref:stock-vs-indices)", out.width="6.6in", fig.align="center", fig.pos="ht"}
-include_graphics(here("figs/stock-vs-indices.pdf"))
+knitr::include_graphics(here::here("figs/stock-vs-indices.png"))
 ```
 
 <!-- \clearpage -->
