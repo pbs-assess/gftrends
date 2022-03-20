@@ -24,12 +24,33 @@ header-includes:
   \renewcommand{\thefigure}{S\arabic{figure}}}
   \usepackage[dvipsnames]{xcolor}
   \definecolor{niceblue}{HTML}{236899}
-editor_options:
-  markdown:
-    wrap: sentence
-abstract: |
-    | We assembled estimated biomass (B) time series from stock assessments for 25 Pacific Canadian groundfish stocks and modelled average and stock status through 2020 based on biomass relative to each stock's (1) Limit Reference Point (B/LRP), (2) Upper Stock Reference (B/USR), and (3) biomass at maximum sustainable yield (B/B~MSY~). The overall mean B/LRP in 2020 was 3.2 (95% credible interval [CI]: 2.6--3.9). The overall mean B/USR and B/B~MSY~ in 2020 was 1.5 (95% CI: 1.3--1.9) and 1.4 (95% CI: 1.1--1.7), respectively. Average stock status declined from 1950 to around 2000 and has remained relatively stable since then. The change around 2000 followed the implementation of ITQs (individual transferable quotas) for the trawl fleet and the commencement of the synoptic trawl surveys. As of their last assessment, four stocks (Strait of Georgia Lingcod [Area 4B], coastwide Bocaccio, and inside and outside Quillback Rockfish) had a greater than 5% probability of being below their LRP (i.e., in the "critical zone"); Pacific Cod in Area 3CD had a 4.6% probability. Roughly one-third of stocks had a greater than 1 in 4 chance of being below their USR (i.e., in the "cautious zone"). Conversely, two-thirds of assessed groundfish stocks had a high (\>75%) probability of being above the USR (i.e., in the "healthy zone").
 ---
+
+## Highlights
+
+* We assembled estimated biomass (B) time series from stock assessments for 24
+  Pacific Canadian groundfish stocks and modelled average and stock status
+  through 2020 based on biomass relative to each stock's (1) Limit Reference
+  Point (B/LRP), (2) Upper Stock Reference (B/USR), and (3) biomass at maximum
+  sustainable yield (B/B~MSY~).
+
+* The overall mean B/LRP in 2020 was 3.2 (95% credible interval [CI]:
+  2.6--3.9). The overall mean B/USR and B/B~MSY~ in 2020 was 1.5 (95% CI:
+  1.3--1.9) and 1.4 (95% CI: 1.1--1.7), respectively.
+
+* Average stock status declined from 1950 to around 2000 and has remained
+  relatively stable since then. The change around 2000 followed the
+  implementation of ITQs (individual transferable quotas) for the trawl fleet
+  and the commencement of the synoptic trawl surveys.
+
+* As of their last assessment, four stocks (Strait of Georgia Lingcod [Area
+  4B], coastwide Bocaccio, and inside and outside Quillback Rockfish) had
+  a greater than 5% probability of being below their LRP (i.e., in the
+  "critical zone"); Pacific Cod in Area 3CD had a 4.6% probability. Roughly
+  one-third of stocks had a greater than 1 in 4 chance of being below their USR
+  (i.e., in the "cautious zone"). Conversely, two-thirds of assessed groundfish
+  stocks had a high (\>75%) probability of being above the USR (i.e., in the
+  "healthy zone").
 
 <!-- \n| This document is a preprint version of a contribution to the\n| Fisheries and Oceans Canada State of the Pacific Ocean report in 2022 \n" -->
 
@@ -80,10 +101,6 @@ This year, we explored stock status using two methods: 1) we updated the hierarc
 
 <!-- This model incorporated uncertainty in stock-specific status; and (2) we projected the latent underlying stock-specific status forward to the last year (2021). -->
 <!-- The latter accounts for not all stocks having an up-to-date stock assessment and accounts for future possible stock states based on the time-series properties of the fitted stock trajectories. -->
-
-
-
-# Methods
 
 We gathered Bayesian posterior distributions of estimated biomass from assessments for 25 stocks (including 6 new assessments completed in 2020). 
 <!-- IS THIS TRUE? OR WERE THESE 2020 ones out already for last years SOPO? -->
@@ -178,7 +195,9 @@ csasdown::csas_table(refs, col.names = c("Stock", "Reference"), caption = "Groun
 
 <!-- \clearpage -->
 
-# Discussion
+## Factors influencing trends
+
+## Implications of those trends
 
 <!-- <!-- ## Factors influencing trends --> -->
 
