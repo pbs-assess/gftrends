@@ -84,19 +84,18 @@ These surveys provide the data (survey indexes, ages, lengths, maturities, catch
 # A state-space model of groundfish stock status
 
 Recent amendments to Canada's *Fisheries Act* via the [[Fish Stocks provisions]{.ul}](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547) have increased DFO's focus on stock status with respect to biological reference points.
-<!-- The amendments are based on Canada's Precautionary Approach (PA) Framework, which describes two stock status reference points: (1) the Limit Reference Point (LRP), a "status below which serious harm is occurring to the stock"; and (2) the Upper Stock Reference Point (USR), which represents the "threshold below which removals must be progressively reduced in order to avoid reaching the LRP". -->
-<!-- The USR defines the breakpoint between the healthy and cautious zone and the LRP defines the breakpoint between the cautious and critical zone. -->
-<!-- The LRP and USR are often calculated based on B~MSY~ (biomass at maximum sustainable yield) at provisional levels of 0.4 B~MSY~ and 0.8 B~MSY~, but in other cases can be based on proxies, such as average or minimum historical biomass levels [e.g., @forrest2020pcod]. -->
+The amendments are based on Canada's Precautionary Approach (PA) Framework, which describes two stock status reference points: (1) the Limit Reference Point (LRP), a "status below which serious harm is occurring to the stock"; and (2) the Upper Stock Reference Point (USR), which represents the "threshold below which removals must be progressively reduced in order to avoid reaching the LRP".
+The USR defines the breakpoint between the healthy and cautious zone and the LRP defines the breakpoint between the cautious and critical zone.
+The LRP and USR are often calculated based on B~MSY~ (biomass at maximum sustainable yield) at provisional levels of 0.4 B~MSY~ and 0.8 B~MSY~, but in other cases can be based on proxies, such as average or minimum historical biomass levels [e.g., @forrest2020pcod].
 <!-- COULD KEEP THE ABOVE FROM LAST YEAR, OR WE COULD FOCUS ON LRP TO SAVE SPACE? -->
 <!-- THIS WOULD MEAN MODIFYING OR REMOVING FIG. 1 -->
-The Limit Reference Point (LRP) defines the breakpoint between the cautious and critical zone.
-The LRP is often calculated based on B~MSY~ (biomass at maximum sustainable yield) at a provisional level of 0.4 B~MSY~, but in other cases can be based on proxies, such as average or minimum historical biomass levels [e.g., @forrest2020pcod].
+<!-- The Limit Reference Point (LRP) defines the breakpoint between the cautious and critical zone. -->
+<!-- The LRP is often calculated based on B~MSY~ (biomass at maximum sustainable yield) at a provisional level of 0.4 B~MSY~, but in other cases can be based on proxies, such as average or minimum historical biomass levels [e.g., @forrest2020pcod]. -->
 
 Assessments are usually ‘tuned’ to fit survey indices well; however, assessments also account for gear ‘selectivity’, like the fact that smaller fish are not captured by certain gear.
 But assessments are time and labour intensive and therefore frequently lag behind some available data like a survey index.  
 Geostatistical spatiotemporal models allow spatially adjacent areas surveyed in different years to be combined into single annual index that might be used to track changes in abundance between assessments. 
 
-<!-- This year, we gathered output data from assessments for 25 stocks representing the Bayesian posterior distribution of estimated biomass (B) compared to three measures of stock status: (1) B/LRP (biomass divided by the LRP), (2) B/USR (biomass divided by the USR), (3) B/B~MSY~ (biomass divided by B~MSY~). -->
 This year, we explored stock status using two methods: 1) we updated the hierarchical Bayesian state-space time-series model from last year to explore trends until the year 2021, and 2) we developed model-based indices from the relevant surveys for all assessed stocks, as well as those with outstanding requests for Science Advice. 
 
 <!-- This model incorporated uncertainty in stock-specific status; and (2) we projected the latent underlying stock-specific status forward to the last year (2021). -->
@@ -225,7 +224,7 @@ knitr::include_graphics(here::here("figs/stock-vs-indices.png"))
 <!-- The slow recovery of Area 4B Lingcod since initial fishery-driven declines between the 1930s and 1980s may be a result of changes in the Strait of Georgia ecosystem [e.g., plankton timing, pinnipeds, @holt2016lingsog]. -->
 <!-- Underlying these stock-level trends, recent work suggests that temperature velocity---the pace a fish would have to move to maintain consistent temperature---may be related to a fine-scale redistribution of groundfish species density in Canadian Pacific waters [@english2021b]. -->
 
-<!-- <!-- ## Implications of those trends --> -->
+<!-- <!-- ## Implications of those trends -->
 
 <!-- The Sustainable Fisheries Framework and the Fish Stocks provisions of the *Fisheries Act* require that major ﬁsh stocks be maintained above their LRP with high probability. -->
 <!-- Stocks below their LRP will require a rebuilding plan. -->
