@@ -53,14 +53,14 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
   x_t %>%
     filter(.draw %in% .samples) %>%
     ggplot(aes(year, .value)) +
-    geom_line(aes(y = .value, group = .draw), colour = "grey10", alpha = 0.04) +
-    geom_line(
-      mapping = aes(
-        x = year, y = exp(.value), group = .draw,
-        colour = last_status
-      ),
-      alpha = 0.3, lwd = 0.15, data = .y_true, inherit.aes = FALSE
-    ) +
+    # geom_line(aes(y = .value, group = .draw), colour = "grey10", alpha = 0.04) +
+    # geom_line(
+    #   mapping = aes(
+    #     x = year, y = exp(.value), group = .draw,
+    #     colour = last_status
+    #   ),
+    #   alpha = 0.3, lwd = 0.15, data = .y_true, inherit.aes = FALSE
+    # ) +
     geom_ribbon(aes(
       x = year,
       y = exp({
@@ -126,6 +126,9 @@ g <- plot_x_t(x_t[["blrp"]], y_true[["blrp"]], d[["blrp"]]$filtered_dat,
 )
 ggsave("figs/blrp-x-t-2022.pdf", width = 8, height = 8)
 ggsave("figs/blrp-x-t-2022.png", width = 8, height = 8)
+
+ggsave("figs/blrp-x-t-2022-small.png", width = 8.2, height = 6)
+
 # ggsave("figs/blrp-x-t-example-2022.png", width = 4, height = 3, dpi = 200)
 
 g <- plot_x_t(x_t[["busr"]], y_true[["busr"]], d[["busr"]]$filtered_dat,
