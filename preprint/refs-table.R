@@ -28,6 +28,7 @@ refs <- tibble::tribble(
   "Walleye Pollock BC S","starr2021pollock",
   "Widow Rockfish BC","dfo2019widow",
   "Yelloweye Rockfish 4B","dfo2020yelloweyeinside",
+  "Yellowmouth Rockfish BC","dfo2022yellowmouth",
   "Yellowtail Rockfish BC", "dfo2015yellowtail")
 
 refs$reference <- paste0("@", refs$reference)
