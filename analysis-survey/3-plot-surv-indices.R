@@ -413,8 +413,8 @@ g <- make_surv_assess_plot(d4, ncol = 5, colour_by = type, lty_by = gear_simple)
   scale_fill_brewer(palette = "Dark2") +
   scale_linetype_manual(values = c("Trawl" = 1, "Long line" = 2)) +
   labs(fill = "Species\ngroup", colour = "Species\ngroup", linetype = "Gear")
-ggsave("figs/stock-vs-indices.pdf", width = 9.2, height = 8.5)
-ggsave("figs/stock-vs-indices.png", width = 9.2, height = 8.5)
+ggsave("figs/stock-vs-indices.pdf", width = 9.6, height = 8.7)
+ggsave("figs/stock-vs-indices.png", width = 9.6, height = 8.7)
 
 g <- d3 %>%
   filter(year >= 2000) %>%
