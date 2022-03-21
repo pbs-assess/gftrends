@@ -29,8 +29,8 @@ header-includes:
 ## Highlights
 
 * To summarize groundfish stock status as of 2021, we (1) updated
-  a hierarchical Bayesian time-series model to include **3** newly assessed
-  stocks and (2) joined model-based population indices with assessed biomass to
+  a hierarchical Bayesian time-series model to include five stocks with 
+  updated assessments and (2) joined model-based population indices with assessed biomass to
   illustrate how surveyed population trends have changed subsequent to the
   latest stock assessments.
 
@@ -51,8 +51,8 @@ header-includes:
 <!--   implementation of ITQs (individual transferable quotas) for the trawl fleet -->
 <!--   and the commencement of the synoptic trawl surveys. -->
 
-* Stock assessments classified four stocks (Strait of Georgia Lingcod [Area
-  4B], coastwide Bocaccio, and inside and outside Quillback Rockfish) as having
+* Stock assessments classified three stocks (Strait of Georgia Lingcod [Area
+  4B], inside and outside Quillback Rockfish) as having
   a greater than 5% probability of being in the critical zone, while roughly
   one-third of stocks had a greater than 1 in 4 chance of being in the
   "cautious zone". Conversely, two-thirds of assessed stocks had a high (\>75%)
@@ -82,6 +82,11 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+```
+
+```{r, include=FALSE, echo=FALSE, warning=FALSE}
+library(magrittr)
+source(here::here("preprint/refs-table.R"))
 ```
 
 ## Introduction
@@ -116,11 +121,16 @@ This year, we explored stock status using two methods: (1) we updated a hierarch
 
 ## Methods
 
-We gathered Bayesian posterior distributions of estimated biomass from assessments for 25 stocks, including 3 new assessments completed in 2020.
+We gathered Bayesian posterior distributions of estimated biomass from assessments for `r nrow(refs)` stocks, including five updated assessments (Yellomouth Rockfish coastwide stock, Rougheye/Blackspotted Rockfish south and north stocks, Pacific Cod 5ABCD and 3CD stocks).
+We did not have access to the updated Bocaccio assessment data [@dfo2022bocaccio] at the time of writing and so include the projection from [@dfo2022bocaccio].
 From these distributions, we modelled overall (i.e., all stocks combined) mean log stock status as a latent random walk with individual stocks assumed to have an auto-regressive observation model with their 'true' status drawn from their stock-assessed posterior distribution.
-Details on the model are available in REF and the approach is an extension of REF.
+The approach is an extension of a model in @hilborn2020 to include uncertainty on stock status and implement the model in Stan [@carpenter2017]; details are available in @anderson2021sopopreprint.
 
-For these 25 stocks, as well as stocks with outstanding requests for Science Advice and stocks with assessments that lacked the necessary posterior distributions for inclusion in the above model, we selected the relevant surveys.
+```{r, include=FALSE}
+surv_dat <- readRDS(here::here("data-generated/assess-index-plotted-data.rds"))
+```
+
+For these `r nrow(refs)` stocks, as well as stocks with outstanding requests for Science Advice, and stocks with assessments that lacked the necessary posterior distributions for inclusion in the above model, we selected the relevant surveys (`r nrow(surv_dat)` total stocks).
 We combined regional surveys that used the same gear and protocols (e.g., north and south outside HBLL surveys, or various synoptic trawl surveys).
 We then fit geostatistical models of biomass density with TMB [@kristensen2016] via the R package sdmTMB [@anderson2022].
 These models accounted for latent spatial factors with a constant spatial Gaussian random field and allowed spatiotemporal deviations to evolve as a Guassian random field random walk.
@@ -133,15 +143,13 @@ Data and code to reproduce our analysis are available at <https://github.com/pbs
 
 ## Status and trends
 
-Of the 25 groundfish stock status time series included in the analysis (Table 1),
+Of the `r nrow(refs)` groundfish stock status time series included in the analysis (Table 1),
 <!-- TODO IF INCLUDING, WILL NEED UPDATING -->
 **four** stocks provided historical reference points for management advice, **18** provided MSY-based reference points, and **two** (Rocksole in Areas 5AB and 5CD) provided both historical and MSY reference points (we herein use the MSY-based ones).
 The most recent assessments were for the Rougheye/Blackspotted Rockfish complex, Yellowmouth Rockfish, Bocaccio and Pacific Cod.
 <!-- IS YELLOWMOUTH THE ONLY REAL NEW ADDITION FOR THIS YEAR? BECAUSE THAT'S THE ONLY ONE I ADDED... -->
 
 ```{r, results='asis'}
-library(magrittr)
-source(here::here("preprint/refs-table.R"))
 csasdown::csas_table(refs, col.names = c("Stock", "Reference"), caption = "Groundfish stocks included in the analysis with associated data reference. In cases where a Research Document was still 'In press', we indicate the associated published Science Advisory Report or Science Response.", longtable = FALSE)
 ```
 
@@ -161,7 +169,7 @@ Dark lines represent the posterior median and shaded ribbons represent 95% quant
 include_graphics(here("figs/ts-summary.png"))
 ```
 
-(ref:fig-ridges) Posterior distribution of the three measures of stock status for 23 of the 25 stocks.
+(ref:fig-ridges) Posterior distribution of the three measures of stock status for `r nrow(refs) - 2` of the `r nrow(refs)` stocks.
 Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column represent the year the status represents.
 Colours represent the mean B/LRP value such that green is highest and purple is lowest.
 Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were used instead of MSY-based reference points.
