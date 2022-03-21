@@ -153,12 +153,34 @@ The most recent assessments were for the Rougheye/Blackspotted Rockfish complex,
 csasdown::csas_table(refs, col.names = c("Stock", "Reference"), caption = "Groundfish stocks included in the analysis with associated data reference. In cases where a Research Document was still 'In press', we indicate the associated published Science Advisory Report or Science Response.", longtable = FALSE)
 ```
 
+
+```{r, include=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+refpt <- readRDS("data-generated/p-thresh.rds")
+ts_mcmc <- readRDS("data-generated/x_t_posterior.rds")
+ts_2021_lrp <- dplyr::filter(ts_mcmc, year == 2021, ratio == "B/LRP") %>% 
+  pull(.value)
+ts_2021_usr <- dplyr::filter(ts_mcmc, year == 2021, ratio == "B/USR") %>% 
+  pull(.value)
+ts_2021_bmsy <- dplyr::filter(ts_mcmc, year == 2021, ratio == "B/B[MSY]") %>% 
+  pull(.value)
+q2021lrp <- sprintf("%.1f", round(quantile(ts_2021_lrp, probs = c(0.025, 0.5, 0.975)), 1))
+
+make_quant_text <- function(x) {
+  paste0(x[2], " (95% CI: ", x[1], "--", x[3], ")")
+}
+
+q2021usr <- sprintf("%.1f", round(quantile(ts_2021_usr, probs = c(0.025, 0.5, 0.975)), 1))
+
+q2021msy <- sprintf("%.1f", round(quantile(ts_2021_bmsy, probs = c(0.025, 0.5, 0.975)), 1))
+```
+
 Across all stocks, there was a decline in average stock status prior until approximately 2000 (Figure \@ref(fig:pa-framework)).
 The late 1990s and early 2000s marked the beginning of a relatively stable average status.
 <!-- TODO: UPDATE ABOVE WITH NEW CI -->
-We estimated the overall mean B/LRP in 2020 to be **3.2 (95% credible interval [CI]: 2.6--3.9)**.
-The overall mean B/USR and B/B~MSY~ in 2020 was **1.5 (95% CI: 1.3--1.9) and 1.4 (95% CI: 1.1--1.7)**, respectively.
-Uncertainty in average status in the last few years increased because not all stocks had a current assessment (Figure \@ref(fig:pa-framework)).
+We estimated the overall mean B/LRP in 2020 to be `r make_quant_text(q2021lrp)`.
+The overall mean B/USR and B/B~MSY~ in 2020 was `r make_quant_text(q2021usr)` and `r make_quant_text(q2021msy)`, respectively.
+Uncertainty in average status in recent years increased slightly because not all stocks had a current assessment (Figure \@ref(fig:pa-framework)).
 <!-- This uncertainty can be partially address using survey indices to extend our exploration of stock status to the most recent year with survey data. -->
 Despite the overall pattern in the average biological status, there is considerable variation within and across individual stocks, especially when recent survey trends are also considered (Figure \@ref(fig:stock-vs-indices)).
 
@@ -176,7 +198,7 @@ Stocks with missing data in the B/B~MSY~ column are assessments where historical
 Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values in the PA Framework).
 The x-axis has been square-root transformed to slightly compress high ratio values for visualization.
 <!-- In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data. -->
-The full posteriors were not available for Quillback Rockfish stocks, which are shown in Figure \@ref(fig:stock-vs-indices).
+The full posteriors were not available for Quillback or Canary Rockfish stocks, which are shown in Figure \@ref(fig:stock-vs-indices).
 
 ```{r ridges, fig.cap = "(ref:fig-ridges)", out.width="4.2in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/ridges.png"))
@@ -192,11 +214,11 @@ knitr::include_graphics(here::here("figs/stock-vs-indices.png"))
 ```
 
 Estimated biomass was above the LRP and USR for most stocks as of the most recent assessment (Figure \@ref(fig:ridges)).
-Considering the USR instead of the LRP, **7/22** of the stocks in Figure \@ref(fig:ridges) had \> 25% probability of being below their USR as of their most recent assessment.
-Lingcod in 4B and coastwide Bocaccio were the only stocks (with full posterior distributions available) with $>$ 5% posterior density below their LRP as of their most recent assessment (Figure \@ref(fig:ridges)).
-The assessment of Bocaccio, however, projected the stock to rebuild above the LRP by 2023 due to a very large recruitment event in 2016 [@dfo2020bocaccio].
+Considering the USR instead of the LRP, `r sum(refpt$p_usr > 0.25)`/`r nrow(refpt)` of the stocks in Figure \@ref(fig:ridges) had \> 25% probability of being below their USR as of their most recent assessment.
+**Lingcod in 4B and coastwide Bocaccio were the only stocks (with full posterior distributions available) with $>$ 5% posterior density below their LRP as of their most recent assessment (Figure \@ref(fig:ridges)).**
+**The assessment of Bocaccio, however, projected the stock to rebuild above the LRP by 2023 due to a very large recruitment event in 2016 [@dfo2020bocaccio].**
 Quillback Rockfish in both outside and inside waters had $>$ 5% posterior density below their LRPs as of the 2011 assessment, but the full posterior distribution was not available (quantiles are shown in Figure \@ref(fig:stock-vs-indices)).
-Pacific Cod in 3CD almost met 5% threshold with a **4.6%** probability B $<$ LRP in 2021.
+Pacific Cod in 3CD had a `r round(refpt$p_lrp[refpt$stock_clean == "Pacific Cod 3CD"], 2)` probability B $<$ LRP in 2020.
 Pacific Cod and Walleye Pollock both have a shorter generation time compared to many other stocks here, and have both exhibited strong patterns of decadal variation.
 
 When survey indices are used to explore more recent changes across species, additional patterns emerge.
