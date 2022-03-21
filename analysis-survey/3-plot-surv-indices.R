@@ -206,6 +206,10 @@ d3$type[d3$species %in% c("Walleye Pollock", "Pacific Cod", "Sablefish", "Lingco
 d3$species_common_name <- tolower(d3$species)
 d3 <- left_join(d3, select(gfsynopsis::get_spp_names(), species_common_name, species_code))
 
+select(d3, stock_clean) %>%
+  distinct() %>%
+  saveRDS(here::here("data-generated/assess-index-plotted-data.rds"))
+
 make_surv_assess_plot <- function(dat, ylab = "Relative biomass or abundance estimate", ncol = 5L, arrange_by = c("slope", "code"), colour_by = gear, lty_by = NULL) {
 
   arrange_by <- match.arg(arrange_by)
