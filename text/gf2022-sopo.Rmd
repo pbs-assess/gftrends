@@ -28,29 +28,35 @@ header-includes:
 
 ## Highlights
 
-* We assembled estimated biomass (B) time series from stock assessments for 24
-  Pacific Canadian groundfish stocks and modelled average and stock status
-  through 2020 based on biomass relative to each stock's (1) Limit Reference
-  Point (B/LRP), (2) Upper Stock Reference (B/USR), and (3) biomass at maximum
-  sustainable yield (B/B~MSY~).
+* All the usual groundfish surveys were completed this year, in addition to those 
+  that were missed last year due to covid. 
 
-* The overall mean B/LRP in 2020 was 3.2 (95% credible interval [CI]:
-  2.6--3.9). The overall mean B/USR and B/B~MSY~ in 2020 was 1.5 (95% CI:
-  1.3--1.9) and 1.4 (95% CI: 1.1--1.7), respectively.
+<!-- TODO: check/update numbers -->
+* To assess stock status in 2021, we updated the hierarchical Bayesian state-space time-series model to include **6** newly complete stock assessments, and estimated model-based indices from the relevant surveys for all assessed stocks and those with outstanding requests for Science Advice. 
 
-* Average stock status declined from 1950 to around 2000 and has remained
-  relatively stable since then. The change around 2000 followed the
-  implementation of ITQs (individual transferable quotas) for the trawl fleet
-  and the commencement of the synoptic trawl surveys.
+<!-- * We assembled estimated biomass (B) time series from stock assessments for 24 -->
+<!--   Pacific Canadian groundfish stocks and modelled average and stock status -->
+<!--   through 2021 based on biomass relative to each stock's (1) Limit Reference -->
+<!--   Point (B/LRP), (2) Upper Stock Reference (B/USR), and (3) biomass at maximum -->
+<!--   sustainable yield (B/B~MSY~). -->
 
-* As of their last assessment, four stocks (Strait of Georgia Lingcod [Area
-  4B], coastwide Bocaccio, and inside and outside Quillback Rockfish) had
-  a greater than 5% probability of being below their LRP (i.e., in the
-  "critical zone"); Pacific Cod in Area 3CD had a 4.6% probability. Roughly
-  one-third of stocks had a greater than 1 in 4 chance of being below their USR
-  (i.e., in the "cautious zone"). Conversely, two-thirds of assessed groundfish
-  stocks had a high (\>75%) probability of being above the USR (i.e., in the
-  "healthy zone").
+<!-- * The overall mean B/LRP in 2021 was **3.2** (95% credible interval [CI]: -->
+<!--   **2.6--3.9**) . The overall mean B/USR and B/B~MSY~ in 2021 was **1.5** (95% CI: -->
+<!--   **1.3--1.9) and 1.4 (95% CI: 1.1--1.7)**, respectively. -->
+
+<!-- * Average stock status declined from 1950 to around 2000 and has remained -->
+<!--   relatively stable since then. The change around 2000 followed the -->
+<!--   implementation of ITQs (individual transferable quotas) for the trawl fleet -->
+<!--   and the commencement of the synoptic trawl surveys. -->
+
+* Like in 2020, 4 or 5 stocks were likely in the critical zone and roughly one-third of stocks had a greater than 1 in 4 chance of being below their USR (i.e., in the "cautious zone"). Conversely, two-thirds of assessed groundfish stocks had a high (\>75%) probability of being above the USR (i.e., in the "healthy zone").
+
+* All assessed shelf rockfish (Redstripe, Bocaccio, Widow, Silvergray, Canary, Yellowtail) and some slope rockfish have increased over last ~5–6 years, possibly due to extreme/spasmodic recruitment.
+
+* Many flatfish (Petrale, English, Rex, Dover) have increased over last 5–10 years (but Arrowtooth has declined). 
+
+* Dogfish stocks have experienced the steepest declines of all stocks with the steepest decline being found in inside Vancouver Island waters in 2021.
+
 
 <!-- \n| This document is a preprint version of a contribution to the\n| Fisheries and Oceans Canada State of the Pacific Ocean report in 2022 \n" -->
 
@@ -154,7 +160,7 @@ include_graphics(here("figs/ts-summary.png"))
 ```
 
 
-(ref:fig-ridges) Posterior distribution of the three measures of stock status for 23 of the 24 stocks.
+(ref:fig-ridges) Posterior distribution of the three measures of stock status for 23 of the 25 stocks.
 Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column represent the year the status represents.
 Colours represent the mean B/LRP value such that green is highest and purple is lowest.
 Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were used instead of MSY-based reference points.
