@@ -95,7 +95,7 @@ The LRP and USR are often calculated based on B~MSY~ (biomass at maximum sustain
 <!-- The Limit Reference Point (LRP) defines the breakpoint between the cautious and critical zone. -->
 <!-- The LRP is often calculated based on B~MSY~ (biomass at maximum sustainable yield) at a provisional level of 0.4 B~MSY~, but in other cases can be based on proxies, such as average or minimum historical biomass levels [e.g., @forrest2020pcod]. -->
 
-DFO conducts a suite of randomized surveys using bottom trawl, longline hook, and longline trap gear that, in aggregate, cover Canada's Pacific Coast @anderson2019.
+DFO conducts a suite of randomized surveys using bottom trawl, longline hook, and longline trap gear that, in aggregate, cover Canada's Pacific Coast [@anderson2019].
 Synoptic trawl surveys in Queen Charlotte Sound (Areas 5A and 5B) and Hecate Strait (Areas 5C and 5D) are conducted in odd numbered years, while the West Coast of Vancouver Island (WCVI; Areas 3C and 3D) and the West Coast of Haida Gwaii (WCHG; Area 5E) surveys are conducted in even numbered years.
 In addition, four biennial Hard Bottom Longline (HBLL) surveys are conducted, two in "inside" waters (east of Vancouver Island; Area 4B) and two others in "outside" waters (everywhere else).
 Lastly, a coast-wide longline trap survey targeting sablefish is conducted every year and DFO collects biological information from the International Pacific Halibut Commission (IPHC) Setline Survey.
