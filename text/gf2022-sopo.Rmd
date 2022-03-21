@@ -32,7 +32,9 @@ header-includes:
   that were missed last year due to covid. 
 
 <!-- TODO: check/update numbers -->
-* To assess stock status in 2021, we updated the hierarchical Bayesian state-space time-series model to include **6** newly complete stock assessments, and estimated model-based indices from the relevant surveys for all assessed stocks and those with outstanding requests for Science Advice. 
+* To assess stock status in 2021, we took two approaches: 1) we updated the hierarchical Bayesian state-space time-series model to include **6** newly complete stock assessments, and 2) we estimated model-based indices from the relevant surveys. We then scaled scaled the survey indices to existing assessments based on the geometric mean in overlapping years to illustrate how stock status may be changing subsequent to the most recent completed stock assessments.
+
+<!-- inclusion of  information on ages, lengths, maturities, and commercial catch changes our understanding of stock status  -->
 
 <!-- * We assembled estimated biomass (B) time series from stock assessments for 24 -->
 <!--   Pacific Canadian groundfish stocks and modelled average and stock status -->
@@ -49,7 +51,7 @@ header-includes:
 <!--   implementation of ITQs (individual transferable quotas) for the trawl fleet -->
 <!--   and the commencement of the synoptic trawl surveys. -->
 
-* Like in 2020, 4 or 5 stocks were likely in the critical zone and roughly one-third of stocks had a greater than 1 in 4 chance of being below their USR (i.e., in the "cautious zone"). Conversely, two-thirds of assessed groundfish stocks had a high (\>75%) probability of being above the USR (i.e., in the "healthy zone").
+* Same as in 2020, stock assessments suggest that 4 or 5 stocks were likely in the critical zone, while roughly one-third of stocks had a greater than 1 in 4 chance of being in the "cautious zone". Conversely, two-thirds of assessed groundfish stocks had a high (\>75%) probability of being in the "healthy zone".
 
 * All assessed shelf rockfish (Redstripe, Bocaccio, Widow, Silvergray, Canary, Yellowtail) and some slope rockfish have increased over last ~5–6 years, possibly due to extreme/spasmodic recruitment.
 
