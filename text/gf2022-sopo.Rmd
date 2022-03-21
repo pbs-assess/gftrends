@@ -28,17 +28,10 @@ header-includes:
 
 ## Highlights
 
-* All the usual groundfish surveys were completed this year, in addition to
-  those that were missed last year due to covid.
-
-<!-- TODO: check/update numbers -->
-* To assess stock status in 2021, we took two approaches: 1) we updated the
-  hierarchical Bayesian state-space time-series model to include **6** newly
-  complete stock assessments, and 2) we estimated model-based indices from the
-  relevant surveys. We then scaled scaled the survey indices to existing
-  assessments based on the geometric mean in overlapping years to illustrate
-  how stock status may be changing subsequent to the most recent completed
-  stock assessments.
+* To summarize groundfish stock status in 2021, we (1) updated a hierarchical
+  Bayesian time-series model to include 3 newly assessed stocks and (2) joined
+  model-based population indices with assessed biomass to illustrate how stock
+  status may be changing subsequent to the most recent stock assessments.
 
 <!-- inclusion of  information on ages, lengths, maturities, and commercial catch changes our understanding of stock status  -->
 
@@ -57,27 +50,21 @@ header-includes:
 <!--   implementation of ITQs (individual transferable quotas) for the trawl fleet -->
 <!--   and the commencement of the synoptic trawl surveys. -->
 
-* Same as in 2020, stock assessments suggest that 4 or 5 stocks were likely in
-  the critical zone, while roughly one-third of stocks had a greater than 1 in
-  4 chance of being in the "cautious zone". Conversely, two-thirds of assessed
-  groundfish stocks had a high (\>75%) probability of being in the "healthy
-  zone".
+* As in 2020, stock assessments suggested that 4 or 5 stocks were likely (>95%
+  probability) in the critical zone, while roughly one-third of stocks had
+  a greater than 1 in 4 chance of being in the "cautious zone". Conversely,
+  two-thirds of assessed stocks had a high (\>75%) probability of being in the
+  "healthy zone".
 
 * All assessed shelf rockfish (Redstripe, Bocaccio, Widow, Silvergray, Canary,
-  Yellowtail) and some slope rockfish have increased over last ~5–6 years,
-  possibly due to extreme/spasmodic recruitment.
+  Yellowtail) and some slope rockfish have increased in surveyed biomass over
+  the last ~5--7 years. Surveyed biomass for several soles (Petrale, English,
+  Rex, Dover) has increased over the last 5–-10 years while declining for
+  Arrowtooth Flounder.
 
-* Many flatfish (Petrale, English, Rex, Dover) have increased over last 5–10
-  years (but Arrowtooth has declined).
-
-* Dogfish stocks have experienced the steepest declines of all stocks with the
-  steepest decline being found in inside Vancouver Island waters in 2021.
-
-* An update to A DATA SYNOPSIS FOR BRITISH COLUMBIA GROUNDFISH will be released
-  as a Science Response in 2022 and will provide additional information of
-  population and fishing trends, growth and maturity patterns, and data
-  availability for 113 fish species.
-
+* Survey indices for North Pacific Spiny Dogfish stocks have experienced the
+  steepest declines across all stocks---particularly in inside Vancouver Island
+  waters in 2021.
 
 <!-- \n| This document is a preprint version of a contribution to the\n| Fisheries and Oceans Canada State of the Pacific Ocean report in 2022 \n" -->
 
