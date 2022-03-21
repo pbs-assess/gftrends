@@ -202,7 +202,7 @@ g <- plot_data_sub %>%
   geom_line(aes(y = med, x = year, color = ratio),
     inherit.aes = FALSE, data = summarized_plot_data, alpha = 1, lwd = 1
   ) +
-  geom_line(alpha = 0.3, lwd = 0.3) +
+  # geom_line(alpha = 0.3, lwd = 0.3) +
   scale_y_continuous(breaks = c(1, 2, 3, 4, 5, 6)) +
   ylab("Ratio value") +
   xlab("Year") +
