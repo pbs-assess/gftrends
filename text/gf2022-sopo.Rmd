@@ -28,10 +28,11 @@ header-includes:
 
 ## Highlights
 
-* To summarize groundfish stock status in 2021, we (1) updated a hierarchical
-  Bayesian time-series model to include 3 newly assessed stocks and (2) joined
-  model-based population indices with assessed biomass to illustrate how stock
-  status may be changing subsequent to the most recent stock assessments.
+* To summarize groundfish stock status as of 2021, we (1) updated
+  a hierarchical Bayesian time-series model to include **3** newly assessed
+  stocks and (2) joined model-based population indices with assessed biomass to
+  illustrate how surveyed population trends have changed subsequent to the
+  latest stock assessments.
 
 <!-- inclusion of  information on ages, lengths, maturities, and commercial catch changes our understanding of stock status  -->
 
@@ -50,21 +51,22 @@ header-includes:
 <!--   implementation of ITQs (individual transferable quotas) for the trawl fleet -->
 <!--   and the commencement of the synoptic trawl surveys. -->
 
-* As in 2020, stock assessments suggested that 4 or 5 stocks were likely (>95%
-  probability) in the critical zone, while roughly one-third of stocks had
-  a greater than 1 in 4 chance of being in the "cautious zone". Conversely,
-  two-thirds of assessed stocks had a high (\>75%) probability of being in the
-  "healthy zone".
+* Stock assessments classified four stocks (Strait of Georgia Lingcod [Area
+  4B], coastwide Bocaccio, and inside and outside Quillback Rockfish) as having
+  a greater than 5% probability of being in the critical zone, while roughly
+  one-third of stocks had a greater than 1 in 4 chance of being in the
+  "cautious zone". Conversely, two-thirds of assessed stocks had a high (\>75%)
+  probability of being in the "healthy zone".
 
 * All assessed shelf rockfish (Redstripe, Bocaccio, Widow, Silvergray, Canary,
-  Yellowtail) and some slope rockfish have increased in surveyed biomass over
-  the last ~5--7 years. Surveyed biomass for several soles (Petrale, English,
-  Rex, Dover) has increased over the last 5–-10 years while declining for
-  Arrowtooth Flounder.
+  Yellowtail) and some slope rockfish increased in surveyed biomass or
+  abundance over the last ~5--7 years. Surveyed biomass for several flatfish
+  (Petrale, English, Rex, and Dover Sole) increased over the last 5–-10 years but
+  declined for Arrowtooth Flounder.
 
-* Survey indices for North Pacific Spiny Dogfish stocks have experienced the
-  steepest declines across all stocks---particularly in inside Vancouver Island
-  waters in 2021.
+* Survey indices for North Pacific Spiny Dogfish stocks had the steepest
+  declines across all stocks---particularly in inside Vancouver Island waters
+  in 2021.
 
 <!-- \n| This document is a preprint version of a contribution to the\n| Fisheries and Oceans Canada State of the Pacific Ocean report in 2022 \n" -->
 
@@ -82,7 +84,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Introduction
+## Introduction
 
 Recent amendments to Canada's *Fisheries Act* via the [[Fish Stocks provisions]{.ul}](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547) have increased DFO's focus on stock status with respect to biological reference points.
 The amendments are based on Canada's Precautionary Approach (PA) Framework, which describes two stock status reference points: (1) the Limit Reference Point (LRP), a "status below which serious harm is occurring to the stock"; and (2) the Upper Stock Reference Point (USR), which represents the "threshold below which removals must be progressively reduced in order to avoid reaching the LRP".
@@ -112,41 +114,29 @@ This year, we explored stock status using two methods: (1) we updated a hierarch
 <!-- This model incorporated uncertainty in stock-specific status; and (2) we projected the latent underlying stock-specific status forward to the last year (2021). -->
 <!-- The latter accounts for not all stocks having an up-to-date stock assessment and accounts for future possible stock states based on the time-series properties of the fitted stock trajectories. -->
 
-We gathered Bayesian posterior distributions of estimated biomass from assessments for 25 stocks (including 6 new assessments completed in 2020).
+## Methods
+
+We gathered Bayesian posterior distributions of estimated biomass from assessments for 25 stocks, including **6** new assessments completed in 2020.
 <!-- IS THIS TRUE? OR WERE THESE 2020 ones out already for last years SOPO? -->
-<!-- HOW MUCH OF THE MODEL DETAILS BELOW SHOULD STAY? -->
-From these, we modelled overall (i.e., all stocks combined) log stock status $x$ at time $t$ as $x_{t = 1} = x_{0}$ and $x_{t > 1} = x_{t - 1} + \eta_{t},\eta_{t} \sim \text{Normal}\left( 0,\sigma_{\eta}^{2} \right)$, where $\eta_{t}$ is a random walk deviation with standard deviation $\sigma_{\eta}$.
-We assumed an auto-regressive observation model:
+From these distributions, we modelled overall (i.e., all stocks combined) mean log stock status as a latent random walk with individual stocks assumed to have an auto-regressive observation model with their 'true' status drawn from their stock-assessed posterior distribution.
+Details on the model are available in REF and the approach is an extension of REF.
 
-```{=tex}
-\begin{align}
-{\widehat{y}}_{j,t} &\sim \text{Normal}\left( y_{j,t},{\widehat{\tau}}^{2} \right), \\
-y_{j,t} &= x_{t} + \alpha_{j} + \epsilon_{j,t},\epsilon_{j,t} \sim \text{Normal}\left( \rho\epsilon_{j,t - 1},\sigma_{\epsilon}^{2} \right),
-\end{align}
-```
-where ${\widehat{y}}_{j,t}$ is the mean log stock status for stock $j$ and time $t$ (from an assessment), $y_{j,t}$ is the unobserved "true" mean stock-specific status, and $\widehat{\tau}$ is the standard deviation of the log stock status from an assessment.
-The symbol $\alpha_{j}$ represents a stock-specific intercept that is constrained such that the sum of all $\alpha_{j}$ is zero to make the overall mean $x_{t}$ identifiable.
-The symbol $\epsilon_{j,t}$ represents a first-order autoregressive (AR1) deviation with correlation $\rho$ and standard deviation $\sigma_{\epsilon}$.
-We placed half-Normal(0, 1) priors on $\sigma_{\epsilon}$ and $\sigma_{\eta}$, Normal(0, 5^2^) priors on $x_{0}$ and $\alpha_{j}$, and a Normal(0, 1)[-1, 1] prior on $\rho$.
-We fit the models with Stan [@carpenter2017; @rstan2020], sampling 1000 iterations on each of 6 chains and discarding the first half as warm up.
-
-For the same 25 stocks, as well as stocks with outstanding requests for Science Advice or with assessments that lacked the necessary posterior distributions for inclusion in the above model, we selected the relevant surveys.
-We combined regional surveys that use the same gear and protocols (e.g. north and south outside HBLL surveys, or various trawl surveys).
-We fit geostatistical models of biomass density with TMB [@kristensen2016] via the R package sdmTMB [@anderson2022].
-These models account for all latent spatial factors with a constant spatial Gaussian random field and allow spatiotemporal deviations to evolve as a Guassian random field random walk.
-The random fields were structured with Matern correlation functions.
-For each stock--survey type combination, we fit both Tweedie and a delta-gamma (binomial and Gamma) observation error models and report the model that produced the most precise biomass estimates on average.
-In most cases this was the delta-gamma.
-We predicted each biomass index for the appropriate 2 x 2km survey grid(s) and scaled the survey index to the existing assessment biomass trend based on the geometric mean in overlapping years.
+For these 25 stocks, as well as stocks with outstanding requests for Science Advice and stocks with assessments that lacked the necessary posterior distributions for inclusion in the above model, we selected the relevant surveys.
+We combined regional surveys that used the same gear and protocols (e.g., north and south outside HBLL surveys, or various synoptic trawl surveys).
+We then fit geostatistical models of biomass density with TMB [@kristensen2016] via the R package sdmTMB [@anderson2022].
+These models accounted for latent spatial factors with a constant spatial Gaussian random field and allowed spatiotemporal deviations to evolve as a Guassian random field random walk.
+<!-- The random fields were structured with Matern correlation functions. -->
+For each stock--survey type combination, we fit both Tweedie and delta-gamma (binomial and gamma) observation error models and reported the model that produced the most precise index estimates on average; form most (XX%) stocks, this was the delta-gamma model.
+We then predicted and summed biomass or abundance density across the appropriate 2 x 2km survey grid(s) (e.g., REF) and scaled the survey index to the existing stock assessment biomass trend based on the geometric mean in overlapping years.
 
 Data and code to reproduce our analysis are available at <https://github.com/pbs-assess/gftrends> with the specific version at <https://github.com/pbs-assess/gftrends/releases/tag/v0.02>.
 <!-- TODO: update version? -->
 
 ## Status and trends
 
-Of the 25 groundfish stock status time series included in the analysis (Table 1).
-<!-- IF INCLUDING, WILL NEED UPDATING -->
-<!-- , four stocks provided historical reference points for management advice, 18 provided MSY-based reference points, and two (Rocksole in Areas 5AB and 5CD) provided both historical and MSY reference points (we herein use the MSY-based ones). -->
+Of the 25 groundfish stock status time series included in the analysis (Table 1),
+<!-- TODO IF INCLUDING, WILL NEED UPDATING -->
+**four** stocks provided historical reference points for management advice, **18** provided MSY-based reference points, and **two** (Rocksole in Areas 5AB and 5CD) provided both historical and MSY reference points (we herein use the MSY-based ones).
 The most recent assessments were for the Rougheye/Blackspotted Rockfish complex, Yellowmouth Rockfish, Bocaccio and Pacific Cod.
 <!-- IS YELLOWMOUTH THE ONLY REAL NEW ADDITION FOR THIS YEAR? BECAUSE THAT'S THE ONLY ONE I ADDED... -->
 
@@ -156,7 +146,7 @@ source(here::here("preprint/refs-table.R"))
 csasdown::csas_table(refs, col.names = c("Stock", "Reference"), caption = "Groundfish stocks included in the analysis with associated data reference. In cases where a Research Document was still 'In press', we indicate the associated published Science Advisory Report or Science Response.", longtable = FALSE)
 ```
 
-Across all stocks, there was a decline in average stock status prior to approximately 2000 (Figure \@ref(fig:pa-framework)).
+Across all stocks, there was a decline in average stock status prior until approximately 2000 (Figure \@ref(fig:pa-framework)).
 The late 1990s and early 2000s marked the beginning of a relatively stable average status.
 <!-- TODO: UPDATE ABOVE WITH NEW CI -->
 We estimated the overall mean B/LRP in 2020 to be **3.2 (95% credible interval [CI]: 2.6--3.9)**.
@@ -165,8 +155,8 @@ Uncertainty in average status in the last few years increased because not all st
 <!-- This uncertainty can be partially address using survey indices to extend our exploration of stock status to the most recent year with survey data. -->
 Despite the overall pattern in the average biological status, there is considerable variation within and across individual stocks, especially when recent survey trends are also considered (Figure \@ref(fig:stock-vs-indices)).
 
-(ref:fig-pa) Overall mean biomass status ($x_{t}$) across all stocks for B/LRP, B/USR, and B/B~MSY~.
-Dark lines represent the median, shaded ribbons represent 95% quantile credible intervals, and thin lines represent 25 illustrative draws from the posterior distribution.
+(ref:fig-pa) Overall mean biomass status across all stocks for B/LRP, B/USR, and B/B~MSY~ from the hierarchical time-series model.
+Dark lines represent the posterior median and shaded ribbons represent 95% quantile credible intervals.
 
 ```{r pa-framework, fig.cap="(ref:fig-pa)", out.width="3.2in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/ts-summary.png"))
@@ -185,8 +175,6 @@ The full posteriors were not available for Quillback Rockfish stocks, which are 
 include_graphics(here("figs/ridges.png"))
 ```
 
-<!-- \clearpage -->
-
 (ref:stock-vs-indices) Trends in BC groundfish stocks with assessments in the last ~15 years or outstanding requests for Science Advice.
 Dark grey lines and ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals.
 Coloured lines and ribbons represent model-based indices for the most relevant survey(s) for each stock.
@@ -196,8 +184,6 @@ Survey trends are scaled to existing assessments based on the geometric mean in 
 knitr::include_graphics(here::here("figs/stock-vs-indices.png"))
 ```
 
-<!-- \clearpage -->
-
 Estimated biomass was above the LRP and USR for most stocks as of the most recent assessment (Figure \@ref(fig:ridges)).
 Considering the USR instead of the LRP, **7/22** of the stocks in Figure \@ref(fig:ridges) had \> 25% probability of being below their USR as of their most recent assessment.
 Lingcod in 4B and coastwide Bocaccio were the only stocks (with full posterior distributions available) with $>$ 5% posterior density below their LRP as of their most recent assessment (Figure \@ref(fig:ridges)).
@@ -206,31 +192,31 @@ Quillback Rockfish in both outside and inside waters had $>$ 5% posterior densit
 Pacific Cod in 3CD almost met 5% threshold with a **4.6%** probability B $<$ LRP in 2021.
 Pacific Cod and Walleye Pollock both have a shorter generation time compared to many other stocks here, and have both exhibited strong patterns of decadal variation.
 
-When the survey indices are used to explore more recent changes across species, additional patterns emerge.
-Survey indices for all assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, Yellowtail), and some slope rockfish (e.g. Yellowmouth) have increased in the past 5--7 years (Figure \@ref(fig:stock-vs-indices)), possibly due to a shared spasmodic recruitment event (**REF?**).
-We did not include a Sablefish survey index because our included surveys did not include the trap survey that is used in its stock assessment; however, the sablefish surveys do show signs of increase since around 2015 as a result of large recent recruitment events [@dfo2020sablefish, Figure \@ref(fig:stock-vs-indices)].
+When survey indices are used to explore more recent changes across species, additional patterns emerge.
+Survey indices for all assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, Yellowtail), and some slope rockfish (e.g. Yellowmouth) have increased in the past 5--7 years (Figure \@ref(fig:stock-vs-indices)).
+<!-- We did not include a Sablefish survey index because our included surveys did not include the trap survey that is used in its stock assessment; however, the sablefish surveys do show signs of increase since around 2015 as a result of large recent recruitment events [@dfo2020sablefish, Figure \@ref(fig:stock-vs-indices)]. -->
 The survey indices also allow us to explore the status of species that have not yet received full assessments, such as many flatfish and Chondrichthyans.
-The majority of the flatfish (Petrale, English, Rex, Dover) appear to have increased in survey biomass over the last 5--10 years.
-However, the survey index suggests that Arrowtooth has declined since the last assessment (Figure \@ref(fig:stock-vs-indices)).
+The majority of the included flatfish (Petrale, English, Rex, Dover) appear to have increased in survey biomass over the last 5--10 years.
+However, the trawl survey index suggests that Arrowtooth has declined since the last assessment (Figure \@ref(fig:stock-vs-indices)).
 Trends among the skates generally appear stable or positive.
-North Pacific Spiny Dogfish stocks, however, have experienced the steepest declines of all stocks (Figure \@ref(fig:stock-vs-indices)), with a particularly steep decline having been observed in inside Vancouver Island waters in 2021.
+North Pacific Spiny Dogfish (herein 'dogfish') stocks, however, have experienced the steepest declines of all stocks (Figure \@ref(fig:stock-vs-indices)), with a particularly steep decline in inside Vancouver Island waters in 2021.
 
 ## Factors influencing trends
 
-The longterm overall groundfish trend has likely been most strongly influenced by fishery removals and management interventions.
+The longterm overall groundfish trend is likely to have been primarily influenced by fishery removals and management interventions.
 <!-- TODO: Do you want to repeat any of this from last year? -->
 <!-- The transition from declining average B/LRP and B/USR to a relatively stable trajectory coincided with (1) the implementation of individual transferable quotas (ITQs) for the trawl fleet, (2) the introduction of 100% at-sea observer coverage over the period 1992--1997 [@turris2000], and (3) the initiation of the current synoptic trawl surveys in 2003. -->
 <!-- Furthermore, ITQs and electronic at-sea monitoring were introduced into the longline and trap fisheries in 2006 [@stanley2015]. -->
 <!-- Following these major management changes, quota for many stocks has remained relatively constant over the last two decades [@dfo2019ifmp]. -->
 <!-- The decadal patterns in assessed status for Pacific Cod [@forrest2020pcod] and Walleye Pollock [@starr2021pollock] in early decades are largely driven by trends in commercial catches and catch per unit effort. -->
 <!-- In terms of absolute stock status, estimates of B~MSY~ for data-limited species may be highly uncertain, or in some cases biased [@forrest2018]. -->
-For specific species and more recent changes, the drivers may include species interactions and climatic effects.
-For example, dogfish are not currently heavily affected by any fishery, so the cause of there declines are unknown.
-One possibility is that climate change is driving a northward range shift or that seasonal distribution patterns have changed (REF).
+For specific species and more recent trends, the drivers may include species interactions and climatic effects.
+For example, dogfish are not currently heavily affected by any fishery, so the cause of their survey declines is unknown.
+One possibility is that climate change is driving a northward range shift or that seasonal distribution patterns have changed as seen in the northwest Pacific Ocean (REF).
 While there is evidence suggesting that temperature velocity---the pace a fish would have to move to maintain consistent temperature---may be related to a fine-scale redistribution of groundfish species density in Canadian Pacific waters [@english2021b], the coastwide declines observed in both trawl and HBLL survey indices for dogfish would require a much larger shift than has been so far documented.
 Effects of recent oceanographic conditions on spawning habitat are hypothesized to have led to years of low recruitment in some groundfish [e.g., Pacific Cod in nearby Alaskan waters, @laurel2020].
-After decades of consistently poor recruitment, recent increases in several shelf rockfishes species---most notably Bocaccio---may in part by driven by availability of oxygen-rich water at depth during gestation [@schroeder2019].
-Whatever the cause, increases in biomass density among other rockfishes suggests that many species may have benefited.
+On the other hand, after decades of consistently poor recruitment, recent increases in several shelf rockfishes species---most notably Bocaccio---may in part by driven by availability of oxygen-rich water at depth during gestation [@schroeder2019].
+<!-- Whatever the cause, increases in biomass density among several rockfishes suggests that many species may have benefited. -->
 
 <!-- TODO: reword and acknowledge survey increases if including? -->
 <!-- The slow recovery of Area 4B Lingcod since initial fishery-driven declines between the 1930s and 1980s may be a result of changes in the Strait of Georgia ecosystem [e.g., plankton timing, pinnipeds, @holt2016lingsog]. -->
@@ -239,7 +225,7 @@ Whatever the cause, increases in biomass density among other rockfishes suggests
 ## Implications of those trends
 
 The Sustainable Fisheries Framework and the Fish Stocks provisions of the *Fisheries Act* require that major fish stocks be maintained above their LRP with high probability.
-Four or five stocks are likely below their LRP.
+Four or five stocks were likely below their LRP as of their last assessment.
 Roughly one-third of assessed stocks had $>$ 25% probability of being in the cautious zone where removals should be progressively reduced to avoid reaching the LRP.
 Rebuilding and precautionary management of stocks in the critical and cautious zones, respectively, should help ensure stock status improves over time in response to reduced fishing pressure and favourable environmental conditions if and when they occur.
 
