@@ -32,8 +32,12 @@ arrowtooth %>% rename(b = ssb) %>%
 
 # pcod average model ------------------------------------------------------
 
-d3cd <- readRDS("data-raw/model-output/pcod-avg-3cd.rds")
-d5abcd <- readRDS("data-raw/model-output/pcod-avg-5abcd.rds")
+# from pcod project:
+# saveRDS(avg.model.5abcd, file = "../gftrends/data-raw/model-output/pcod-avg-5abcd-2021.rds")
+# saveRDS(avg.model.3cd, file = "../gftrends/data-raw/model-output/pcod-avg-3cd-2021.rds")
+
+d3cd <- readRDS("data-raw/model-output/pcod-avg-3cd-2021.rds")
+d5abcd <- readRDS("data-raw/model-output/pcod-avg-5abcd-2021.rds")
 
 tidy_bratio_dat <- function(ratio) {
   ratio %>% reshape2::melt() %>% rename(year = variable) %>%
@@ -74,6 +78,10 @@ head(pcod5abcd)
 pcod5abcd <- mutate(pcod5abcd, species = "pcod", region = "5ABCD") %>%
   select(species, region, everything())
 head(pcod5abcd)
+
+# remove projection:
+pcod3cd <- dplyr::filter(pcod3cd, year <= 2020)
+pcod5abcd <- dplyr::filter(pcod5abcd, year <= 2020)
 
 pcod3cd %>% saveRDS("data-raw/pcod-3cd.rds")
 pcod5abcd %>% saveRDS("data-raw/pcod-5abcd.rds")
