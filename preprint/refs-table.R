@@ -7,6 +7,7 @@ refs <- tibble::tribble(
   ~stock_clean, ~reference,
   "Arrowtooth Flounder BC","grandin2017arrowtooth",
   "Bocaccio BC","dfo2020bocaccio",
+  "Canary BC","stanly2009canary",
   "Lingcod 4B","holt2016lingsog",
   "Pacific Ocean Perch 3CD","edwards2014popwcvi",
   "Pacific Ocean Perch 5ABC","edwards2013pophg",
