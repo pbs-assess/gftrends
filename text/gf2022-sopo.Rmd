@@ -116,8 +116,7 @@ This year, we explored stock status using two methods: (1) we updated a hierarch
 
 ## Methods
 
-We gathered Bayesian posterior distributions of estimated biomass from assessments for 25 stocks, including **6** new assessments completed in 2020.
-<!-- IS THIS TRUE? OR WERE THESE 2020 ones out already for last years SOPO? -->
+We gathered Bayesian posterior distributions of estimated biomass from assessments for 25 stocks, including 3 new assessments completed in 2020.
 From these distributions, we modelled overall (i.e., all stocks combined) mean log stock status as a latent random walk with individual stocks assumed to have an auto-regressive observation model with their 'true' status drawn from their stock-assessed posterior distribution.
 Details on the model are available in REF and the approach is an extension of REF.
 
@@ -126,7 +125,7 @@ We combined regional surveys that used the same gear and protocols (e.g., north 
 We then fit geostatistical models of biomass density with TMB [@kristensen2016] via the R package sdmTMB [@anderson2022].
 These models accounted for latent spatial factors with a constant spatial Gaussian random field and allowed spatiotemporal deviations to evolve as a Guassian random field random walk.
 <!-- The random fields were structured with Matern correlation functions. -->
-For each stock--survey type combination, we fit both Tweedie and delta-gamma (binomial and gamma) observation error models and reported the model that produced the most precise index estimates on average; form most (XX%) stocks, this was the delta-gamma model.
+For each stock--survey type combination, we fit both Tweedie and delta-gamma (binomial and gamma) observation error models and reported the model that produced the most precise index estimates on average; for most (XX%) stocks, this was the delta-gamma model.
 We then predicted and summed biomass or abundance density across the appropriate 2 x 2km survey grid(s) (e.g., REF) and scaled the survey index to the existing stock assessment biomass trend based on the geometric mean in overlapping years.
 
 Data and code to reproduce our analysis are available at <https://github.com/pbs-assess/gftrends> with the specific version at <https://github.com/pbs-assess/gftrends/releases/tag/v0.02>.
