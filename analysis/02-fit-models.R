@@ -34,7 +34,7 @@ m <- purrr::map(d, function(.d) {
     data = .d$stan_dat,
     chains = 6L, iter = 1000L,
     pars = pars,
-    control = list(max_treedepth = 20L, adapt_delta = 0.9),
+    control = list(max_treedepth = 15L, adapt_delta = 0.9),
     seed = 84791
   )
   # rstan::read_stan_csv(fit$output_files())
