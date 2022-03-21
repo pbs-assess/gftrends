@@ -59,6 +59,8 @@ header-includes:
 
 * Dogfish stocks have experienced the steepest declines of all stocks with the steepest decline being found in inside Vancouver Island waters in 2021.
 
+* An update to A DATA SYNOPSIS FOR BRITISH COLUMBIA GROUNDFISH will be released as a Science Response in 2022 and will provide additional information of population and fishing trends, growth and maturity patterns, and data availability for 113 fish species.
+
 
 <!-- \n| This document is a preprint version of a contribution to the\n| Fisheries and Oceans Canada State of the Pacific Ocean report in 2022 \n" -->
 
