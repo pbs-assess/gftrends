@@ -541,3 +541,50 @@ d$iter <- as.numeric(as.factor(as.character(d$iter)))
 d <- arrange(d, iter)
 d %>% saveRDS("data-raw/bocaccio-bc-mcmc.rds")
 d %>% ggplot(aes(year, b / bmsy, group = iter)) + geom_line(alpha = 0.05)
+
+# canary ---------------------------------------------------------------
+
+# Philina hand extracted on 2022-03-21
+# https://github.com/pbs-assess/gftrends/issues/10
+# Fig. J26, run 11
+# B0 from Table J10 B0 median MCMC
+# female only
+
+d <- readr::read_csv("data-raw/model-output/canary.csv")
+d <- rename(d, med = median)
+plot(d$year, d$med)
+d$log_B <- log(d$med)
+d$log_B_lwr <- log(d$lwr)
+d$log_B_upr <- log(d$upr)
+d <- mutate(d, sd_log_B = (log_B_upr - log_B_lwr) / (qnorm(0.975) * 2))
+
+ggplot(d, aes(year, exp(log_B), ymin = exp(log_B + 1.96 * sd_log_B), ymax = exp(log_B - 1.96 * sd_log_B))) +
+  geom_line(lwd = 2) +
+  geom_ribbon(alpha = 0.2) +
+  geom_line(aes(year, med), colour = "red") +
+  geom_ribbon(aes(year, med, ymin = lwr, ymax = upr), alpha = 0.2, colour = "red")
+
+# Bmsy is Table J10 B0 median MCMC
+# "Bmsy in the RPA corresponds approximately to 0.296*B0 and 0.356*B0 for
+# Runs 11 and 17 respectively, in the present document."
+# So
+B0 <- 8395
+bmsy <- 0.296 * B0
+lrp <- bmsy * 0.4
+usr <- bmsy * 0.8
+
+out <- d %>% transmute(species = "canary", region = "BC", year = year,
+  log_blrp = log(med / lrp), sd_log_blrp = sd_log_B,
+  log_busr = log(med / usr), sd_log_busr = sd_log_B,
+  log_bbmsy = log(med / bmsy), sd_log_bbmsy = sd_log_B,
+  q0.05_blrp = lwr / lrp, q0.95_blrp = upr / lrp,
+  q0.05_busr = lwr / usr, q0.95_busr = upr / usr,
+  q0.05_bmsy = lwr / bmsy, q0.95_bmsy = upr / bmsy,
+  p_lrp = NA, p_usr = NA
+)
+
+ggplot(out, aes(year, exp(log_blrp), ymin = exp(log_blrp + 1.96 * sd_log_blrp), ymax = exp(log_blrp - 1.96 * sd_log_blrp))) +
+  geom_line() +
+  geom_ribbon(alpha = 0.4)
+
+out %>% saveRDS("data-raw/canary-bc.rds")

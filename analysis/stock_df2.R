@@ -2,6 +2,7 @@ stock_df <- tibble::tribble(
   ~stock, ~stock_clean, ~type, ~species, ~region,
   "arrowtooth_BC", "Arrowtooth Flounder BC", "Flatfish", "Arrowtooth Flounder", "Coast-wide trawl surveys",
   "bocaccio_BC", "Bocaccio BC", "Rockfish", "Bocaccio", "Coast-wide trawl surveys",
+  "canary_BC", "Canary BC", "Rockfish", "Canary", "Coast-wide trawl surveys",
   "lingcod_4B", "Lingcod 4B", "Cod allies", "Lingcod", "HBLL inside surveys",
   "dogfish_BC", "North Pacific Spiny Dogfish BC", "Sharks", "North Pacific Spiny Dogfish", "Coast-wide trawl surveys",
   "dogfish_BC", "North Pacific Spiny Dogfish BC", "Sharks", "North Pacific Spiny Dogfish", "HBLL outside surveys",

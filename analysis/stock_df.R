@@ -2,6 +2,7 @@ stock_df <- tibble::tribble(
   ~stock, ~stock_clean, ~type,
   "arrowtooth_BC", "Arrowtooth Flounder BC", "Flatfish",
   "bocaccio_BC", "Bocaccio BC", "Rockfish",
+  "canary_BC", "Canary BC", "Rockfish",
   "lingcod_4B", "Lingcod 4B", "Cod allies",
   "pacific_ocean_perch_3CD", "Pacific Ocean Perch 3CD", "Rockfish",
   "pacific_ocean_perch_5ABC", "Pacific Ocean Perch 5ABC", "Rockfish",
