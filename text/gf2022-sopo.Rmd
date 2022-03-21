@@ -126,6 +126,10 @@ We did not have access to the updated Bocaccio assessment data [@dfo2022bocaccio
 From these distributions, we modelled overall (i.e., all stocks combined) mean log stock status as a latent random walk with individual stocks assumed to have an auto-regressive observation model with their 'true' status drawn from their stock-assessed posterior distribution.
 The approach is an extension of a model in @hilborn2020 to include uncertainty on stock status and implement the model in Stan [@carpenter2017]; details are available in @anderson2021sopopreprint.
 
+```{r, results='asis'}
+csasdown::csas_table(refs, col.names = c("Stock", "Reference"), caption = "Groundfish stocks included in the analysis with associated data reference. In cases where a Research Document was still 'In press', we indicate the associated published Science Advisory Report or Science Response.", longtable = FALSE)
+```
+
 ```{r, include=FALSE}
 surv_dat <- readRDS(here::here("data-generated/assess-index-plotted-data.rds"))
 ```
@@ -143,16 +147,11 @@ Data and code to reproduce our analysis are available at <https://github.com/pbs
 
 ## Status and trends
 
-Of the `r nrow(refs)` groundfish stock status time series included in the analysis (Table 1),
+<!-- Of the `r nrow(refs)` groundfish stock status time series included in the analysis (Table 1), -->
 <!-- TODO IF INCLUDING, WILL NEED UPDATING -->
-**four** stocks provided historical reference points for management advice, **18** provided MSY-based reference points, and **two** (Rocksole in Areas 5AB and 5CD) provided both historical and MSY reference points (we herein use the MSY-based ones).
-The most recent assessments were for the Rougheye/Blackspotted Rockfish complex, Yellowmouth Rockfish, Bocaccio and Pacific Cod.
+<!-- **four** stocks provided historical reference points for management advice, **18** provided MSY-based reference points, and **two** (Rocksole in Areas 5AB and 5CD) provided both historical and MSY reference points (we herein use the MSY-based ones). -->
+<!-- The most recent assessments were for the Rougheye/Blackspotted Rockfish complex, Yellowmouth Rockfish, Bocaccio, and Pacific Cod. -->
 <!-- IS YELLOWMOUTH THE ONLY REAL NEW ADDITION FOR THIS YEAR? BECAUSE THAT'S THE ONLY ONE I ADDED... -->
-
-```{r, results='asis'}
-csasdown::csas_table(refs, col.names = c("Stock", "Reference"), caption = "Groundfish stocks included in the analysis with associated data reference. In cases where a Research Document was still 'In press', we indicate the associated published Science Advisory Report or Science Response.", longtable = FALSE)
-```
-
 
 ```{r, include=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -177,7 +176,6 @@ q2021msy <- sprintf("%.1f", round(quantile(ts_2021_bmsy, probs = c(0.025, 0.5, 0
 
 Across all stocks, there was a decline in average stock status prior until approximately 2000 (Figure \@ref(fig:pa-framework)).
 The late 1990s and early 2000s marked the beginning of a relatively stable average status.
-<!-- TODO: UPDATE ABOVE WITH NEW CI -->
 We estimated the overall mean B/LRP in 2020 to be `r make_quant_text(q2021lrp)`.
 The overall mean B/USR and B/B~MSY~ in 2020 was `r make_quant_text(q2021usr)` and `r make_quant_text(q2021msy)`, respectively.
 Uncertainty in average status in recent years increased slightly because not all stocks had a current assessment (Figure \@ref(fig:pa-framework)).
@@ -197,7 +195,7 @@ Colours represent the mean B/LRP value such that green is highest and purple is 
 Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were used instead of MSY-based reference points.
 Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values in the PA Framework).
 The x-axis has been square-root transformed to slightly compress high ratio values for visualization.
-<!-- In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data. -->
+In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data.
 The full posteriors were not available for Quillback or Canary Rockfish stocks, which are shown in Figure \@ref(fig:stock-vs-indices).
 
 ```{r ridges, fig.cap = "(ref:fig-ridges)", out.width="4.2in", fig.align="center", fig.pos="ht"}
@@ -215,18 +213,18 @@ knitr::include_graphics(here::here("figs/stock-vs-indices.png"))
 
 Estimated biomass was above the LRP and USR for most stocks as of the most recent assessment (Figure \@ref(fig:ridges)).
 Considering the USR instead of the LRP, `r sum(refpt$p_usr > 0.25)`/`r nrow(refpt)` of the stocks in Figure \@ref(fig:ridges) had \> 25% probability of being below their USR as of their most recent assessment.
-**Lingcod in 4B and coastwide Bocaccio were the only stocks (with full posterior distributions available) with $>$ 5% posterior density below their LRP as of their most recent assessment (Figure \@ref(fig:ridges)).**
-**The assessment of Bocaccio, however, projected the stock to rebuild above the LRP by 2023 due to a very large recruitment event in 2016 [@dfo2020bocaccio].**
-Quillback Rockfish in both outside and inside waters had $>$ 5% posterior density below their LRPs as of the 2011 assessment, but the full posterior distribution was not available (quantiles are shown in Figure \@ref(fig:stock-vs-indices)).
+Of the stocks with full posterior distributions available, 4B Lingcod was the only stock with $>$ 5% posterior density below its LRP as of its most recent assessment (Figure \@ref(fig:ridges)).
+Coastwide Bocaccio had $>$ 5% posterior density below the LRP in 2020 [@dfo2020bocaccio] but effectively 0% by 2021 after a large recruitment cohort in 2016 [@dfo2022bocaccio].
+Quillback Rockfish in both outside and inside waters had $>$ 5% posterior density below their LRPs as of the 2011 assessment, but the full posterior distribution was not available (quantiles shown in Figure \@ref(fig:stock-vs-indices)).
 Pacific Cod in 3CD had a `r round(refpt$p_lrp[refpt$stock_clean == "Pacific Cod 3CD"], 2)` probability B $<$ LRP in 2020.
-Pacific Cod and Walleye Pollock both have a shorter generation time compared to many other stocks here, and have both exhibited strong patterns of decadal variation.
+<!-- Pacific Cod and Walleye Pollock both have a shorter generation time compared to many other stocks here, and have both exhibited strong patterns of decadal variation. -->
 
 When survey indices are used to explore more recent changes across species, additional patterns emerge.
 Survey indices for all assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, Yellowtail), and some slope rockfish (e.g. Yellowmouth) have increased in the past 5--7 years (Figure \@ref(fig:stock-vs-indices)).
 <!-- We did not include a Sablefish survey index because our included surveys did not include the trap survey that is used in its stock assessment; however, the sablefish surveys do show signs of increase since around 2015 as a result of large recent recruitment events [@dfo2020sablefish, Figure \@ref(fig:stock-vs-indices)]. -->
 The survey indices also allow us to explore the status of species that have not yet received full assessments, such as many flatfish and Chondrichthyans.
 The majority of the included flatfish (Petrale, English, Rex, Dover) appear to have increased in survey biomass over the last 5--10 years.
-However, the trawl survey index suggests that Arrowtooth has declined since the last assessment (Figure \@ref(fig:stock-vs-indices)).
+However, the trawl survey index suggests that Arrowtooth Flounder has declined since the last assessment (Figure \@ref(fig:stock-vs-indices)).
 Trends among the skates generally appear stable or positive.
 North Pacific Spiny Dogfish (herein 'dogfish') stocks, however, have experienced the steepest declines of all stocks (Figure \@ref(fig:stock-vs-indices)), with a particularly steep decline in inside Vancouver Island waters in 2021.
 
