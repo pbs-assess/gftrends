@@ -230,17 +230,17 @@ North Pacific Spiny Dogfish (herein 'dogfish') stocks, however, experienced the 
 
 The longterm overall groundfish trend is likely to have been primarily influenced by fishery removals and management interventions.
 <!-- TODO: Do you want to repeat any of this from last year? -->
-<!-- The transition from declining average B/LRP and B/USR to a relatively stable trajectory coincided with (1) the implementation of individual transferable quotas (ITQs) for the trawl fleet, (2) the introduction of 100% at-sea observer coverage over the period 1992--1997 [@turris2000], and (3) the initiation of the current synoptic trawl surveys in 2003. -->
-<!-- Furthermore, ITQs and electronic at-sea monitoring were introduced into the longline and trap fisheries in 2006 [@stanley2015]. -->
-<!-- Following these major management changes, quota for many stocks has remained relatively constant over the last two decades [@dfo2019ifmp]. -->
+The transition from declining average B/LRP and B/USR to a relatively stable trajectory coincided with the implementation of individual transferable quotas (ITQs) for the trawl fleet, the introduction of 100% at-sea observer coverage over the period 1992--1997 [@turris2000], and the initiation of the current synoptic trawl surveys in 2003.
+Furthermore, ITQs and electronic at-sea monitoring were introduced into the longline and trap fisheries in 2006 [@stanley2015].
+Following these major management changes, quota for many stocks has remained relatively constant over the last two decades [@dfo2019ifmp].
 <!-- The decadal patterns in assessed status for Pacific Cod [@forrest2020pcod] and Walleye Pollock [@starr2021pollock] in early decades are largely driven by trends in commercial catches and catch per unit effort. -->
-<!-- In terms of absolute stock status, estimates of B~MSY~ for data-limited species may be highly uncertain, or in some cases biased [@forrest2018]. -->
-For specific species and more recent trends, the drivers may include species interactions and climatic effects.
+
+Other patterns may be driven by species interactions and climatic effects.
 For example, dogfish are not currently heavily affected by any fishery, so the cause of their survey declines is unknown.
-One possibility is that climate change is driving a northward range shift or that seasonal distribution patterns have changed as seen in the northwest Pacific Ocean (REF).
+One possibility is that climate change is driving a northward range shift or that seasonal distribution patterns have changed as seen in the northwest Pacific Ocean [@Kanamori2022Dogfish].
 While there is evidence suggesting that temperature velocity---the pace a fish would have to move to maintain consistent temperature---may be related to a fine-scale redistribution of groundfish species density in Canadian Pacific waters [@english2021b], the coastwide declines observed in both trawl and HBLL survey indices for dogfish would require a much larger shift than has been so far documented.
 Effects of recent oceanographic conditions on spawning habitat are hypothesized to have led to years of low recruitment in some groundfish [e.g., Pacific Cod in nearby Alaskan waters, @laurel2020].
-On the other hand, after decades of consistently poor recruitment, recent increases in several shelf rockfishes species---most notably Bocaccio---may in part by driven by availability of oxygen-rich water at depth during gestation [@schroeder2019].
+On the other hand, after decades of consistently low recruitment, recent increases in several shelf rockfishes species---most notably Bocaccio---may in part by driven by availability of oxygen-rich water at depth during gestation [@schroeder2019; @dfo2022bocaccio].
 <!-- Whatever the cause, increases in biomass density among several rockfishes suggests that many species may have benefited. -->
 
 <!-- TODO: reword and acknowledge survey increases if including? -->
@@ -250,7 +250,7 @@ On the other hand, after decades of consistently poor recruitment, recent increa
 ## Implications of those trends
 
 The Sustainable Fisheries Framework and the Fish Stocks provisions of the *Fisheries Act* require that major fish stocks be maintained above their LRP with high probability.
-Four or five stocks were likely below their LRP as of their last assessment.
+Three stocks had $>$ 5% probability of being below their LRP as of their last assessment.
 Roughly one-third of assessed stocks had $>$ 25% probability of being in the cautious zone where removals should be progressively reduced to avoid reaching the LRP.
 Rebuilding and precautionary management of stocks in the critical and cautious zones, respectively, should help ensure stock status improves over time in response to reduced fishing pressure and favourable environmental conditions if and when they occur.
 
