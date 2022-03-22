@@ -153,8 +153,8 @@ Data and code to reproduce our analysis are available at <https://github.com/pbs
 
 ```{r, include=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
-refpt <- readRDS("data-generated/p-thresh.rds")
-ts_mcmc <- readRDS("data-generated/x_t_posterior.rds")
+refpt <- readRDS(here::here("data-generated/p-thresh.rds"))
+ts_mcmc <- readRDS(here::here("data-generated/x_t_posterior.rds"))
 ts_2021_lrp <- dplyr::filter(ts_mcmc, year == 2021, ratio == "B/LRP") %>% 
   pull(.value)
 ts_2021_usr <- dplyr::filter(ts_mcmc, year == 2021, ratio == "B/USR") %>% 
