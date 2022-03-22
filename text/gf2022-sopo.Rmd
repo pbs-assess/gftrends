@@ -87,30 +87,23 @@ source(here::here("preprint/refs-table.R"))
 
 ## Introduction
 
-Recent amendments to Canada's *Fisheries Act* via the [[Fish Stocks provisions]{.ul}](https://laws-lois.justice.gc.ca/eng/acts/f-14/page-3.html#h-1175547) have increased DFO's focus on stock status with respect to biological reference points.
-The amendments are based on Canada's Precautionary Approach (PA) Framework, which describes two stock status reference points: (1) the Limit Reference Point (LRP), a "status below which serious harm is occurring to the stock"; and (2) the Upper Stock Reference Point (USR), which represents the "threshold below which removals must be progressively reduced in order to avoid reaching the LRP".
-The USR defines the breakpoint between the healthy and cautious zone and the LRP defines the breakpoint between the cautious and critical zone.
-The LRP and USR are often calculated based on B~MSY~ (biomass at maximum sustainable yield) at provisional levels of 0.4 B~MSY~ and 0.8 B~MSY~, but in other cases can be based on proxies, such as average or minimum historical biomass levels [e.g., @forrest2020pcod].
-<!-- COULD KEEP THE ABOVE FROM LAST YEAR, OR WE COULD FOCUS ON LRP TO SAVE SPACE? -->
-<!-- THIS WOULD MEAN MODIFYING OR REMOVING FIG. 1 -->
-<!-- The Limit Reference Point (LRP) defines the breakpoint between the cautious and critical zone. -->
-<!-- The LRP is often calculated based on B~MSY~ (biomass at maximum sustainable yield) at a provisional level of 0.4 B~MSY~, but in other cases can be based on proxies, such as average or minimum historical biomass levels [e.g., @forrest2020pcod]. -->
-
 DFO conducts a suite of randomized surveys using bottom trawl, longline hook, and longline trap gear that, in aggregate, cover Canada's Pacific Coast [@anderson2019].
 Synoptic trawl surveys in Queen Charlotte Sound (Areas 5A and 5B) and Hecate Strait (Areas 5C and 5D) are conducted in odd numbered years, while the West Coast of Vancouver Island (WCVI; Areas 3C and 3D) and the West Coast of Haida Gwaii (WCHG; Area 5E) surveys are conducted in even numbered years.
 In addition, four biennial Hard Bottom Longline (HBLL) surveys are conducted, two in "inside" waters (east of Vancouver Island; Area 4B) and two in "outside" waters (everywhere else).
 Lastly, a coast-wide longline trap survey targeting sablefish is conducted every year and DFO collects biological information from the International Pacific Halibut Commission (IPHC) Setline Survey.
 In 2021, in addition to the usual odd numbered year surveys, the synoptic WCVI trawl survey and inside HBLL south surveys were conducted to make up for missing them in 2020 due to COVID-19.
 At the time of writing, the outside HBLL data are not yet available in DFO's survey databases.
-These surveys provide the data (survey indexes, ages, lengths, maturities, catches) to reconstruct plausible stock trajectories and estimate reference points.
+<!-- These surveys provide much of the data (survey indexes, ages, lengths, maturities) to reconstruct plausible stock trajectories and estimate reference points. -->
+
 
 Assessment scientists conduct regular stock assessment for major fish stocks in BC.
-These assessments combine fishery-dependent data (such as commercial catches) with fishery-independent data (data from scientific surveys) to estimate quantities such as spawning stock biomass, growth and maturity, and derive measures of stock status and fishing intensity.
+These assessments combine fishery-dependent data (such as commercial catches) with fishery-independent data (data from scientific surveys) to estimate quantities such as spawning stock biomass, growth and maturity, and derive measures of fishing intensity and stock status.
+Stock status is typically assessed with respect to two reference points: (1) the Limit Reference Point (LRP), a "status below which serious harm is occurring to the stock"; and (2) the Upper Stock Reference Point (USR), which represents the "threshold below which removals must be progressively reduced in order to avoid reaching the LRP".
 <!-- Assessments are usually ‘tuned’ to fit survey indices well; however, assessments also account for gear ‘selectivity’, like the fact that smaller fish are not captured by certain gear. -->
-However, assessments are time and labour intensive and therefore frequently lag behind high quality datasets such as indices of abundance from scientific surveys, which often closely reflect population trends from assessments.
+While stock assessments represent the gold-standard of estimated trends in population status, assessments are time and labour intensive and therefore frequently lag behind high quality datasets such as indices of abundance from scientific surveys, which often closely reflect population trends from assessments.
 Geostatistical spatiotemporal models allow spatially adjacent areas surveyed in various years to be combined into single annual indices that can help track changes in surveyed abundance between assessments.
 
-This year, we explored stock status using two methods: (1) we updated a hierarchical Bayesian state-space time-series model from last year to explore trends until the year 2021, and (2) we developed model-based indices from relevant surveys for all assessed stocks, as well as stocks with outstanding requests for Science Advice.
+This year, we explored population trends for groundfish stocks using two methods: (1) we updated a hierarchical Bayesian state-space time-series model from last year [@anderson2021sopopreprint] to explore trends until the year 2021, and (2) we developed model-based indices from relevant surveys for all assessed stocks, as well as stocks with outstanding requests for Science Advice.
 
 <!-- This model incorporated uncertainty in stock-specific status; and (2) we projected the latent underlying stock-specific status forward to the last year (2021). -->
 <!-- The latter accounts for not all stocks having an up-to-date stock assessment and accounts for future possible stock states based on the time-series properties of the fitted stock trajectories. -->
@@ -138,7 +131,7 @@ These models accounted for latent spatial factors with a constant spatial Gaussi
 For each stock--survey type combination, we fit both Tweedie and delta-gamma (binomial and gamma) observation error models and reported the model that produced the most precise index estimates on average; for most stocks (~80%), this was the delta-gamma model.
 We then predicted and summed biomass or abundance density across the appropriate 2 x 2km survey grid(s) [e.g., @anderson2019] and scaled the survey index to the existing stock assessment biomass trend based on the geometric mean in overlapping years.
 
-Data and code to reproduce our analysis are available at <https://github.com/pbs-assess/gftrends> with the specific version at <https://github.com/pbs-assess/gftrends/releases/tag/v0.02>.
+Data and code to reproduce our analysis are available at <https://github.com/pbs-assess/gftrends>.
 <!-- TODO: update version? -->
 
 ## Status and trends
@@ -170,6 +163,11 @@ q2021usr <- sprintf("%.1f", round(quantile(ts_2021_usr, probs = c(0.025, 0.5, 0.
 q2021msy <- sprintf("%.1f", round(quantile(ts_2021_bmsy, probs = c(0.025, 0.5, 0.975)), 1))
 ```
 
+<!-- Across all stocks, there was a decline in average stock status until approximately 2000 (Figure \@ref(fig:pa-framework)). -->
+
+<!-- The USR defines the breakpoint between the healthy and cautious zone and the LRP defines the breakpoint between the cautious and critical zone. -->
+<!-- The LRP and USR are often calculated based on B~MSY~ (biomass at maximum sustainable yield) at provisional levels of 0.4 B~MSY~ and 0.8 B~MSY~, but in other cases can be based on proxies, such as average or minimum historical biomass levels [e.g., @forrest2020pcod]. -->
+
 <!-- If space is an issue for the SOPO version of this, I still think Figure 1 could be left out and last years report cited. We could keep the stats. -->
 Across all stocks, there was a decline in average stock status until approximately 2000 (Figure \@ref(fig:pa-framework)).
 The late 1990s and early 2000s marked the beginning of a relatively stable average status.
@@ -183,7 +181,7 @@ Despite the overall pattern in the average biological status, there was consider
 (ref:fig-pa) Overall mean biomass status across all stocks for B/LRP, B/USR, and B/B~MSY~ from the hierarchical time-series model.
 Dark lines represent the posterior median and shaded ribbons represent 95% quantile credible intervals.
 
-```{r pa-framework, fig.cap="(ref:fig-pa)", out.width="3.2in", fig.align="center", fig.pos="ht"}
+```{r pa-framework, fig.cap="(ref:fig-pa)", out.width="2.8in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/ts-summary.png"))
 ```
 
@@ -221,7 +219,7 @@ When we used survey indices to explore more recent changes across species, addit
 Survey indices for all assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, Yellowtail), and some slope rockfish (e.g. Yellowmouth) increased in the past 5--7 years (Figure \@ref(fig:stock-vs-indices)).
 <!-- We did not include a Sablefish survey index because our included surveys did not include the trap survey that is used in its stock assessment; however, the sablefish surveys do show signs of increase since around 2015 as a result of large recent recruitment events [@dfo2020sablefish, Figure \@ref(fig:stock-vs-indices)]. -->
 The survey indices also allowed us to explore surveyed population trends of species that have not yet received full assessments, such as many flatfish and Chondrichthyans.
-The majority of the included flatfish (Petrale, English, Rex, Dover) appeared to increase in survey biomass over the last 5--10 years.
+Most of the included flatfish (Petrale, English, Rex, Dover) appeared to increase in survey biomass over the last 5--10 years.
 However, the trawl survey index suggested that Arrowtooth Flounder have declined since the last assessment (Figure \@ref(fig:stock-vs-indices)).
 Trends among the skates generally appeared stable or positive.
 North Pacific Spiny Dogfish (herein 'dogfish') stocks, however, experienced the steepest declines of all stocks (Figure \@ref(fig:stock-vs-indices)), with a particularly steep decline in inside Vancouver Island waters in 2021.
@@ -232,13 +230,13 @@ The longterm overall groundfish trend is likely to have been primarily influence
 <!-- TODO: Do you want to repeat any of this from last year? -->
 The transition from declining average B/LRP and B/USR to a relatively stable trajectory coincided with the implementation of individual transferable quotas (ITQs) for the trawl fleet, the introduction of 100% at-sea observer coverage over the period 1992--1997 [@turris2000], and the initiation of the current synoptic trawl surveys in 2003.
 Furthermore, ITQs and electronic at-sea monitoring were introduced into the longline and trap fisheries in 2006 [@stanley2015].
-Following these major management changes, quota for many stocks has remained relatively constant over the last two decades [@dfo2019ifmp].
+<!-- Following these major management changes, quota for many stocks has remained relatively constant over the last two decades [@dfo2019ifmp]. -->
 <!-- The decadal patterns in assessed status for Pacific Cod [@forrest2020pcod] and Walleye Pollock [@starr2021pollock] in early decades are largely driven by trends in commercial catches and catch per unit effort. -->
 
 Other patterns may be driven by species interactions and climatic effects.
 For example, dogfish are not currently heavily affected by any fishery, so the cause of their survey declines is unknown.
 One possibility is that climate change is driving a northward range shift or that seasonal distribution patterns have changed as seen in the northwest Pacific Ocean [@Kanamori2022Dogfish].
-While there is evidence suggesting that temperature velocity---the pace a fish would have to move to maintain consistent temperature---may be related to a fine-scale redistribution of groundfish species density in Canadian Pacific waters [@english2021b], the coastwide declines observed in both trawl and HBLL survey indices for dogfish would require a much larger shift than has been so far documented.
+For several species, there is evidence that temperature velocity---the pace a fish would have to move to maintain consistent temperature---may be related to a fine-scale redistribution of population density in Canadian Pacific waters [@english2021b].
 Effects of recent oceanographic conditions on spawning habitat are hypothesized to have led to years of low recruitment in some groundfish [e.g., Pacific Cod in nearby Alaskan waters, @laurel2020].
 On the other hand, after decades of consistently low recruitment, recent increases in several shelf rockfishes species---most notably Bocaccio---may in part by driven by availability of oxygen-rich water at depth during gestation [@schroeder2019; @dfo2022bocaccio].
 <!-- Whatever the cause, increases in biomass density among several rockfishes suggests that many species may have benefited. -->
