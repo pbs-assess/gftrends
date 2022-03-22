@@ -213,11 +213,11 @@ knitr::include_graphics(here::here("figs/stock-vs-indices.png"))
 ```
 
 Estimated biomass was above the LRP and USR for most stocks as of the most recent assessment (Figure \@ref(fig:ridges)).
-Considering the USR instead of the LRP, `r sum(refpt$p_usr > 0.25)`/`r nrow(refpt)` of the stocks in Figure \@ref(fig:ridges) had \> 25% probability of being below their USR as of their most recent assessment.
 Of the stocks with full posterior distributions available, 4B Lingcod was the only stock with $>$ 5% posterior density below its LRP as of its most recent assessment (Figure \@ref(fig:ridges)).
 Coastwide Bocaccio had $>$ 5% posterior density below the LRP in 2020 [@dfo2020bocaccio] but effectively 0% by 2021 after a large recruitment cohort in 2016 [@dfo2022bocaccio].
 Quillback Rockfish in both outside and inside waters had $>$ 5% posterior density below their LRPs as of the 2011 assessment, but the full posterior distribution was not available (quantiles shown in Figure \@ref(fig:stock-vs-indices)).
 Pacific Cod in 3CD had a `r round(refpt$p_lrp[refpt$stock_clean == "Pacific Cod 3CD"], 2)` probability B $<$ LRP in 2020.
+Considering the USR instead of the LRP, `r sum(refpt$p_usr > 0.25)`/`r nrow(refpt)` of the stocks in Figure \@ref(fig:ridges) had \> 25% probability of being below their USR as of their most recent assessment.
 <!-- Pacific Cod and Walleye Pollock both have a shorter generation time compared to many other stocks here, and have both exhibited strong patterns of decadal variation. -->
 
 When we used survey indices to explore more recent changes across species, additional patterns emerged.
