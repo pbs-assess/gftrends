@@ -169,8 +169,8 @@ q2021msy <- sprintf("%.1f", round(quantile(ts_2021_bmsy, probs = c(0.025, 0.5, 0
 <!-- If space is an issue for the SOPO version of this, I still think Figure 1 could be left out and last years report cited. We could keep the stats. -->
 Across all stocks, there was a decline in average stock status until approximately 2000 (Figure \@ref(fig:pa-framework)).
 The late 1990s and early 2000s marked the beginning of a relatively stable average status.
-We estimated the overall mean B/LRP (biomass divided by the LRP) in 2020 to be `r make_quant_text(q2021lrp)`.
-The overall mean B/USR and B/B~MSY~ (biomass divided by biomass at maximum sustainable yield) in 2020 was `r make_quant_text(q2021usr)` and `r make_quant_text(q2021msy)`, respectively (Figure \@ref(fig:pa-framework), \@ref(fig:ridges)).
+We estimated the overall mean B/LRP (biomass divided by the LRP) in 2021 to be `r make_quant_text(q2021lrp)`.
+The overall mean B/USR and B/B~MSY~ (biomass divided by biomass at maximum sustainable yield) in 2021 was `r make_quant_text(q2021usr)` and `r make_quant_text(q2021msy)`, respectively (Figure \@ref(fig:pa-framework), \@ref(fig:ridges)).
 <!-- I think this effect is too small to need to mention. -->
 <!-- Uncertainty in average status in recent years increased slightly because not all stocks had a current assessment (Figure \@ref(fig:pa-framework)). -->
 <!-- This uncertainty can be partially address using survey indices to extend our exploration of stock status to the most recent year with survey data. -->
