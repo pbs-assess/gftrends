@@ -1,13 +1,13 @@
 ---
-title: "Trends in Pacific Canadian groundfish stock status and surveys"
+title: ""
 author: "|
   Sean C. Anderson$^1$, Philina A. English$^1$\n| $^1$Pacific Biological Station, Fisheries and Oceans Canada, \n| Nanaimo, BC, Canada\n"
 output:
-    bookdown::pdf_document2:
+    bookdown::word_document2:
       toc: false
       number_sections: false
       fig_caption: true
-      # reference_docx: "SOPO 2022 TEMPLATE FOR ORAL PRESENTATION SUMMARIES_V2.docx"
+      reference_docx: "SOPO 2022 TEMPLATE FOR ORAL PRESENTATION SUMMARIES_V2.docx"
 csl: csas.csl
 bibliography: refs.bib
 link-citations: yes
@@ -60,7 +60,7 @@ $^1$Sean.Anderson@dfo-mpo.gc.ca, $^2$Philina.English@dfo-mpo.gc.ca
 
 * As of their last assessment, three stocks (Strait of Georgia Lingcod [Area 4B] and inside and outside Quillback Rockfish) had a $>$ 5% probability of being below their Limit Reference Point. Conversely, two-thirds of assessed stocks had a high (\>75%) probability of being in the "healthy zone".
 
-* All assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow,  Yellowtail) and several slope rockfish increased in surveyed biomass over the last ~5 years. Surveyed biomass for several flatfish (Petrale, English, Rex, and Dover Sole) increased over the last 5–-10 years but declined for Arrowtooth Flounder.
+* All assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow,  Yellowtail) and several slope rockfish increased in surveyed biomass over the last ~5 years. Surveyed biomass for several flatfish (Petrale, English, Rex, and Dover Sole) increased over the last 5–10 years but declined for Arrowtooth Flounder.
 
 * Survey indices for North Pacific Spiny Dogfish stocks had the steepest declines across all stocks---particularly for inside Vancouver Island waters in 2021.
 
@@ -127,10 +127,8 @@ For these `r nrow(refs)` stocks, as well as stocks with outstanding requests for
 We combined regional surveys that used the same gear and protocols (e.g., north and south outside HBLL surveys, or various synoptic trawl surveys).
 We then fit geostatistical models of biomass density with TMB [@kristensen2016] via the R package sdmTMB [@anderson2022].
 These models accounted for latent spatial factors with a constant spatial Gaussian random field and allowed spatiotemporal deviations to evolve as a Guassian random field random walk.
-<!-- The random fields were structured with Matern correlation functions. -->
 For each stock--survey type combination, we fit both Tweedie and delta-gamma (binomial and gamma) observation error models and reported the model that produced the most precise index estimates on average; for most stocks (~80%), this was the delta-gamma model.
 We then predicted and summed biomass or abundance density across the appropriate 2 x 2km survey grid(s) [e.g., @anderson2019] and scaled the survey index to the existing stock assessment biomass trend based on the geometric mean in overlapping years.
-
 Data and code to reproduce our analysis are available at <https://github.com/pbs-assess/gftrends>.
 <!-- TODO: update version? -->
 
@@ -171,37 +169,26 @@ q2021msy <- sprintf("%.1f", round(quantile(ts_2021_bmsy, probs = c(0.025, 0.5, 0
 <!-- If space is an issue for the SOPO version of this, I still think Figure 1 could be left out and last years report cited. We could keep the stats. -->
 Across all stocks, there was a decline in average stock status until approximately 2000 (Figure \@ref(fig:pa-framework)).
 The late 1990s and early 2000s marked the beginning of a relatively stable average status.
-We estimated the overall mean B/LRP in 2020 to be `r make_quant_text(q2021lrp)`.
-The overall mean B/USR and B/B~MSY~ in 2020 was `r make_quant_text(q2021usr)` and `r make_quant_text(q2021msy)`, respectively (Figure \@ref(fig:pa-framework), \@ref(fig:ridges)).
+We estimated the overall mean B/LRP (biomass divided by the LRP) in 2020 to be `r make_quant_text(q2021lrp)`.
+The overall mean B/USR and B/B~MSY~ (biomass divided by biomass at maximum sustainable yield) in 2020 was `r make_quant_text(q2021usr)` and `r make_quant_text(q2021msy)`, respectively (Figure \@ref(fig:pa-framework), \@ref(fig:ridges)).
 <!-- I think this effect is too small to need to mention. -->
 <!-- Uncertainty in average status in recent years increased slightly because not all stocks had a current assessment (Figure \@ref(fig:pa-framework)). -->
 <!-- This uncertainty can be partially address using survey indices to extend our exploration of stock status to the most recent year with survey data. -->
 Despite the overall pattern in the average biological status, there was considerable variation within and across individual stocks, especially when recent survey trends are also considered (Figure \@ref(fig:stock-vs-indices)).
 
-(ref:fig-pa) Overall mean biomass status across all stocks for B/LRP, B/USR, and B/B~MSY~ from the hierarchical time-series model.
-Dark lines represent the posterior median and shaded ribbons represent 95% quantile credible intervals.
+(ref:fig-pa) Overall mean biomass status across all stocks for B/LRP, B/USR, and B/B~MSY~ from the hierarchical time-series model. Dark lines represent the posterior median and shaded ribbons represent 95% quantile credible intervals.
 
 ```{r pa-framework, fig.cap="(ref:fig-pa)", out.width="2.8in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/ts-summary.png"))
 ```
 
-(ref:fig-ridges) Posterior distribution of the three measures of stock status for `r nrow(refs) - 3` of the `r nrow(refs)` stocks [@grandin2017arrowtooth; @dfo2020bocaccio; @holt2016lingsog; @edwards2014popwcvi; @edwards2013pophg; @edwards2011popqcs; @dfo2021pcod; @starr2021redstripe; @holt2016rocksole;@dfo2020rougheye; @dfo2020sablefish; @starr2015shortspineidiots; @starr2016silvergray;@starr2021pollock; @dfo2019widow;@dfo2020yelloweyeinside;@dfo2022yellowmouth;@dfo2015yellowtail].
-Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column indicate the year the status represents.
-Colours represent the mean B/LRP value such that green is highest and purple is lowest.
-Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were used instead of MSY-based reference points.
-Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values).
-The x-axis has been square-root transformed to slightly compress high ratio values for visualization.
-In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data [@dfo2020bocaccio].
-The full posteriors were not available for Quillback or Canary Rockfish stocks, which are shown in Figure \@ref(fig:stock-vs-indices) [@yamanaka2011quillback; @stanly2009canary].
+(ref:fig-ridges) Posterior distribution of the three measures of stock status for `r nrow(refs) - 3` of the `r nrow(refs)` stocks [@grandin2017arrowtooth; @dfo2020bocaccio; @holt2016lingsog; @edwards2014popwcvi; @edwards2013pophg; @edwards2011popqcs; @dfo2021pcod; @starr2021redstripe; @holt2016rocksole;@dfo2020rougheye; @dfo2020sablefish; @starr2015shortspineidiots; @starr2016silvergray;@starr2021pollock; @dfo2019widow;@dfo2020yelloweyeinside;@dfo2022yellowmouth;@dfo2015yellowtail]. Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column indicate the year the status represents. Colours represent the mean B/LRP value such that green is highest and purple is lowest. Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were used instead of MSY-based reference points. Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values). The x-axis has been square-root transformed to slightly compress high ratio values for visualization. In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data [@dfo2020bocaccio]. The full posteriors were not available for Quillback or Canary Rockfish stocks, which are shown in Figure \@ref(fig:stock-vs-indices) [@yamanaka2011quillback; @stanly2009canary].
 
 ```{r ridges, fig.cap = "(ref:fig-ridges)", out.width="4.2in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/ridges.png"))
 ```
 
-(ref:stock-vs-indices) Trends in BC groundfish stocks with assessments in the last ~15 years or outstanding requests for Science Advice.
-Dark grey lines and ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals (see citations in Figure \@ref(fig:ridges) caption).
-Coloured lines and ribbons represent model-based indices for the most relevant survey(s) for each stock.
-Survey trends are scaled to existing assessments based on the geometric mean in overlapping years.
+(ref:stock-vs-indices) Trends in BC groundfish stocks with assessments in the last ~15 years or outstanding requests for Science Advice. Dark grey lines and ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals (see citations in Figure \@ref(fig:ridges) caption). Coloured lines and ribbons represent model-based indices for the most relevant survey(s) for each stock. Survey trends are scaled to existing assessments based on the geometric mean in overlapping years.
 
 ```{r stock-vs-indices, fig.cap = "(ref:stock-vs-indices)", out.width="6.6in", fig.align="center", fig.pos="ht"}
 knitr::include_graphics(here::here("figs/stock-vs-indices.png"))
@@ -216,8 +203,7 @@ Considering the USR instead of the LRP, `r sum(refpt$p_usr > 0.25)`/`r nrow(refp
 <!-- Pacific Cod and Walleye Pollock both have a shorter generation time compared to many other stocks here, and have both exhibited strong patterns of decadal variation. -->
 
 When we used survey indices to explore more recent changes across species, additional patterns emerged.
-Survey indices for all assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, Yellowtail), and some slope rockfish (e.g. Yellowmouth) increased in the past ~5 years (Figure \@ref(fig:stock-vs-indices)).
-<!-- We did not include a Sablefish survey index because our included surveys did not include the trap survey that is used in its stock assessment; however, the sablefish surveys do show signs of increase since around 2015 as a result of large recent recruitment events [@dfo2020sablefish, Figure \@ref(fig:stock-vs-indices)]. -->
+Survey indices for all assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, Yellowtail), and some slope rockfish (e.g., Yellowmouth) increased in the past ~5 years (Figure \@ref(fig:stock-vs-indices)).
 The survey indices also allowed us to explore surveyed population trends of species that have not yet received full assessments, such as many flatfish and Chondrichthyans.
 Most of the included flatfish (Petrale, English, Rex, Dover) appeared to increase in survey biomass over the last 5--10 years.
 However, the trawl survey index suggested that Arrowtooth Flounder have declined since the last assessment (Figure \@ref(fig:stock-vs-indices)).
@@ -238,7 +224,7 @@ For example, dogfish are not currently heavily affected by any fishery, so the c
 One possibility is that climate change is driving a northward range shift or that seasonal distribution patterns have changed as seen in the northwest Pacific Ocean [@Kanamori2022Dogfish].
 For several species, there is evidence that temperature velocity---the pace a fish would have to move to maintain consistent temperature---may be related to a fine-scale redistribution of population density in Canadian Pacific waters [@english2021b].
 Effects of recent oceanographic conditions on spawning habitat are hypothesized to have led to years of low recruitment in some groundfish [e.g., Pacific Cod in nearby Alaskan waters, @laurel2020].
-On the other hand, after decades of consistently low recruitment, recent increases in several shelf rockfishes species---most notably Bocaccio---may in part by driven by availability of oxygen-rich water at depth during gestation [@schroeder2019; @dfo2022bocaccio].
+On the other hand, after decades of consistently low recruitment, recent increases in several shelf rockfishes species---most notably Bocaccio---may in part by driven by transient availability of oxygen-rich water at depth during gestation [@schroeder2019; @dfo2022bocaccio].
 <!-- Whatever the cause, increases in biomass density among several rockfishes suggests that many species may have benefited. -->
 
 <!-- TODO: reword and acknowledge survey increases if including? -->
