@@ -3,10 +3,11 @@ title: "Trends in Pacific Canadian groundfish stock status and surveys"
 author: "|
   Sean C. Anderson$^1$, Philina A. English$^1$\n| $^1$Pacific Biological Station, Fisheries and Oceans Canada, \n| Nanaimo, BC, Canada\n"
 output:
-    bookdown::pdf_document2:
+    bookdown::word_document2:
       toc: false
       number_sections: false
       fig_caption: true
+      reference_docx: "SOPO 2022 TEMPLATE FOR ORAL PRESENTATION SUMMARIES_V2.docx"
 csl: csas.csl
 bibliography: refs.bib
 link-citations: yes
@@ -26,14 +27,19 @@ header-includes:
   \definecolor{niceblue}{HTML}{236899}
 ---
 
+# Trends in Pacific Canadian groundfish stock status and surveys
+
+Sean C. Anderson$^1$, Philina A. English$^2$
+
+Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo, B.C.,
+$^1$Sean.Anderson@dfo-mpo.gc.ca, $^2$Philina.English@dfo-mpo.gc.ca
+
 ## Highlights
 
-* We summarized groundfish stock status as of 2021 by (1) gathering time series of stock assessment output, (2) fitting
-  a hierarchical Bayesian time-series model to them, and (3) joining model-based survey indices with assessed biomass to
-  illustrate how surveyed population trends have changed subsequent to the
-  stock assessments.
-
-<!-- inclusion of  information on ages, lengths, maturities, and commercial catch changes our understanding of stock status  -->
+<!-- * We summarized groundfish stock status as of 2021 by (1) gathering time series of stock assessment output, (2) fitting -->
+<!--   a hierarchical Bayesian time-series model to them, and (3) joining model-based survey indices with assessed biomass to -->
+<!--   illustrate how surveyed population trends have changed subsequent to the -->
+<!--   stock assessments. -->
 
 <!-- * We assembled estimated biomass (B) time series from stock assessments for 24 -->
 <!--   Pacific Canadian groundfish stocks and modelled average and stock status -->
@@ -50,22 +56,13 @@ header-includes:
 <!--   implementation of ITQs (individual transferable quotas) for the trawl fleet -->
 <!--   and the commencement of the synoptic trawl surveys. -->
 
-* Stock assessments classified three stocks (Strait of Georgia Lingcod [Area
-  4B], inside and outside Quillback Rockfish) as having
-  a greater than 5% probability of being in the critical zone, while roughly
-  one-third of stocks had a greater than 1 in 4 chance of being in the
-  "cautious zone". Conversely, two-thirds of assessed stocks had a high (\>75%)
-  probability of being in the "healthy zone".
+* Average groundfish stock status declined from 1950 to around 2000 and has remained relatively stable since then. The change around 2000 followed the implementation of ITQs (individual transferable quotas) for the trawl fleet and the commencement of the synoptic trawl surveys.
 
-* All assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, 
-  Yellowtail) and several slope rockfish increased in surveyed biomass over the 
-  last ~5--7 years. Surveyed biomass for several flatfish
-  (Petrale, English, Rex, and Dover Sole) increased over the last 5–-10 years but
-  declined for Arrowtooth Flounder.
+* Stock assessments classified three stocks (Strait of Georgia Lingcod [Area 4B] and inside and outside Quillback Rockfish) as having had a $>$ 5% probability of being in the critical zone. Conversely, two-thirds of assessed stocks had a high (\>75%) probability of being in the "healthy zone".
 
-* Survey indices for North Pacific Spiny Dogfish stocks had the steepest
-  declines across all stocks---particularly for inside Vancouver Island waters
-  in 2021.
+* All assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow,  Yellowtail) and several slope rockfish increased in surveyed biomass over the  last ~5--7 years. Surveyed biomass for several flatfish (Petrale, English, Rex, and Dover Sole) increased over the last 5–-10 years but declined for Arrowtooth Flounder.
+
+* Survey indices for North Pacific Spiny Dogfish stocks had the steepest declines across all stocks---particularly for inside Vancouver Island waters in 2021.
 
 <!-- \n| This document is a preprint version of a contribution to the\n| Fisheries and Oceans Canada State of the Pacific Ocean report in 2022 \n" -->
 
