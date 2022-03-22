@@ -115,9 +115,9 @@ We did not have access to the updated Bocaccio assessment data [@dfo2022bocaccio
 From these distributions, we modelled overall (i.e., all stocks combined) mean log stock status as a latent random walk with individual stocks assumed to have an auto-regressive observation model with their 'true' status drawn from their stock-assessed posterior distribution.
 The approach is an extension of a model in @hilborn2020 to include uncertainty on stock status and implement the model in Stan [@carpenter2017]; details are available in @anderson2021sopopreprint.
 
-```{r, results='asis'}
-csasdown::csas_table(refs, col.names = c("Stock", "Reference"), caption = "Assessed groundfish stocks included in the analysis with associated data reference.", longtable = FALSE)
-```
+<!-- ```{r, results='asis'} -->
+<!-- csasdown::csas_table(refs, col.names = c("Stock", "Reference"), caption = "Assessed groundfish stocks included in the analysis with associated data reference.", longtable = FALSE) -->
+<!-- ``` -->
 
 ```{r, include=FALSE}
 surv_dat <- readRDS(here::here("data-generated/assess-index-plotted-data.rds"))
@@ -185,21 +185,21 @@ Dark lines represent the posterior median and shaded ribbons represent 95% quant
 include_graphics(here("figs/ts-summary.png"))
 ```
 
-(ref:fig-ridges) Posterior distribution of the three measures of stock status for `r nrow(refs) - 3` of the `r nrow(refs)` stocks.
+(ref:fig-ridges) Posterior distribution of the three measures of stock status for `r nrow(refs) - 3` of the `r nrow(refs)` stocks [@grandin2017arrowtooth; @dfo2020bocaccio; @holt2016lingsog; @edwards2014popwcvi; @edwards2013pophg; @edwards2011popqcs; @dfo2021pcod; @starr2021redstripe; @holt2016rocksole;@dfo2020rougheye; @dfo2020sablefish; @starr2015shortspineidiots; @starr2016silvergray;@starr2021pollock; @dfo2019widow;@dfo2020yelloweyeinside;@dfo2022yellowmouth;@dfo2015yellowtail].
 Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column indicate the year the status represents.
 Colours represent the mean B/LRP value such that green is highest and purple is lowest.
 Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were used instead of MSY-based reference points.
-Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values in the PA Framework).
+Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values).
 The x-axis has been square-root transformed to slightly compress high ratio values for visualization.
-In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data.
-The full posteriors were not available for Quillback or Canary Rockfish stocks, which are shown in Figure \@ref(fig:stock-vs-indices).
+In a few cases (e.g., Bocaccio) the status represents a one- or two-year projection from the last year of available data [@dfo2020bocaccio].
+The full posteriors were not available for Quillback or Canary Rockfish stocks, which are shown in Figure \@ref(fig:stock-vs-indices) [@yamanaka2011quillback; @stanly2009canary].
 
 ```{r ridges, fig.cap = "(ref:fig-ridges)", out.width="4.2in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/ridges.png"))
 ```
 
 (ref:stock-vs-indices) Trends in BC groundfish stocks with assessments in the last ~15 years or outstanding requests for Science Advice.
-Dark grey lines and ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals.
+Dark grey lines and ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals (see citations in Figure \@ref(fig:ridges) caption).
 Coloured lines and ribbons represent model-based indices for the most relevant survey(s) for each stock.
 Survey trends are scaled to existing assessments based on the geometric mean in overlapping years.
 
