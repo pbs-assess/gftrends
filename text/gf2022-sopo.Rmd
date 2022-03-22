@@ -1,7 +1,7 @@
 ---
 title: "Trends in Pacific Canadian groundfish stock status and surveys"
 author: "|
-  Sean C. Anderson$^1$^, Philina A. English$^1$\n| $^1$Pacific Biological Station, Fisheries and Oceans Canada, \n| Nanaimo, BC, Canada\n"
+  Sean C. Anderson$^1$, Philina A. English$^1$\n| $^1$Pacific Biological Station, Fisheries and Oceans Canada, \n| Nanaimo, BC, Canada\n"
 output:
     bookdown::pdf_document2:
       toc: false
