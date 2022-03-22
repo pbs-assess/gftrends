@@ -29,9 +29,9 @@ header-includes:
 ## Highlights
 
 * We summarized groundfish stock status as of 2021 by (1) gathering time series of stock assessment output, (2) fitting
-  a hierarchical Bayesian time-series model to them, and (3) joining model-based population indices with assessed biomass to
+  a hierarchical Bayesian time-series model to them, and (3) joining model-based survey indices with assessed biomass to
   illustrate how surveyed population trends have changed subsequent to the
-  latest stock assessments.
+  stock assessments.
 
 <!-- inclusion of  information on ages, lengths, maturities, and commercial catch changes our understanding of stock status  -->
 
@@ -57,8 +57,9 @@ header-includes:
   "cautious zone". Conversely, two-thirds of assessed stocks had a high (\>75%)
   probability of being in the "healthy zone".
 
-* All assessed shelf rockfish (Redstripe, Bocaccio, Widow, Silvergray, Canary,
-  Yellowtail) and several slope rockfish increased in surveyed biomass over the last ~5--7 years. Surveyed biomass for several flatfish
+* All assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, 
+  Yellowtail) and several slope rockfish increased in surveyed biomass over the 
+  last ~5--7 years. Surveyed biomass for several flatfish
   (Petrale, English, Rex, and Dover Sole) increased over the last 5–-10 years but
   declined for Arrowtooth Flounder.
 
@@ -100,7 +101,7 @@ The LRP and USR are often calculated based on B~MSY~ (biomass at maximum sustain
 
 DFO conducts a suite of randomized surveys using bottom trawl, longline hook, and longline trap gear that, in aggregate, cover Canada's Pacific Coast [@anderson2019].
 Synoptic trawl surveys in Queen Charlotte Sound (Areas 5A and 5B) and Hecate Strait (Areas 5C and 5D) are conducted in odd numbered years, while the West Coast of Vancouver Island (WCVI; Areas 3C and 3D) and the West Coast of Haida Gwaii (WCHG; Area 5E) surveys are conducted in even numbered years.
-In addition, four biennial Hard Bottom Longline (HBLL) surveys are conducted, two in "inside" waters (east of Vancouver Island; Area 4B) and two others in "outside" waters (everywhere else).
+In addition, four biennial Hard Bottom Longline (HBLL) surveys are conducted, two in "inside" waters (east of Vancouver Island; Area 4B) and two in "outside" waters (everywhere else).
 Lastly, a coast-wide longline trap survey targeting sablefish is conducted every year and DFO collects biological information from the International Pacific Halibut Commission (IPHC) Setline Survey.
 In 2021, in addition to the usual odd numbered year surveys, the synoptic WCVI trawl survey and inside HBLL south surveys were conducted to make up for missing them in 2020 due to COVID-19.
 At the time of writing, the outside HBLL data are not yet available in DFO's survey databases.
@@ -172,13 +173,15 @@ q2021usr <- sprintf("%.1f", round(quantile(ts_2021_usr, probs = c(0.025, 0.5, 0.
 q2021msy <- sprintf("%.1f", round(quantile(ts_2021_bmsy, probs = c(0.025, 0.5, 0.975)), 1))
 ```
 
+<!-- If space is an issue for the SOPO version of this, I still think Figure 1 could be left out and last years report cited. We could keep the stats. -->
 Across all stocks, there was a decline in average stock status until approximately 2000 (Figure \@ref(fig:pa-framework)).
 The late 1990s and early 2000s marked the beginning of a relatively stable average status.
 We estimated the overall mean B/LRP in 2020 to be `r make_quant_text(q2021lrp)`.
 The overall mean B/USR and B/B~MSY~ in 2020 was `r make_quant_text(q2021usr)` and `r make_quant_text(q2021msy)`, respectively (Figure \@ref(fig:pa-framework), \@ref(fig:ridges)).
-Uncertainty in average status in recent years increased slightly because not all stocks had a current assessment (Figure \@ref(fig:pa-framework)).
+<!-- I think this effect is too small to need to mention. -->
+<!-- Uncertainty in average status in recent years increased slightly because not all stocks had a current assessment (Figure \@ref(fig:pa-framework)). -->
 <!-- This uncertainty can be partially address using survey indices to extend our exploration of stock status to the most recent year with survey data. -->
-Despite the overall pattern in the average biological status, there is considerable variation within and across individual stocks, especially when recent survey trends are also considered (Figure \@ref(fig:stock-vs-indices)).
+Despite the overall pattern in the average biological status, there was considerable variation within and across individual stocks, especially when recent survey trends are also considered (Figure \@ref(fig:stock-vs-indices)).
 
 (ref:fig-pa) Overall mean biomass status across all stocks for B/LRP, B/USR, and B/B~MSY~ from the hierarchical time-series model.
 Dark lines represent the posterior median and shaded ribbons represent 95% quantile credible intervals.
@@ -187,8 +190,8 @@ Dark lines represent the posterior median and shaded ribbons represent 95% quant
 include_graphics(here("figs/ts-summary.png"))
 ```
 
-(ref:fig-ridges) Posterior distribution of the three measures of stock status for `r nrow(refs) - 2` of the `r nrow(refs)` stocks.
-Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column represent the year the status represents.
+(ref:fig-ridges) Posterior distribution of the three measures of stock status for `r nrow(refs) - 3` of the `r nrow(refs)` stocks.
+Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column indicate the year the status represents.
 Colours represent the mean B/LRP value such that green is highest and purple is lowest.
 Stocks with missing data in the B/B~MSY~ column are assessments where historical reference points were used instead of MSY-based reference points.
 Vertical dashed lines are at values of 1.0 in all columns and also at values of 0.4 and 0.8 in the B/B~MSY~ column (0.4 and 0.8 B~MSY~ are provisional LRP and USR values in the PA Framework).
