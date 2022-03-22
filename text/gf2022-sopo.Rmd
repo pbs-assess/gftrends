@@ -58,9 +58,9 @@ $^1$Sean.Anderson@dfo-mpo.gc.ca, $^2$Philina.English@dfo-mpo.gc.ca
 
 * Average groundfish stock status declined from 1950 to around 2000 and has remained relatively stable since then. The change around 2000 followed the implementation of ITQs (individual transferable quotas) for the trawl fleet and the commencement of the synoptic trawl surveys.
 
-* Stock assessments classified three stocks (Strait of Georgia Lingcod [Area 4B] and inside and outside Quillback Rockfish) as having had a $>$ 5% probability of being in the critical zone. Conversely, two-thirds of assessed stocks had a high (\>75%) probability of being in the "healthy zone".
+* As of their last assessment, three stocks (Strait of Georgia Lingcod [Area 4B] and inside and outside Quillback Rockfish) had a $>$ 5% probability of being below their Limit Reference Point. Conversely, two-thirds of assessed stocks had a high (\>75%) probability of being in the "healthy zone".
 
-* All assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow,  Yellowtail) and several slope rockfish increased in surveyed biomass over the  last ~5--7 years. Surveyed biomass for several flatfish (Petrale, English, Rex, and Dover Sole) increased over the last 5–-10 years but declined for Arrowtooth Flounder.
+* All assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow,  Yellowtail) and several slope rockfish increased in surveyed biomass over the last ~5 years. Surveyed biomass for several flatfish (Petrale, English, Rex, and Dover Sole) increased over the last 5–-10 years but declined for Arrowtooth Flounder.
 
 * Survey indices for North Pacific Spiny Dogfish stocks had the steepest declines across all stocks---particularly for inside Vancouver Island waters in 2021.
 
@@ -216,7 +216,7 @@ Considering the USR instead of the LRP, `r sum(refpt$p_usr > 0.25)`/`r nrow(refp
 <!-- Pacific Cod and Walleye Pollock both have a shorter generation time compared to many other stocks here, and have both exhibited strong patterns of decadal variation. -->
 
 When we used survey indices to explore more recent changes across species, additional patterns emerged.
-Survey indices for all assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, Yellowtail), and some slope rockfish (e.g. Yellowmouth) increased in the past 5--7 years (Figure \@ref(fig:stock-vs-indices)).
+Survey indices for all assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, Yellowtail), and some slope rockfish (e.g. Yellowmouth) increased in the past ~5 years (Figure \@ref(fig:stock-vs-indices)).
 <!-- We did not include a Sablefish survey index because our included surveys did not include the trap survey that is used in its stock assessment; however, the sablefish surveys do show signs of increase since around 2015 as a result of large recent recruitment events [@dfo2020sablefish, Figure \@ref(fig:stock-vs-indices)]. -->
 The survey indices also allowed us to explore surveyed population trends of species that have not yet received full assessments, such as many flatfish and Chondrichthyans.
 Most of the included flatfish (Petrale, English, Rex, Dover) appeared to increase in survey biomass over the last 5--10 years.
