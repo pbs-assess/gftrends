@@ -28,7 +28,7 @@ header-includes:
 
 ## Highlights
 
-* We summarized groundfish stock status as of 2021, by (1) fitting
+* We summarized groundfish stock status as of 2021 by (1) fitting
   a hierarchical Bayesian time-series model (including updated assessments for five stocks in 2021) and (2) joining model-based population indices with assessed biomass to
   illustrate how surveyed population trends have changed subsequent to the
   latest stock assessments.
