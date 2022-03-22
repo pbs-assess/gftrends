@@ -1,7 +1,7 @@
 ---
 title: "Trends in Pacific Canadian groundfish stock status and surveys"
 author: "|
-  Sean C. Anderson$^1$^[Corresponding author: sean.anderson@dfo-mpo.gc.ca], Philina A. English$^1$, Brendan M. Connors$^2$, Robyn E. Forrest$^1$,\n| Rowan Haigh$^2$, Kendra R. Holt$^2$\n| $^1$Pacific Biological Station, Fisheries and Oceans Canada, \n| Nanaimo, BC, Canada\n| $^2$Institute of Ocean Sciences, Fisheries and Oceans Canada, \n| Sidney, BC, Canada\n"
+  Sean C. Anderson$^1$^, Philina A. English$^1$\n| $^1$Pacific Biological Station, Fisheries and Oceans Canada, \n| Nanaimo, BC, Canada\n"
 output:
     bookdown::pdf_document2:
       toc: false
@@ -256,7 +256,10 @@ Four or five stocks were likely below their LRP as of their last assessment.
 Roughly one-third of assessed stocks had $>$ 25% probability of being in the cautious zone where removals should be progressively reduced to avoid reaching the LRP.
 Rebuilding and precautionary management of stocks in the critical and cautious zones, respectively, should help ensure stock status improves over time in response to reduced fishing pressure and favourable environmental conditions if and when they occur.
 
-<!-- # Acknowledgements -->
+## Acknowledgements
+
+We thank Rowan Haigh, Brendan Connors, Robyn Forrest, Chris Grandin, Dana Haggarty, and Kendra Holt for providing stock assessment output data and contributing to the initial version of the time series model [@anderson2021sopopreprint].
+We thank all those involved in coordinating and conducting the synoptic and longline surveys (especially Malcolm Wyeth, Norm Olsen, Maria Cornthwaite, and Dana Haggarty) as well as many others who have contributed to the collection of survey data that make analyses such as these possible.
 
 \clearpage
 
