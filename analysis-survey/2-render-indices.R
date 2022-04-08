@@ -1,4 +1,25 @@
+# update or call a previous version of sdmTMB
+# remotes::install_github("pbs-assess/sdmTMB", ref = "HEAD")
 library(dplyr)
+
+# add for Gabe
+to_fit0 <- tribble(
+  ~species, ~region,
+  # "Canary Rockfish", "HBLL outside surveys",
+  "Copper Rockfish", "HBLL outside surveys",
+  "Darkblotched rockfish", "Coast-wide trawl surveys",
+  "Longspine thornyhead", "Coast-wide trawl surveys",
+  "Longspine thornyhead", "WCHG only",
+  "Greenstriped Rockfish", "Coast-wide trawl surveys",
+  "Flathead Sole", "Coast-wide trawl surveys",
+  "Kelp Greenling", "Coast-wide trawl surveys",
+  "Kelp Greenling", "HBLL outside surveys",
+  # "Kelp Greenling", "HBLL inside surveys",
+  "Sandpaper Skate", "Coast-wide trawl surveys",
+  "Sharpchin Rockfish", "Coast-wide trawl surveys",
+  "Splitnose Rockfish", "Coast-wide trawl surveys",
+  "Butter Sole", "Both odd year trawl surveys"
+)
 
 to_fit1 <- tribble(
   ~species, ~region,
@@ -93,6 +114,7 @@ to_fit5 <- bind_rows(to_fit5, make_dat(list_regions, list_species))
 
 to_fit <- bind_rows(
   list(
+    to_fit0, # for gabe
     to_fit1,
     to_fit2,
     to_fit3,
@@ -108,6 +130,7 @@ to_fit <- bind_rows(
 #   "Chilipepper", "QCS & WCVI",
 #     "Pacific Sand Lance", "Coast-wide trawl surveys"
 #   )
+
 
 # https://github.com/rstudio/rmarkdown/issues/1673
 render_separately <- function(...) callr::r(
@@ -129,16 +152,16 @@ fit_index <- function(region, species) {
         silent = TRUE
         # update_index = FALSE
       ),
-      output_file = paste0(spp, name, "-", region_name, "-delta.html")
+      output_file = paste0(spp, name, "-", region_name, ".html")
     )
   })
 }
 
-# purrr::pwalk(to_fit[31,,drop=FALSE], fit_index)
+# purrr::pwalk(to_fit, fit_index)
 
-set.seed(1)
-i <- sample(seq_len(nrow(to_fit)), nrow(to_fit))
-to_fit <- to_fit[i, ]
+# set.seed(1)
+# i <- sample(seq_len(nrow(to_fit)), nrow(to_fit))
+# to_fit <- to_fit[i, ]
 
 # if (Sys.info()[["user"]] == "seananderson") {
 #   to_fit <- to_fit[1:28, ]
