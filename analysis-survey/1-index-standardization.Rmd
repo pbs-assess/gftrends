@@ -8,18 +8,18 @@ params:
     # species: "Arrowtooth Flounder"
     # species: "Big Skate"
     # species: "North Pacific Spiny Dogfish"
-    species: "Pacific Ocean Perch"
+    # species: "Pacific Ocean Perch"
     # species: "Bocaccio"
-    # species: "Rougheye/Blackspotted Rockfish Complex"
+    species: "Splitnose Rockfish"
     # species: "Pacific Sand Lance"
     # species: "Pacific Herring"
     region: "Coast-wide trawl surveys"
     # region: "HBLL outside surveys"
     # region: "HBLL inside surveys"
-    delta_model: TRUE
+    delta_model: FALSE
     name: "-rw-no-covs" # covariate string used to name model rds
-    # update_model: FALSE
-    update_model: TRUE # will over write past models; will always attempt a model if none exists
+    update_model: FALSE
+    # update_model: TRUE # will over write past models; will always attempt a model if none exists
     update_index: TRUE
     silent: FALSE
 ---
@@ -380,9 +380,13 @@ try({
 })
 # }
 
-try({
-  m1
-})
+p<-function(x){
+out <- tryCatch({print(x)}, error = function(e) NULL)
+return(out)
+}
+
+p(m1)
+
 try({
   max(m1$gradients)
 })
@@ -396,9 +400,7 @@ try({
   tidy(m1, effects = "ran_pars", conf.int = TRUE)
 })
 
-try({
-  m2
-})
+p(m2)
 try({
   max(m2$gradients)
 })
@@ -413,9 +415,8 @@ try({
   tidy(m2, effects = "ran_pars", conf.int = TRUE)
 })
 
-try({
-  m
-})
+p(m)
+
 try({
   max(m$gradients)
 })
