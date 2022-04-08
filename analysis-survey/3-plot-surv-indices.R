@@ -33,7 +33,7 @@ g <- ggplot(all_indices, aes(year, est, group = model)) +
   facet_wrap(vars(paste(species, region)), scales = "free_y") +
   ggsidekick::theme_sleek() +
   theme(axis.text.y = element_blank())
-ggsave("figs/delta-vs-tweedie-all.pdf", width = 17, height = 12)
+ggsave("figs/delta-vs-tweedie-all.pdf", width = 22, height = 12)
 
 se_check <- all_indices %>%
   group_by(species, gear, region, surveys, model) %>%
@@ -63,6 +63,8 @@ g <- ggplot(all_indices, aes(year, est, group = model)) +
   facet_wrap(vars(paste(species, region)), scales = "free_y") +
   ggsidekick::theme_sleek() +
   theme(axis.text.y = element_blank())
+g
+
 ggsave("figs/delta-vs-tweedie-best.pdf", width = 17, height = 12)
 
 slopes <- all_indices %>%
