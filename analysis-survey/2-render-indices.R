@@ -1,21 +1,22 @@
 # update or call a previous version of sdmTMB
-# remotes::install_github("pbs-assess/sdmTMB", ref = "HEAD")
+# remotes::install_github("pbs-assess/sdmTMB", ref = "delta")
 library(dplyr)
 
 # add for Gabe
 to_fit0 <- tribble(
   ~species, ~region,
-  # "Canary Rockfish", "HBLL outside surveys",
+  # # "Canary Rockfish", "HBLL outside surveys",
   "Copper Rockfish", "HBLL outside surveys",
-  "Darkblotched rockfish", "Coast-wide trawl surveys",
-  "Longspine thornyhead", "Coast-wide trawl surveys",
-  "Longspine thornyhead", "WCHG only",
+  "Darkblotched Rockfish", "Coast-wide trawl surveys",
+  # "Longspine Thornyhead", "Coast-wide trawl surveys",
+  "Longspine Thornyhead", "WCHG only",
   "Greenstriped Rockfish", "Coast-wide trawl surveys",
   "Flathead Sole", "Coast-wide trawl surveys",
   "Kelp Greenling", "Coast-wide trawl surveys",
   "Kelp Greenling", "HBLL outside surveys",
   # "Kelp Greenling", "HBLL inside surveys",
   "Sandpaper Skate", "Coast-wide trawl surveys",
+  "Sandpaper Skate", "HBLL outside surveys",
   "Sharpchin Rockfish", "Coast-wide trawl surveys",
   "Splitnose Rockfish", "Coast-wide trawl surveys",
   "Butter Sole", "Both odd year trawl surveys"
@@ -123,12 +124,14 @@ to_fit <- bind_rows(
   )
 )
 
-# # # add interesting (possibly expanding north?) species
+# # # # add interesting (possibly expanding north?) species
 # to_fit <- tribble(
 #   ~species, ~region,
-# #   "Shortbelly Rockfish", "Coast-wide trawl surveys",
-#   "Chilipepper", "QCS & WCVI",
-#     "Pacific Sand Lance", "Coast-wide trawl surveys"
+# # "Sandpaper Skate", "HBLL outside surveys"
+# # "Kelp Greenling", "HBLL outside surveys"
+#   "Shortbelly Rockfish", "Coast-wide trawl surveys"
+#   # "Chilipepper", "QCS & WCVI",
+#     # "Pacific Sand Lance", "Coast-wide trawl surveys"
 #   )
 
 
@@ -142,13 +145,13 @@ fit_index <- function(region, species) {
   name <- "-RW-no-covs" # string describing model covariates
   region_name <- region
   try({
-    render_separately("analysis-survey/1-index-standardization.Rmd",
+    render_separately("analysis-survey/1-index-new-deltas.Rmd",
       params = list(
         species = species,
         region = region,
-        delta_model = TRUE,
-        update_model = TRUE,
-        update_index = TRUE,
+        update_delta = FALSE,
+        update_model = FALSE,
+        update_index = FALSE,
         silent = TRUE
         # update_index = FALSE
       ),
@@ -174,7 +177,7 @@ is_unix <- .Platform$OS.type == "unix"
 if (is_unix && !is_rstudio) {
   future::plan(future::multicore, workers = 6L)
 } else {
-  future::plan(future::multisession, workers = 3L)
+  future::plan(future::multisession, workers = 2L)
 }
 options(future.rng.onMisuse = "ignore")
 
