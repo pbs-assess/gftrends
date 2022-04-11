@@ -26,8 +26,8 @@ g <- ggplot(all_indices, aes(year, est, group = model)) +
   geom_ribbon(aes(
     ymin = lwr, ymax = upr, fill = model
   ), alpha = 0.4) +
-  ylab("Relative Biomass") +
-  scale_y_log10() +
+  ylab("Relative Biomass (log scale)") +
+  # scale_y_log10() +
   scale_color_brewer(palette = "Dark2") +
   scale_fill_brewer(palette = "Dark2") +
   facet_wrap(vars(paste(species, region)), scales = "free_y") +
@@ -56,7 +56,7 @@ g <- ggplot(all_indices, aes(year, est, group = model)) +
   geom_ribbon(aes(
     ymin = lwr, ymax = upr, fill = model
   ), alpha = 0.4) +
-  ylab("Relative Biomass") +
+  ylab("Relative Biomass (log scale)") +
   scale_y_log10() +
   scale_color_brewer(palette = "Dark2") +
   scale_fill_brewer(palette = "Dark2") +
@@ -65,7 +65,7 @@ g <- ggplot(all_indices, aes(year, est, group = model)) +
   theme(axis.text.y = element_blank())
 g
 
-ggsave("figs/delta-vs-tweedie-best.pdf", width = 17, height = 12)
+ggsave("figs/delta-vs-tweedie-best.pdf", width = 22, height = 12)
 
 slopes <- all_indices %>%
   group_by(species, region) %>%
@@ -110,6 +110,7 @@ unique(d1$stock_clean)
 # # change order of facets to group more like species together
 d2 <- d1 %>% arrange(desc(type), stock) # for grouping by taxa/type first
 d2$stock_clean <- ifelse(!is.na(d2$stock_clean), d2$stock_clean, paste(d2$species, d2$gear))
+# d2$region <- ifelse(!is.na(d2$region), d2$region, d2$index)
 
 unique(d2$stock_clean)
 
@@ -117,7 +118,7 @@ d2 <- d2 %>%
   group_by(stock_clean) %>%
   mutate(slope = ifelse(is.na(slope), mean(slope, na.rm = TRUE), slope)) # fill in assessment rows
 
-select(d2, species, region, slope) %>% distinct()
+select(d2, species, region, index, slope) %>% distinct()
 
 cols <- RColorBrewer::brewer.pal(3, name = "Dark2")
 cols <- c("#00000050", cols)
@@ -172,6 +173,9 @@ d3$slope[d3$stock_clean == "Lingcod Synoptic trawl"] <- mean(c(mean(lh), mean(lt
 d3$stock_clean[d3$stock_clean == "Lingcod Synoptic trawl"] <- "Lingcod BC Outside"
 d3$stock_clean[d3$stock_clean == "Lingcod HBLL (outside)"] <- "Lingcod BC Outside"
 
+
+d3$species <- gsub("rockfish", "Rockfish", d3$species)
+d3$stock_clean <- gsub("rockfish", "Rockfish", d3$stock_clean)
 d3$stock_clean <- gsub("Synoptic trawl", "BC", d3$stock_clean)
 d3$stock_clean <- gsub("HBLL (outide)", "BC Outside", d3$stock_clean)
 d3$stock_clean <- gsub("VI Inside", "4B (VI Inside)", d3$stock_clean)
@@ -190,20 +194,44 @@ lt <- d3$slope[d3$stock_clean == "Longnose Skate BC (Outside)"]
 d3$slope[d3$stock_clean == "Longnose Skate BC (Outside)"] <- mean(c(mean(lh), mean(lt)))
 d3$stock_clean <- gsub("^Longnose Skate BC$", "Longnose Skate BC (Outside)", d3$stock_clean)
 
+d3$stock_clean <- gsub("^Sandpaper Skate BC$", "Sandpaper Skate BC (Outside)", d3$stock_clean)
+# d3$stock_clean[d3$stock_clean == "Sandpaper Skate BC (Outside)"] <- "Sandpaper Skate BC"
+d3$stock_clean <- gsub("^Copper Rockfish BC$", "Copper Rockfish BC (Outside)", d3$stock_clean)
+d3$stock_clean <- gsub("^Yelloweye Rockfish BC Outside$", "Yelloweye Rockfish BC (Outside)", d3$stock_clean)
+d3$stock_clean <- gsub("Quillback BC Outside", "Quillback Rockfish BC (Outside)", d3$stock_clean)
+d3$stock_clean <- gsub("Quillback 4B", "Quillback Rockfish 4B", d3$stock_clean)
+d3$stock_clean <- gsub("^Yelloweye Rockfish 4B$", "Yelloweye Rockfish 4B (VI Inside)", d3$stock_clean)
+
+
 d3$type[d3$species %in% c(
   "North Pacific Spiny Dogfish",
   "Big Skate",
   "Longnose Skate",
+  "Sandpaper Skate",
   "Spotted Ratfish"
 )] <- "Sharks and allies"
 d3$type[d3$species %in% c(
-  "Petrale Sole",
-  "Rex Sole",
+  "Butter Sole",
   "Dover Sole",
-  "English Sole"
+  "English Sole",
+  "Flathead Sole",
+  "Petrale Sole",
+  "Rex Sole"
 )] <- "Flatfish"
-d3$type[d3$species %in% c("Canary Rockfish", "Shortraker Rockfish", "Shortbelly Rockfish")] <- "Rockfish"
-d3$type[d3$species %in% c("Walleye Pollock", "Pacific Cod", "Sablefish", "Lingcod")] <- "Cods and allies"
+
+d3$type[d3$species %in% c(
+  "Canary Rockfish",
+  "Copper Rockfish",
+  "Darkblotched rockfish",
+  "Greenstriped Rockfish",
+  "Longspine Thornyhead",
+  "Sharpchin Rockfish",
+  "Shortraker Rockfish",
+  "Shortbelly Rockfish",
+  "Splitnose Rockfish"
+)] <- "Rockfish"
+
+d3$type[d3$species %in% c("Walleye Pollock", "Pacific Cod", "Sablefish", "Kelp Greenling", "Lingcod")] <- "Cods and allies"
 
 d3$species_common_name <- tolower(d3$species)
 d3 <- left_join(d3, select(gfsynopsis::get_spp_names(), species_common_name, species_code))
@@ -269,6 +297,53 @@ make_surv_assess_plot <- function(dat, ylab = "Relative biomass or abundance est
   # geom_vline(aes(xintercept = max_geo_mean), lty = 1) # testing
 }
 
+
+
+d3$type[d3$species %in% c("Darkblotched Rockfish", "Longspine Thornyhead","Pacific Ocean Perch", "Rougheye/Blackspotted Rockfish Complex", "Sharpchin Rockfish", "Shortraker Rockfish", "Shortspine Thornyhead", "Splitnose Rockfish","Yellowmouth Rockfish")] <- "Slope rockfish"
+d3$type[d3$species %in% c("Bocaccio", "Canary Rockfish", "Greenstriped Rockfish", "Redstripe Rockfish", "Silvergray Rockfish", "Widow Rockfish", "Yellowtail Rockfish")] <- "Shelf rockfish"
+d3$type[d3$species %in% c("Copper Rockfish", "Quillback Rockfish", "Yelloweye Rockfish")] <- "Inshore rockfish"
+
+
+d4 <- mutate(d3, gear_simple = ifelse(grepl("trawl", gear), "Trawl", "Long line"))
+d4 <- mutate(d4, type = ifelse(grepl("Cods", type), "Roundfish", type))
+d4 <- mutate(d4, type = ifelse(grepl("Sharks", type), "Sharks, skates, chimeras", type))
+g <- make_surv_assess_plot(d4, ncol = 5, colour_by = type, lty_by = gear_simple) +
+  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_linetype_manual(values = c("Trawl" = 1, "Long line" = 2)) +
+  labs(fill = "Species\ngroup", colour = "Species\ngroup", linetype = "Gear")
+g
+ggsave("figs/stock-vs-indices.pdf", width = 9.6, height = 8.7)
+ggsave("figs/stock-vs-indices.png", width = 9.6, height = 8.7)
+
+
+d4 %>% mutate(
+  stock_clean =
+    gsub("([a-zA-Z]+[ \\/]+[0-9a-zA-Z\\.]+) ([a-zA-Z 0-9]+)", "\\1\\\n\\2", stock_clean)
+) %>% filter(!is.na(gear)) %>%
+  filter(stock_clean != "Sablefish BC")%>%
+  # mutate(gear = ifelse(is.na(gear), "Assessment", gear)) %>%
+  ggplot(aes(year, est/ mean_est, group = gear)) +
+  geom_line(aes(colour = type, lty = gear_simple)) +
+  geom_ribbon(aes(
+    ymin = lwr/ mean_est, ymax = upr/ mean_est, fill = type
+  ), alpha = 0.3) +
+  ylab("Relative Biomass or abundance estimate") +
+  xlab("Year") +
+  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_linetype_manual(values = c("Trawl" = 1, "Long line" = 2)) +
+  facet_wrap(vars(forcats::fct_reorder(stock_clean, -slope)), scales = "free_y", ncol = 6) +
+  labs(fill = "Species\ngroup", colour = "Species\ngroup", linetype = "Gear")+
+  ggsidekick::theme_sleek() +
+  theme(axis.text.y = element_blank())
+
+ggsave("figs/survey-indices.pdf", width = 12, height = 12)
+
+
+
+
+
 # # plot just sablefish before survey removed
 # g <- d3 %>%
 #   filter(species == "Sablefish") %>%
@@ -292,70 +367,61 @@ make_surv_assess_plot <- function(dat, ylab = "Relative biomass or abundance est
 # ggsave("figs/range-expansion.pdf", width = 4.5, height = 1.5)
 # ggsave("figs/range-expansion.png", width = 4.5, height = 1.5)
 
-d3 <- d3 %>%
-  filter(!species %in% c("Shortbelly Rockfish", "Chilipepper"))
+# d3 <- d3 %>% filter(!species %in% c("Shortbelly Rockfish", "Chilipepper"))
+
+
+g <- d3 %>%
+  filter(year >= 2000) %>%
+  make_surv_assess_plot()
+# ggsave("figs/stock-vs-indices-recent.pdf", width = 10, height = 12)
+ggsave("figs/stock-vs-indices-recent.png", width = 10, height = 12)
+
+# g <- d3 %>%
+#   mutate(stock_clean = gsub("Quillback 4B \\(VI Inside\\)", "Quillback 4B Inside", stock_clean)) %>%
+#   filter(year >= 2000) %>%
+#   mutate(q0.05_blrp = NA, q0.95_blrp = NA, log_blrp = NA) %>%
+#   filter(stock %in% c("quillback_BC_Outside", "quillback_WCVI_Inside")) %>%
+#   make_surv_assess_plot(ylab = "Relative abundance estimate")
+# g
+# ggsave("figs/stock-vs-indices-recent.pdf", width = 10, height = 12)
+# ggsave("figs/stock-vs-indices-recent.png", width = 10, height = 12)
+
 
 # just rockfish
 g <- d3 %>%
-  filter(type == "Rockfish") %>%
+  filter(type %in% c("Inshore rockfish", "Shelf rockfish", "Slope rockfish")) %>%
   make_surv_assess_plot(ncol = 5, arrange_by = "code")
 g
 # ggsave("figs/stock-vs-indices-rockfish.pdf", width = 10, height = 5)
 ggsave("figs/stock-vs-indices-rockfish.png", width = 10, height = 5)
 
 g <- d3 %>%
-  filter(type == "Rockfish") %>%
+  filter(type %in% c("Inshore rockfish", "Shelf rockfish", "Slope rockfish")) %>%
   make_surv_assess_plot(ncol = 5, arrange_by = "slope")
 g
 # ggsave("figs/stock-vs-indices-rockfish-by-slope.pdf", width = 10, height = 5)
 ggsave("figs/stock-vs-indices-rockfish-by-slope.png", width = 10, height = 5)
 
-
 g <- d3 %>%
-  filter(type == "Rockfish") %>%
-  filter(species %in% c(
-  # "Canary Rockfish",
-  "Quillback Rockfish",
-  "Yelloweye Rockfish"
-  )) %>%
+  filter(type == "Inshore rockfish") %>%
   make_surv_assess_plot(ncol = 2, arrange_by = "slope") +
   facet_wrap(vars(stock_clean),
-    ncol = 2L,
-    scales = "free_y"
+             ncol = 2L,
+             scales = "free_y"
   )
 g
 # ggsave("figs/stock-vs-indices-rockfish-inshore.pdf", width = 10, height = 5)
 ggsave("figs/stock-vs-indices-rockfish-inshore.png", width = 5, height = 3, dpi = 400)
 
 g <- d3 %>%
-  filter(type == "Rockfish") %>%
-  filter(species %in% c(
-    "Canary Rockfish",
-    "Bocaccio",
-    "Redstripe Rockfish",
-    "Silvergray Rockfish",
-    "Widow Rockfish",
-    "Yellowtail Rockfish"
-  )) %>%
+  filter(type == "Shelf rockfish") %>%
   make_surv_assess_plot(ncol = 2, arrange_by = "slope")
 g
 # ggsave("figs/stock-vs-indices-rockfish-shelf.pdf", width = 10, height = 5)
 ggsave("figs/stock-vs-indices-rockfish-shelf.png", width = 5, height = 5)
 
 g <- d3 %>%
-  filter(type == "Rockfish") %>%
-  filter(!species %in% c(
-    "Canary Rockfish",
-    "Quillback Rockfish",
-    "Yelloweye Rockfish"
-  )) %>%
-  filter(!species %in% c(
-    "Bocaccio",
-    "Redstripe Rockfish",
-    "Silvergray Rockfish",
-    "Widow Rockfish",
-    "Yellowtail Rockfish"
-  )) %>%
+  filter(type == "Slope rockfish") %>%
   make_surv_assess_plot(ncol = 3, arrange_by = "slope")
 g
 # ggsave("figs/stock-vs-indices-rockfish-shelf.pdf", width = 10, height = 5)
@@ -384,10 +450,10 @@ ggsave("figs/stock-vs-indices-sharkco-by-slope.png", width = 7, height = 4.5)
 g <- d3 %>%
   filter(type == "Cods and allies" & species != "Sablefish") %>%
   make_surv_assess_plot(arrange_by = "code", ncol = 2)
-  # facet_wrap(vars(stock_clean),
-  #   ncol = 2,
-  #   scales = "free_y"
-  # )
+# facet_wrap(vars(stock_clean),
+#   ncol = 2,
+#   scales = "free_y"
+# )
 g
 # ggsave("figs/stock-vs-indices-cods.pdf", width = 5, height = 4)
 ggsave("figs/stock-vs-indices-cods.png", width = 5, height = 4)
@@ -407,33 +473,4 @@ g <- d3 %>%
 # ggsave("figs/stock-vs-indices-flatfish-by-slope.pdf", width = 5, height = 4)
 ggsave("figs/stock-vs-indices-flatfish-by-slope.png", width = 7, height = 4.5)
 
-d3$type[d3$species %in% c("Pacific Ocean Perch", "Rougheye/Blackspotted Rockfish Complex", "Shortraker Rockfish", "Shortspine Thornyhead", "Yellowmouth Rockfish")] <- "Slope rockfish"
-d3$type[d3$species %in% c("Bocaccio", "Canary Rockfish", "Redstripe Rockfish", "Silvergray Rockfish", "Widow Rockfish", "Yellowtail Rockfish")] <- "Shelf rockfish"
-d3$type[d3$species %in% c("Quillback Rockfish", "Yelloweye Rockfish")] <- "Inshore rockfish"
 
-d4 <- mutate(d3, gear_simple = ifelse(grepl("trawl", gear), "Trawl", "Long line"))
-d4 <- mutate(d4, type = ifelse(grepl("Cods", type), "Roundfish", type))
-d4 <- mutate(d4, type = ifelse(grepl("Sharks", type), "Sharks, skates, chimeras", type))
-g <- make_surv_assess_plot(d4, ncol = 5, colour_by = type, lty_by = gear_simple) +
-  scale_color_brewer(palette = "Dark2") +
-  scale_fill_brewer(palette = "Dark2") +
-  scale_linetype_manual(values = c("Trawl" = 1, "Long line" = 2)) +
-  labs(fill = "Species\ngroup", colour = "Species\ngroup", linetype = "Gear")
-ggsave("figs/stock-vs-indices.pdf", width = 9.6, height = 8.7)
-ggsave("figs/stock-vs-indices.png", width = 9.6, height = 8.7)
-
-g <- d3 %>%
-  filter(year >= 2000) %>%
-  make_surv_assess_plot()
-# ggsave("figs/stock-vs-indices-recent.pdf", width = 10, height = 12)
-ggsave("figs/stock-vs-indices-recent.png", width = 10, height = 12)
-
-# g <- d3 %>%
-#   mutate(stock_clean = gsub("Quillback 4B \\(VI Inside\\)", "Quillback 4B Inside", stock_clean)) %>%
-#   filter(year >= 2000) %>%
-#   mutate(q0.05_blrp = NA, q0.95_blrp = NA, log_blrp = NA) %>%
-#   filter(stock %in% c("quillback_BC_Outside", "quillback_WCVI_Inside")) %>%
-#   make_surv_assess_plot(ylab = "Relative abundance estimate")
-# g
-ggsave("figs/stock-vs-indices-recent.pdf", width = 10, height = 12)
-ggsave("figs/stock-vs-indices-recent.png", width = 10, height = 12)
