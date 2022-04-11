@@ -1,7 +1,7 @@
 library(dplyr)
 library(ggplot2)
 source("analysis/utils.R")
-source("analysis/stock_df2.R")
+# source("analysis/stock_df2.R")
 
 # ---------------------------------------------------------------------
 # Run first part only if you have all indices saved in separate files
@@ -347,6 +347,7 @@ ggsave("figs/survey-indices.pdf", width = 12, height = 12)
 
 
 d5 %>% select(stock_clean, species, gear_simple, index, surveys, est, lwr, upr) %>%
+  mutate(est = round(est), lwr = round(lwr), upr = round(upr)) %>%
   readr::write_csv("data-generated/survey_indices.csv")
 
 
