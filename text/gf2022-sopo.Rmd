@@ -3,11 +3,12 @@ title: ""
 author: "|
   Sean C. Anderson$^1$, Philina A. English$^1$\n| $^1$Pacific Biological Station, Fisheries and Oceans Canada, \n| Nanaimo, BC, Canada\n"
 output:
-    bookdown::word_document2:
+      # bookdown::word_document2:
+    bookdown::pdf_document2:
       toc: false
       number_sections: false
       fig_caption: true
-      reference_docx: "SOPO 2022 TEMPLATE FOR ORAL PRESENTATION SUMMARIES_V2.docx"
+      # reference_docx: "SOPO 2022 TEMPLATE FOR ORAL PRESENTATION SUMMARIES_V2.docx"
 csl: csas.csl
 bibliography: refs.bib
 link-citations: yes
