@@ -11,11 +11,11 @@ params:
     # species: "Pacific Ocean Perch"
     # species: "Bocaccio"
     # species: "Splitnose Rockfish"
-    # species: "Pacific Sand Lance"
+    species: "Pacific Sand Lance"
     # species: "Longspine Thornyhead"
-    species: "Sandpaper Skate"
-    # region: "Coast-wide trawl surveys"
-    region: "HBLL outside surveys"
+    # species: "Sandpaper Skate"
+    region: "Coast-wide trawl surveys"
+    # region: "HBLL outside surveys"
     # region: "HBLL inside surveys"
     # region: "WCHG only"
     name: "-rw-no-covs" # covariate string used to name model rds
@@ -428,14 +428,14 @@ converged <- function(fit) {
     max(fit$gradients) < 0.01,
     !fit$bad_eig,
     fit$pos_def_hessian,
-    sum(is.finite(tidy(fit, effects = "ran_pars", conf.int = TRUE)$conf.high))<1
+    sum(is.infinite(tidy(fit, effects = "ran_pars", conf.int = TRUE)$conf.high))<1
   )
 }
 
 if (!is.null(m1)) {
   if (converged(m1) && update_index 
       ## if you don't want any infinite confidence intervals
-      # && sum(is.finite(tidy(m1, effects = "ran_pars", conf.int = TRUE, model = 2)$conf.high))<1
+      # && sum(is.infinite(tidy(m1, effects = "ran_pars", conf.int = TRUE, model = 2)$conf.high))<1
       ) {
     fitted_yrs <- sort(unique(m$data$year))
     nd <- make_grid(nd_all, years = fitted_yrs)
