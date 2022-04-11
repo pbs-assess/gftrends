@@ -202,6 +202,9 @@ d3$stock_clean <- gsub("Quillback BC Outside", "Quillback Rockfish BC (Outside)"
 d3$stock_clean <- gsub("Quillback 4B", "Quillback Rockfish 4B", d3$stock_clean)
 d3$stock_clean <- gsub("^Yelloweye Rockfish 4B$", "Yelloweye Rockfish 4B (VI Inside)", d3$stock_clean)
 
+d3$stock_clean <- gsub("Butter Sole BC", "Butter Sole (QCS & HS)", d3$stock_clean)
+d3$stock_clean <- gsub("Longspine Thornyhead BC", "Longspine Thornyhead (WCHG)", d3$stock_clean)
+
 
 d3$type[d3$species %in% c(
   "North Pacific Spiny Dogfish",
@@ -313,15 +316,17 @@ g <- make_surv_assess_plot(d4, ncol = 5, colour_by = type, lty_by = gear_simple)
   scale_linetype_manual(values = c("Trawl" = 1, "Long line" = 2)) +
   labs(fill = "Species\ngroup", colour = "Species\ngroup", linetype = "Gear")
 g
-ggsave("figs/stock-vs-indices.pdf", width = 9.6, height = 8.7)
-ggsave("figs/stock-vs-indices.png", width = 9.6, height = 8.7)
+ggsave("figs/stock-vs-indices.pdf", width = 9.6, height = 11)
+ggsave("figs/stock-vs-indices.png", width = 9.6, height = 11)
 
 
-d4 %>% mutate(
+d5 <- d4 %>% filter(!is.na(gear)) %>%
+  filter(stock_clean != "Sablefish BC")
+
+d5 %>% mutate(
   stock_clean =
     gsub("([a-zA-Z]+[ \\/]+[0-9a-zA-Z\\.]+) ([a-zA-Z 0-9]+)", "\\1\\\n\\2", stock_clean)
-) %>% filter(!is.na(gear)) %>%
-  filter(stock_clean != "Sablefish BC")%>%
+)%>%
   # mutate(gear = ifelse(is.na(gear), "Assessment", gear)) %>%
   ggplot(aes(year, est/ mean_est, group = gear)) +
   geom_line(aes(colour = type, lty = gear_simple)) +
@@ -341,6 +346,8 @@ d4 %>% mutate(
 ggsave("figs/survey-indices.pdf", width = 12, height = 12)
 
 
+d5 %>% select(stock_clean, species, gear_simple, index, surveys, est, lwr, upr) %>%
+  readr::write_csv("data-generated/survey_indices.csv")
 
 
 
