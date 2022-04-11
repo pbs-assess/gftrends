@@ -211,6 +211,8 @@ However, the trawl survey index suggested that Arrowtooth Flounder have declined
 Trends among the skates generally appeared stable or positive.
 North Pacific Spiny Dogfish (herein 'dogfish') stocks, however, experienced the steepest declines of all stocks (Figure \@ref(fig:stock-vs-indices)), with a particularly steep decline in inside Vancouver Island waters in 2021.
 
+\clearpage
+
 ## Factors influencing trends
 
 The longterm overall groundfish trend is likely to have been primarily influenced by fishery removals and management interventions.
