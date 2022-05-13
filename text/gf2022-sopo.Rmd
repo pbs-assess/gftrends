@@ -97,8 +97,8 @@ At the time of writing, the outside HBLL data are not yet available in DFO's sur
 <!-- These surveys provide much of the data (survey indexes, ages, lengths, maturities) to reconstruct plausible stock trajectories and estimate reference points. -->
 
 
-Assessment scientists conduct regular stock assessment for major fish stocks in BC.
-These assessments combine fishery-dependent data (such as commercial catches) with fishery-independent data (data from scientific surveys) to estimate quantities such as spawning stock biomass, growth and maturity, and derive measures of fishing intensity and stock status.
+Assessment scientists conduct regular stock assessment for major fish stocks in B.C.
+These assessments combine fishery-dependent data (such as commercial catches) with fishery-independent data (data from scientific surveys) to estimate quantities such as spawning stock biomass, growth and maturity, and to derive measures of fishing intensity and stock status.
 Stock status is typically assessed with respect to two reference points: (1) the Limit Reference Point (LRP), a "status below which serious harm is occurring to the stock"; and (2) the Upper Stock Reference Point (USR), which represents the "threshold below which removals must be progressively reduced in order to avoid reaching the LRP".
 <!-- Assessments are usually ‘tuned’ to fit survey indices well; however, assessments also account for gear ‘selectivity’, like the fact that smaller fish are not captured by certain gear. -->
 While stock assessments represent the gold-standard of estimated trends in population status, assessments are time and labour intensive and therefore frequently lag behind high quality datasets such as indices of abundance from scientific surveys, which often closely reflect population trends from assessments.
