@@ -57,7 +57,7 @@ $^1$Sean.Anderson@dfo-mpo.gc.ca, $^2$Philina.English@dfo-mpo.gc.ca
 <!--   implementation of ITQs (individual transferable quotas) for the trawl fleet -->
 <!--   and the commencement of the synoptic trawl surveys. -->
 
-* Average groundfish stock status declined from 1950 to around 2000 and has remained relatively stable since then. The change around 2000 followed the implementation of ITQs (individual transferable quotas) for the trawl fleet and the commencement of the synoptic trawl surveys.
+* Average groundfish stock status declined from 1950 to around 2000, and following management changes has remained relatively stable since then.
 
 * As of their last assessment, three stocks (Strait of Georgia Lingcod [Area 4B] and inside and outside Quillback Rockfish) had a $>$ 5% probability of being below their Limit Reference Point. Conversely, two-thirds of assessed stocks had a high (\>75%) probability of being in the "healthy zone".
 
@@ -89,7 +89,7 @@ source(here::here("preprint/refs-table.R"))
 ## Introduction
 
 DFO conducts a suite of randomized surveys using bottom trawl, longline hook, and longline trap gear that, in aggregate, cover Canada's Pacific Coast [@anderson2019].
-Synoptic trawl surveys in Queen Charlotte Sound (Areas 5A and 5B) and Hecate Strait (Areas 5C and 5D) are conducted in odd numbered years, while the West Coast of Vancouver Island (WCVI; Areas 3C and 3D) and the West Coast of Haida Gwaii (WCHG; Area 5E) surveys are conducted in even numbered years.
+Synoptic trawl surveys in Queen Charlotte Sound (Areas 5A and 5B) and Hecate Strait (Areas 5C and 5D) are conducted in odd numbered years, while the west coast of Vancouver Island (WCVI; Areas 3C and 3D) and the west coast of Haida Gwaii (WCHG; Area 5E) surveys are conducted in even numbered years.
 In addition, four biennial Hard Bottom Longline (HBLL) surveys are conducted, two in "inside" waters (east of Vancouver Island; Area 4B) and two in "outside" waters (everywhere else).
 Lastly, a coast-wide longline trap survey targeting sablefish is conducted every year and DFO collects biological information from the International Pacific Halibut Commission (IPHC) Setline Survey.
 In 2021, in addition to the usual odd numbered year surveys, the synoptic WCVI trawl survey and inside HBLL south surveys were conducted to make up for missing them in 2020 due to COVID-19.
@@ -111,7 +111,7 @@ This year, we explored population trends for groundfish stocks using two methods
 
 ## Methods
 
-We gathered Bayesian posterior distributions of estimated biomass from assessments for `r nrow(refs)` stocks, including five updated assessments (Yellomouth Rockfish coastwide stock, Rougheye/Blackspotted Rockfish south and north stocks, Pacific Cod 5ABCD and 3CD stocks).
+We gathered Bayesian posterior distributions of estimated biomass from assessments for `r nrow(refs)` stocks, including five updated assessments (Yellowmouth Rockfish coastwide stock, Rougheye/Blackspotted Rockfish south and north stocks, Pacific Cod 5ABCD and 3CD stocks).
 We did not have access to the updated Bocaccio assessment data [@dfo2022bocaccio] at the time of writing and so include the projection from [@dfo2022bocaccio].
 From these distributions, we modelled overall (i.e., all stocks combined) mean log stock status as a latent random walk with individual stocks assumed to have an auto-regressive observation model with their 'true' status drawn from their stock-assessed posterior distribution.
 The approach is an extension of a model in @hilborn2020 to include uncertainty on stock status and implement the model in Stan [@carpenter2017]; details are available in @anderson2021sopopreprint.
@@ -177,7 +177,7 @@ The overall mean B/USR and B/B~MSY~ (biomass divided by biomass at maximum susta
 <!-- This uncertainty can be partially address using survey indices to extend our exploration of stock status to the most recent year with survey data. -->
 Despite the overall pattern in the average biological status, there was considerable variation within and across individual stocks, especially when recent survey trends are also considered (Figure \@ref(fig:stock-vs-indices)).
 
-(ref:fig-pa) Overall mean biomass status across all stocks for B/LRP, B/USR, and B/B~MSY~ from the hierarchical time-series model. Dark lines represent the posterior median and shaded ribbons represent 95% quantile credible intervals.
+(ref:fig-pa) Overall mean biomass status across all stocks for B/LRP, B/USR, and B/B~MSY~ (see text for definitions) from the hierarchical time-series model. Dark lines represent the posterior median and shaded ribbons represent 95% quantile credible intervals. ITQ = individual transferable quotas.
 
 ```{r pa-framework, fig.cap="(ref:fig-pa)", out.width="2.8in", fig.align="center", fig.pos="ht"}
 include_graphics(here("figs/ts-summary.png"))
