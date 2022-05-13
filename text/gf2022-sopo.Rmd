@@ -112,7 +112,7 @@ This year, we explored population trends for groundfish stocks using two methods
 ## Methods
 
 We gathered Bayesian posterior distributions of estimated biomass from assessments for `r nrow(refs)` stocks, including five updated assessments (Yellowmouth Rockfish coastwide stock, Rougheye/Blackspotted Rockfish south and north stocks, Pacific Cod 5ABCD and 3CD stocks).
-We did not have access to the updated Bocaccio assessment data [@dfo2022bocaccio] at the time of writing and so include the projection from [@dfo2022bocaccio].
+We did not have access to the updated Bocaccio assessment data [@dfo2022bocaccio] at the time of writing and so included the projection from [@dfo2022bocaccio].
 From these distributions, we modelled overall (i.e., all stocks combined) mean log stock status as a latent random walk with individual stocks assumed to have an auto-regressive observation model with their 'true' status drawn from their stock-assessed posterior distribution.
 The approach is an extension of a model in @hilborn2020 to include uncertainty on stock status and implement the model in Stan [@carpenter2017]; details are available in @anderson2021sopopreprint.
 
