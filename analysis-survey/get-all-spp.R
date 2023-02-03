@@ -16,6 +16,20 @@ species_list <- unique(species_list)
 # invert_list <- unique(invert_list)
 
 all_spp_trawl <- list()
+
+species_list <- c("Arrowtooth Flounder", "Big Skate", "Bocaccio", "Butter Sole",
+  "Canary Rockfish", "Copper Rockfish", "Darkblotched Rockfish",
+  "Dover Sole", "English Sole", "Flathead Sole", "Greenstriped Rockfish",
+  "Kelp Greenling", "Lingcod", "Longnose Skate", "Longspine Thornyhead",
+  "North Pacific Spiny Dogfish", "Pacific Cod", "Pacific Ocean Perch",
+  "Petrale Sole", "Quillback Rockfish", "Redstripe Rockfish", "Rex Sole",
+  "Rougheye/Blackspotted Rockfish Complex", "Sablefish", "Sandpaper Skate",
+  "Sharpchin Rockfish", "Shortraker Rockfish", "Shortspine Thornyhead",
+  "Silvergray Rockfish", "Southern Rock Sole", "Splitnose Rockfish",
+  "Spotted Ratfish", "Walleye Pollock", "Widow Rockfish", "Yelloweye Rockfish",
+  "Yellowmouth Rockfish", "Yellowtail Rockfish")
+species_list <- tolower(species_list)
+
 for (i in species_list) {
   species <- i
   all_spp_trawl[[i]] <- try({gfdata::get_survey_sets(species, ssid = c(1,3,4,16,22,36,39,40))})
