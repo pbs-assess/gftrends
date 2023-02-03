@@ -539,11 +539,11 @@ d1 <- filter(d1, scenario != "(A) No Jig survey") # robustness
 
 d <- mutate(d1, blrp = 0.4 * bbmsy, busr = 0.8 * bbmsy) |>
   mutate(iter = rep(rep(seq_len(200), 104), 3)) |>
-  mutate(species = "quillback", region = "WCVI Inside") |>
+  mutate(species = "quillback", region = "4B") |>
   mutate(run = as.integer(as.factor(scenario))) |>
   select(-scenario)
 
 d %>% ggplot(aes(year, blrp, group = paste(iter, run))) + geom_line(alpha = 0.05)
 d %>% ggplot(aes(year, busr, group = paste(iter, run))) + geom_line(alpha = 0.05)
 
-d %>% saveRDS("data-raw/quillback-inside.rds")
+d %>% saveRDS("data-raw/quillback-inside-mcmc.rds")
