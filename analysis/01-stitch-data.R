@@ -70,9 +70,7 @@ out <- d %>%
 
     .groups = "drop"
   )
-out <- bind_rows(out, readRDS("data-raw/quillback-inside.rds"))
 out <- bind_rows(out, readRDS("data-raw/quillback-outside.rds"))
-out <- bind_rows(out, readRDS("data-raw/canary-bc.rds"))
 
 out <- mutate(out, stock = paste(species, region)) %>%
   mutate(stock = gsub(" ", "_", stock)) %>%
