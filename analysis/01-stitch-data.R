@@ -109,6 +109,6 @@ g <- out %>%
   theme(axis.title.x = element_blank()) +
   gfplot::theme_pbs()
 print(g)
-ggsave("figs/stitch-summary-plot.pdf", width = 10, height = 8)
+ggsave("figs/stitch-summary-plot.pdf", width = 11, height = 8)
 
 saveRDS(out, "data-generated/b-status-dat.rds")
