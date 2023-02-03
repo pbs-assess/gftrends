@@ -2,34 +2,6 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-# arrowtooth base model -----------------------------------------------------
-
-base_model <- readRDS("data-raw/model-output/arrowtooth-2015.rds")
-lrp <- base_model$mcmc$params.est %>%
-  as_tibble() %>%
-  select("bmsy") %>%
-  mutate(iter = seq_len(n())) %>%
-  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy)
-arrowtooth <- base_model$mcmc$sbt[[1]] %>%
-  pivot_longer(everything(), names_to = "year", values_to = "ssb") %>%
-  mutate(iter = rep(seq_len(2000), each = length(unique(year)))) %>%
-  arrange(year) %>%
-  mutate(year = as.numeric(year)) %>%
-  left_join(lrp) %>%
-  mutate(run = 1)
-arrowtooth %>% ggplot(aes(year, ssb / lrp, group = iter)) + geom_line(alpha = 0.05)
-
-arrowtooth_sum <- arrowtooth %>%
-  mutate(blrp = ssb / lrp) %>%
-  group_by(year) %>%
-  summarise(species = "arrowtooth", region = "BC",
-    log_blrp = mean(log(blrp)), sd_log_blrp = sd(log(blrp)))
-
-arrowtooth_sum %>% saveRDS("data-raw/arrowtooth-bc.rds")
-arrowtooth %>% rename(b = ssb) %>%
-  mutate(species = "arrowtooth", region = "BC") %>%
-  saveRDS("data-raw/arrowtooth-bc-mcmc.rds")
-
 # pcod average model ------------------------------------------------------
 
 # from pcod project:
@@ -355,47 +327,7 @@ d2 %>% rename(b = SSB, bmsy = Bmsy) %>%
 # ggplot(d2, aes(year, sd_log_blrp)) + geom_line() +
 #   geom_line(data = d, colour = "grey")
 
-# quillback ---------------------------------------------------------------
-
-d <- readr::read_csv("data-raw/model-output/quill-ins.csv")
-plot(d$x, d$med)
-
-d_ins_med <- as.data.frame(approx(d$x, d$med, xout = seq(1921, 2009))) %>%
-  rename(year = x, med = y)
-d_ins_upr <- as.data.frame(approx(d$x, d$upr, xout = seq(1921, 2009))) %>%
-  rename(year = x, upr = y)
-d_ins_lwr <- as.data.frame(approx(d$x, d$lwr, xout = seq(1921, 2009))) %>%
-  rename(year = x, lwr = y)
-d <- left_join(d_ins_med, d_ins_lwr) %>% left_join(d_ins_upr) %>%
-  as_tibble()
-d$log_B <- log(d$med)
-d$log_B_lwr <- log(d$lwr)
-d$log_B_upr <- log(d$upr)
-d <- mutate(d, sd_log_B = (log_B_upr - log_B_lwr) / (qnorm(0.975) * 2))
-
-ggplot(d, aes(year, exp(log_B), ymin = exp(log_B + 1.96 * sd_log_B), ymax = exp(log_B - 1.96 * sd_log_B))) +
-  geom_line(lwd = 2) +
-  geom_ribbon(alpha = 0.2) +
-  geom_line(aes(year, med), colour = "red") +
-  geom_ribbon(aes(year, med, ymin = lwr, ymax = upr), alpha = 0.2, colour = "red")
-
-# Bmsy is 5742 in Table 5
-bmsy <- 5742
-lrp <- bmsy * 0.4
-usr <- bmsy * 0.8
-
-out <- d %>% transmute(species = "quillback", region = "WCVI Inside", year = year,
-  log_blrp = log(med / lrp), sd_log_blrp = sd_log_B,
-  log_busr = log(med / usr), sd_log_busr = sd_log_B,
-  log_bbmsy = log(med / bmsy), sd_log_bbmsy = sd_log_B,
-  q0.05_blrp = lwr / lrp, q0.95_blrp = upr / lrp,
-  q0.05_busr = lwr / usr, q0.95_busr = upr / usr,
-  q0.05_bmsy = lwr / bmsy, q0.95_bmsy = upr / bmsy,
-  p_lrp = NA, p_usr = NA
-)
-out %>% saveRDS("data-raw/quillback-inside.rds")
-
-# outside:
+# quillback outside ---------------------------------------------------
 
 d <- readr::read_csv("data-raw/model-output/quill-out.csv")
 plot(d$x, d$med)
@@ -542,49 +474,76 @@ d <- arrange(d, iter)
 d %>% saveRDS("data-raw/bocaccio-bc-mcmc.rds")
 d %>% ggplot(aes(year, b / bmsy, group = iter)) + geom_line(alpha = 0.05)
 
-# canary ---------------------------------------------------------------
+# canary 2023 ---------------------------------------------------------
 
-# Philina hand extracted on 2022-03-21
-# https://github.com/pbs-assess/gftrends/issues/10
-# Fig. J26, run 11
-# B0 from Table J10 B0 median MCMC
-# female only
+d1 <- readr::read_csv("data-raw/model-output/CAR-CST-2022-MCMC(B)-forSean.csv")
+d2 <- readr::read_csv("data-raw/model-output/CAR-CST-2022-MCMC(Bmsy)-forSean.csv")
+names(d1)[1] <- "sample"
+names(d2)[1] <- "sample"
 
-d <- readr::read_csv("data-raw/model-output/canary.csv")
-d <- rename(d, med = median)
-plot(d$year, d$med)
-d$log_B <- log(d$med)
-d$log_B_lwr <- log(d$lwr)
-d$log_B_upr <- log(d$upr)
-d <- mutate(d, sd_log_B = (log_B_upr - log_B_lwr) / (qnorm(0.975) * 2))
+b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
+.species <- "canary"
+.region <- "BC"
+d <- dplyr::left_join(b, d2) %>%
+  mutate(year = as.integer(as.character(year))) %>%
+  rename(b = B, bmsy = Bmsy) %>%
+  mutate(run = 1) %>%
+  mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
+  mutate(species = .species, region = .region) %>%
+  rename(iter = sample)
 
-ggplot(d, aes(year, exp(log_B), ymin = exp(log_B + 1.96 * sd_log_B), ymax = exp(log_B - 1.96 * sd_log_B))) +
-  geom_line(lwd = 2) +
-  geom_ribbon(alpha = 0.2) +
-  geom_line(aes(year, med), colour = "red") +
-  geom_ribbon(aes(year, med, ymin = lwr, ymax = upr), alpha = 0.2, colour = "red")
+set.seed(123)
+iter_sample <- sample(unique(d$iter), 500L) # downsample
+d <- dplyr::filter(d, iter %in% iter_sample)
+d$iter <- as.numeric(as.factor(as.character(d$iter)))
+d <- arrange(d, iter)
 
-# Bmsy is Table J10 B0 median MCMC
-# "Bmsy in the RPA corresponds approximately to 0.296*B0 and 0.356*B0 for
-# Runs 11 and 17 respectively, in the present document."
-# So
-B0 <- 8395
-bmsy <- 0.296 * B0
-lrp <- bmsy * 0.4
-usr <- bmsy * 0.8
+d %>% ggplot(aes(year, b / bmsy, group = iter)) + geom_line(alpha = 0.05)
+d %>% saveRDS("data-raw/canary-bc-mcmc.rds")
 
-out <- d %>% transmute(species = "canary", region = "BC", year = year,
-  log_blrp = log(med / lrp), sd_log_blrp = sd_log_B,
-  log_busr = log(med / usr), sd_log_busr = sd_log_B,
-  log_bbmsy = log(med / bmsy), sd_log_bbmsy = sd_log_B,
-  q0.05_blrp = lwr / lrp, q0.95_blrp = upr / lrp,
-  q0.05_busr = lwr / usr, q0.95_busr = upr / usr,
-  q0.05_bmsy = lwr / bmsy, q0.95_bmsy = upr / bmsy,
-  p_lrp = NA, p_usr = NA
-)
+# arrowtooth 2023 -----------------------------------------------------
 
-ggplot(out, aes(year, exp(log_blrp), ymin = exp(log_blrp + 1.96 * sd_log_blrp), ymax = exp(log_blrp - 1.96 * sd_log_blrp))) +
-  geom_line() +
-  geom_ribbon(alpha = 0.4)
+d1 <- readRDS("data-raw/model-output/arrowtooth-2022-ssb.rds")
+d2 <- readRDS("data-raw/model-output/arrowtooth-2022-params.rds")
+d1$sample <- seq(1, nrow(d1))
 
-out %>% saveRDS("data-raw/canary-bc.rds")
+b <- tidyr::pivot_longer(d1, cols = seq(1, ncol(d1)-1), names_to = "year", values_to = "B")
+d2 <- data.frame(B0 = d2$sbo, sample = seq(1, length(d2$sbo)))
+
+.species <- "arrowtooth"
+.region <- "BC"
+d <- left_join(b, d2) %>%
+  mutate(year = as.integer(as.character(year))) %>%
+  rename(b = B) %>%
+  mutate(run = 1) %>%
+  mutate(lrp = 0.2 * B0, usr = 0.4 * B0) %>%
+  mutate(species = .species, region = .region) %>%
+  rename(iter = sample) |>
+  select(-B0)
+
+set.seed(123)
+iter_sample <- sample(unique(d$iter), 500L) # downsample
+d <- dplyr::filter(d, iter %in% iter_sample)
+d$iter <- as.numeric(as.factor(as.character(d$iter)))
+d <- arrange(d, iter)
+
+d %>% ggplot(aes(year, b / lrp, group = iter)) + geom_line(alpha = 0.05)
+d %>% ggplot(aes(year, b / usr, group = iter)) + geom_line(alpha = 0.05)
+d %>% saveRDS("data-raw/arrowtooth-bc-mcmc.rds")
+
+# quillback 2023 ------------------------------------------------------
+
+d1 <- readRDS("data-raw/model-output/quillback-inside-2022-bbmsy.rds")
+unique(d1$scenario)
+d1 <- filter(d1, scenario != "(A) No Jig survey") # robustness
+
+d <- mutate(d1, blrp = 0.4 * bbmsy, busr = 0.8 * bbmsy) |>
+  mutate(iter = rep(rep(seq_len(200), 104), 3)) |>
+  mutate(species = "quillback", region = "WCVI Inside") |>
+  mutate(run = as.integer(as.factor(scenario))) |>
+  select(-scenario)
+
+d %>% ggplot(aes(year, blrp, group = paste(iter, run))) + geom_line(alpha = 0.05)
+d %>% ggplot(aes(year, busr, group = paste(iter, run))) + geom_line(alpha = 0.05)
+
+d %>% saveRDS("data-raw/quillback-inside.rds")
