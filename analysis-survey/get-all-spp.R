@@ -23,10 +23,10 @@ for (i in species_list) {
 
 all_surv <- do.call("rbind", all_spp_trawl)
 #all_trawl_catch <- all_trawl %>% filter(catch_weight > 0)
-all_catch_2021 <- all_surv %>% filter(year == 2021)
+all_catch_2021 <- all_surv %>% filter(year == 2022)
 
 saveRDS(all_surv, file = "data-raw/all_surv_catch.rds")
-saveRDS(all_catch_2021, file = "data-raw/all_trawl_catch_2021.rds")
+saveRDS(all_catch_2021, file = "data-raw/all_trawl_catch_2022.rds")
 
 ####
 
