@@ -537,13 +537,13 @@ d1 <- readRDS("data-raw/model-output/quillback-inside-2022-bbmsy.rds")
 unique(d1$scenario)
 d1 <- filter(d1, scenario != "(A) No Jig survey") # robustness
 
-d <- mutate(d1, blrp = 0.4 * bbmsy, busr = 0.8 * bbmsy) |>
+d <- mutate(d1, blrp = bbmsy/0.4, busr = bbmsy/0.8) |>
   mutate(iter = rep(rep(seq_len(200), 104), 3)) |>
   mutate(species = "quillback", region = "4B") |>
   mutate(run = as.integer(as.factor(scenario))) |>
   select(-scenario)
 
-d %>% ggplot(aes(year, blrp, group = paste(iter, run))) + geom_line(alpha = 0.05)
-d %>% ggplot(aes(year, busr, group = paste(iter, run))) + geom_line(alpha = 0.05)
+d %>% ggplot(aes(year, blrp, group = paste(iter, run))) + geom_line(alpha = 0.05) + scale_y_log10()
+d %>% ggplot(aes(year, busr, group = paste(iter, run))) + geom_line(alpha = 0.05) + scale_y_log10()
 
 d %>% saveRDS("data-raw/quillback-inside-mcmc.rds")
