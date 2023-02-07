@@ -3,24 +3,24 @@
 library(dplyr)
 
 # add for Gabe
-to_fit0 <- tribble(
-  ~species, ~region,
-  # # "Canary Rockfish", "HBLL outside surveys",
-  "Copper Rockfish", "HBLL outside surveys",
-  "Darkblotched Rockfish", "Coast-wide trawl surveys",
-  # "Longspine Thornyhead", "Coast-wide trawl surveys",
-  "Longspine Thornyhead", "WCHG only",
-  "Greenstriped Rockfish", "Coast-wide trawl surveys",
-  "Flathead Sole", "Coast-wide trawl surveys",
-  "Kelp Greenling", "Coast-wide trawl surveys",
-  "Kelp Greenling", "HBLL outside surveys",
-  # "Kelp Greenling", "HBLL inside surveys",
-  "Sandpaper Skate", "Coast-wide trawl surveys",
-  "Sandpaper Skate", "HBLL outside surveys",
-  "Sharpchin Rockfish", "Coast-wide trawl surveys",
-  "Splitnose Rockfish", "Coast-wide trawl surveys",
-  "Butter Sole", "Both odd year trawl surveys"
-)
+# to_fit0 <- tribble(
+#   ~species, ~region,
+#   # # "Canary Rockfish", "HBLL outside surveys",
+#   "Copper Rockfish", "HBLL outside surveys",
+#   "Darkblotched Rockfish", "Coast-wide trawl surveys",
+#   # "Longspine Thornyhead", "Coast-wide trawl surveys",
+#   "Longspine Thornyhead", "WCHG only",
+#   "Greenstriped Rockfish", "Coast-wide trawl surveys",
+#   "Flathead Sole", "Coast-wide trawl surveys",
+#   "Kelp Greenling", "Coast-wide trawl surveys",
+#   "Kelp Greenling", "HBLL outside surveys",
+#   # "Kelp Greenling", "HBLL inside surveys",
+#   "Sandpaper Skate", "Coast-wide trawl surveys",
+#   "Sandpaper Skate", "HBLL outside surveys",
+#   "Sharpchin Rockfish", "Coast-wide trawl surveys",
+#   "Splitnose Rockfish", "Coast-wide trawl surveys",
+#   "Butter Sole", "Both odd year trawl surveys"
+# )
 
 to_fit1 <- tribble(
   ~species, ~region,
@@ -115,7 +115,7 @@ to_fit5 <- bind_rows(to_fit5, make_dat(list_regions, list_species))
 
 to_fit <- bind_rows(
   list(
-    to_fit0, # for gabe
+    # to_fit0, # for gabe
     to_fit1,
     to_fit2,
     to_fit3,
@@ -175,9 +175,9 @@ fit_index <- function(region, species) {
 is_rstudio <- !is.na(Sys.getenv("RSTUDIO", unset = NA))
 is_unix <- .Platform$OS.type == "unix"
 if (is_unix && !is_rstudio) {
-  future::plan(future::multicore, workers = 6L)
+  future::plan(future::multicore, workers = 4L)
 } else {
-  future::plan(future::multisession, workers = 2L)
+  future::plan(future::multisession, workers = 4L)
 }
 options(future.rng.onMisuse = "ignore")
 
