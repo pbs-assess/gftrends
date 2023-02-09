@@ -318,8 +318,9 @@ d3 %>% saveRDS("data-raw/sable-bc.rds")
 
 # downsample:
 set.seed(123)
-iter_sample <- sample(unique(d2$iter), 1000L) # downsample
-d2 <- dplyr::filter(d2, iter %in% iter_sample)
+iter_sample <- sample(unique(d2$iter), 800L) # downsample
+d2 <- dplyr::filter(d2, iter %in% iter_sample) |>
+  arrange(iter, year)
 d2$iter <- NULL
 
 d2 %>% rename(b = SSB, bmsy = Bmsy) %>%
