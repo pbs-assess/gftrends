@@ -293,13 +293,15 @@ d %>% saveRDS("data-raw/yellowtail-bc-mcmc.rds")
 
 # sablefish -----------------------------------------------------------------
 
-d <- readr::read_csv("data-raw/model-output/sable-mcOutMSY.csv")
-d <- select(d, starts_with("spawnB"), Bmsy)
-d2 <- pivot_longer(d, -Bmsy) %>%
-  mutate(year_i = gsub("spawnB", "", name)) %>%
-  mutate(year = as.integer(year_i) + 1964L) %>%
+d <- readr::read_csv("data-raw/model-output/Sablefish_MCMC_weightedAve_biomass.csv")
+d <- select(d, starts_with("spawnB"), SBmsy) |>
+  mutate(iter = seq_len(nrow(d)))
+d2 <- pivot_longer(d, -c(SBmsy, iter)) %>%
+  mutate(year_i = gsub("spawnB_", "", name)) %>%
+  mutate(year = as.integer(year_i)) %>%
   mutate(species = "sablefish", region = "BC") %>%
-  select(species, region, year, SSB = value, Bmsy)
+  select(species, region, year, SSB = value, SBmsy, iter) |>
+  rename(Bmsy = SBmsy)
 
 d3 <- d2 %>% group_by(species, region, year) %>%
   summarise(
@@ -313,9 +315,16 @@ d3 <- d2 %>% group_by(species, region, year) %>%
   filter(is.finite(log_blrp))
 d3 %>% saveRDS("data-raw/sable-bc.rds")
 
+
+# downsample:
+set.seed(123)
+iter_sample <- sample(unique(d2$iter), 1000L) # downsample
+d2 <- dplyr::filter(d2, iter %in% iter_sample)
+d2$iter <- NULL
+
 d2 %>% rename(b = SSB, bmsy = Bmsy) %>%
   mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy, run = 1) %>%
-  filter(b > 0) %>%
+  # filter(b > 0) %>%
   saveRDS("data-raw/sable-bc-mcmc.rds")
 
 # d <- readRDS("data-raw/model-output/sable.rds")
