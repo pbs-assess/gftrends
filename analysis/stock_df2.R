@@ -30,5 +30,16 @@ stock_df <- tibble::tribble(
   "yelloweye_BC", "Yelloweye Rockfish BC Outside", "Rockfish", "Yelloweye Rockfish", "HBLL outside surveys",
   "yelloweye_4B", "Yelloweye Rockfish 4B", "Rockfish", "Yelloweye Rockfish", "HBLL inside surveys",
   "yellowmouth_BC", "Yellowmouth Rockfish BC", "Rockfish", "Yellowmouth Rockfish", "Coast-wide trawl surveys",
-  "yellowtail_BC", "Yellowtail Rockfish BC", "Rockfish", "Yellowtail Rockfish", "Coast-wide trawl surveys"
+  "yellowtail_BC", "Yellowtail Rockfish BC", "Rockfish", "Yellowtail Rockfish", "Coast-wide trawl surveys",
+  "copper_rockfish_BC", "Copper Rockfish BC","Rockfish","Copper Rockfish","HBLL outside surveys",
+  "darkblotched_rockfish_BC", "Darkblotched rockfish BC", "Rockfish", "Darkblotched rockfish", "Coast-wide trawl surveys",
+  "longspine_thornyhead_BC","Longspine thornyhead BC", "Rockfish", "Longspine thornyhead","WCHG only",
+  "greenstriped_rockfish_BC","Greenstriped Rockfish BC","Rockfish","Greenstriped Rockfish", "Coast-wide trawl surveys",
+  "flathead_sole_BC", "Flathead Sole BC","Flatfish","Flathead Sole","Coast-wide trawl surveys",
+  "Kelp_Greenling_BC","Kelp Greenling BC", "Greenling","Kelp Greenling","Coast-wide trawl surveys",
+  "Kelp_Greenling_BC", "Kelp Greenling BC","Greenling","Kelp Greenling","HBLL outside surveys",
+  "Sandpaper_Skate_BC", "Sandpaper Skate BC","Skate","Sandpaper Skate","Coast-wide trawl surveys",
+  "Sharpchin_Rockfish_BC", "Sharpchin Rockfish BC", "Rockfish", "Sharpchin Rockfish","Coast-wide trawl surveys",
+  "Splitnose_Rockfish_BC","Splitnose Rockfish BC","Rockfish","Splitnose Rockfish", "Coast-wide trawl surveys",
+  "Butter_Sole_BC", "Butter Sole BC","Sole","Butter Sole","Both odd year trawl surveys"
 )
