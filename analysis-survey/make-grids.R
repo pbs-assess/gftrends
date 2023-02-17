@@ -12,9 +12,7 @@ d <- all_data %>% dplyr::filter(survey_abbrev %in% c("SYN QCS", "SYN HS", "SYN W
 # four surveys
 original_time <- sort(unique(d$year))
 # Building out the grid for each year a survey existed (function is now in sdmTMB)
-nd_whole_coast_index <- do.call("rbind",
-  replicate(length(original_time), grid_locs, simplify = FALSE))
-nd_whole_coast_index[["year"]] <- rep(original_time, each = nrow(grid_locs))
+nd_whole_coast_index <- sdmTMB::replicate_df(grid_locs, "year", original_time)
 
 saveRDS(nd_whole_coast_index, file = paste0(here::here("data-generated/nd_whole_coast_index.rds")))
 
