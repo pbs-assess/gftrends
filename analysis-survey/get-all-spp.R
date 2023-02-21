@@ -31,6 +31,7 @@ species_list <- c("Arrowtooth Flounder", "Big Skate", "Bocaccio", "Butter Sole",
 species_list <- tolower(species_list)
 
 for (i in species_list) {
+  cat(i, "\n")
   species <- i
   all_spp_trawl[[i]] <- try({gfdata::get_survey_sets(species, ssid = c(1,3,4,16,22,36,39,40))})
 }
@@ -40,6 +41,7 @@ all_surv <- do.call("rbind", all_spp_trawl)
 all_catch_2021 <- all_surv %>% filter(year == 2022)
 
 saveRDS(all_surv, file = "data-raw/all_surv_catch.rds")
+saveRDS(all_spp_trawl, file = "data-raw/all_spp_trawl.rds")
 saveRDS(all_catch_2021, file = "data-raw/all_trawl_catch_2022.rds")
 
 ####
