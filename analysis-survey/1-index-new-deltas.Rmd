@@ -7,11 +7,11 @@ params:
     # species: "Canary Rockfish"
     # species: "Arrowtooth Flounder"
     # species: "Big Skate"
-    # species: "North Pacific Spiny Dogfish"
+    species: "North Pacific Spiny Dogfish"
     # species: "Pacific Ocean Perch"
     # species: "Bocaccio"
     # species: "Splitnose Rockfish"
-    species: "Pacific Sand Lance"
+    #species: "Pacific Sand Lance"
     # species: "Longspine Thornyhead"
     # species: "Sandpaper Skate"
     region: "Coast-wide trawl surveys"
@@ -43,8 +43,6 @@ theme_set(
   gfplot::theme_pbs(base_size = 14)
 )
 
-# clean up environment just in case
-rm(data, d, m, m1, p, p1, i, i1, g)
 ```
 
 ```{r params}
@@ -164,11 +162,14 @@ if (region == "HBLL inside surveys") {
 }
 
 if (region != "HBLL inside surveys") {
-  all_data <- readRDS(here::here("data-raw/all-survey-sets-2021.rds")) %>%
-    filter(species_common_name == tolower(species)) %>%
-    rename(survey_series_id = survey_series_id.x)
+  #all_data <- readRDS(here::here("data-raw/all-survey-sets-2021.rds")) %>%
+  all_data <- readRDS(here::here("data-raw/all_surv_catch.rds")) %>%
+    filter(species_common_name == tolower(species)) #%>%
+    #rename(survey_series_id = survey_series_id.x)
 } else {
-  all_data <- readRDS(here::here("data-raw/all-inside-hbll-2021.rds")) %>%
+  #all_data <- readRDS(here::here("data-raw/all-inside-hbll-2021.rds")) %>%
+    all_data <- readRDS(here::here("data-raw/all_surv_catch.rds")) %>%
+    filter(stringr::str_detect(survey_abbrev, "HBLL INS")) %>% 
     filter(species_common_name == tolower(species))
 }
 ```
