@@ -296,7 +296,8 @@ if (update_model) {
     family = family,
     spatial = "on",
     spatiotemporal = "RW",
-    silent = params$silent
+    silent = params$silent,
+    control = sdmTMBcontrol(newton_loops = 1L)
   )
   })
   tictoc::toc()
@@ -329,13 +330,6 @@ p <- function(x) {
   )
   return(out)
 }
-
-try({
-  if (max(m$gradients) > 0.01) {
-    m <- run_extra_optimization(m, newton_loops = 1L, nlminb_loops = 0L)
-    saveRDS(m, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
-  }
-})
 
 p(m)
 
@@ -382,9 +376,9 @@ try({
   (d_re2 <- tidy(m1, effects = "ran_pars", conf.int = TRUE, model = 2))
 })
 
-try({
-  simulate(m1, nsim = 200) %>% dharma_residuals(m1)
-})
+# try({
+#   simulate(m1, nsim = 200) %>% dharma_residuals(m1)
+# })
 
 try({
   tw <- m
