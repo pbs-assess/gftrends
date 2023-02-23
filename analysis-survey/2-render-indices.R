@@ -66,7 +66,7 @@ to_fit4 <- expand.grid(
   region = c("WCHG only", "QCS & WCVI"), stringsAsFactors = FALSE
 )
 
-to_fit4 <- expand.grid(
+to_fit6 <- expand.grid(
   species = c(
     "Walleye Pollock"
   ),
@@ -161,8 +161,9 @@ fit_index <- function(region, species) {
 }
 
 # purrr::pwalk(to_fit, fit_index)
-
-# set.seed(1)
+purrr::pwalk(to_fit4, fit_index)
+beepr::beep()
+# set.seed(1)1
 # i <- sample(seq_len(nrow(to_fit)), nrow(to_fit))
 # to_fit <- to_fit[i, ]
 
@@ -183,6 +184,13 @@ options(future.rng.onMisuse = "ignore")
 
 # furrr::future_pwalk(to_fit[c(36, 26),,drop = FALSE], fit_index)
 furrr::future_pwalk(to_fit, fit_index)
+furrr::future_pwalk(to_fit1, fit_index)
+furrr::future_pwalk(to_fit2, fit_index)
+furrr::future_pwalk(to_fit3, fit_index)
+furrr::future_pwalk(to_fit4, fit_index)
+furrr::future_pwalk(to_fit5, fit_index)
+furrr::future_pwalk(to_fit6, fit_index)
+beepr::beep()
 
 future::plan(future::sequential)
 
