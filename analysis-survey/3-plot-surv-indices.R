@@ -1,8 +1,8 @@
 library(dplyr)
 library(ggplot2)
 source("analysis/utils.R")
-source("analysis/stock_df.R")
-# source("analysis/stock_df2.R")
+#source("analysis/stock_df.R")
+source("analysis/stock_df2.R")
 
 # ---------------------------------------------------------------------
 # Run first part only if you have all indices saved in separate files

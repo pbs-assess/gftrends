@@ -13,7 +13,7 @@ stock_df <- tibble::tribble(
   "pcod_3CD", "Pacific Cod 3CD", "Cod", "Pacific Cod", "WCVI only",
   "pcod_5abcd", "Pacific Cod 5ABCD", "Cod", "Pacific Cod", "Both odd year trawl surveys",
   "quillback_BC_Outside", "Quillback BC Outside", "Rockfish", "Quillback Rockfish", "HBLL outside surveys",
-  "quillback_WCVI_Inside", "Quillback VI Inside", "Rockfish", "Quillback Rockfish", "HBLL inside surveys",
+  "quillback_4B", "Quillback VI Inside", "Rockfish", "Quillback Rockfish", "HBLL inside surveys",
   "redstripe_rockfish_BC_North", "Redstripe Rockfish BC N", "Rockfish", "Redstripe Rockfish", "WCHG only",
   "redstripe_rockfish_BC_South", "Redstripe Rockfish BC S", "Rockfish", "Redstripe Rockfish", "QCS & WCVI",
   "rocksole_5AB", "Rocksole 5AB", "Flatfish", "Southern Rock Sole", "QCS only",
