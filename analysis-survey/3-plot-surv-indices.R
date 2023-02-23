@@ -1,5 +1,6 @@
 library(dplyr)
 library(ggplot2)
+library(readr)
 source("analysis/utils.R")
 
 #source("analysis/stock_df2.R")
@@ -22,8 +23,8 @@ all_indices <- readRDS(paste0("data-generated/sopo-2022-indices.rds")) %>%
   rename(gear = type)
 dat <- readRDS("data-generated/b-status-dat.rds") %>%
   filter(year >= 1960) %>%
-  rename(dfo_area = region)
-dat <- left_join(dat, stock_df, by = c('species' = 'assessment_species', 'dfo_area' = 'dfo_area'))
+  rename(dfo_area = region, assessment_species = species)
+dat <- left_join(dat, stock_df, by = c('assessment_species', 'dfo_area'))
 
 g <- ggplot(all_indices, aes(year, est, group = model)) +
   geom_line(aes(colour = model)) +
@@ -99,15 +100,15 @@ ggsave("figs/index-best-by-slope.pdf", width = 17, height = 12)
 
 all_indices <- left_join(all_indices, slopes)
 
-d <- left_join(all_indices, stock_df, by = c("species", "region")) %>%
-  rename(index = region, model_type = model) %>%
-  mutate(model = paste(index, model_type)) %>%
-  group_by(species, index, model_type, model) %>%
+d <- left_join(all_indices, select(stock_df, species, region, stock_clean), by = c("species", "region")) %>%
+  rename(model_type = model) %>%
+  mutate(model = paste(region, model_type)) %>%
+  group_by(species, region, model_type, model) %>%
   mutate(mean_est = exp(mean(log(est), na.rm = TRUE))) %>%
   ungroup()
 
 unique(dat$stock_clean)
-d1 <- full_join(dat, d)
+d1 <- full_join(dat, d, by = c('year', 'species', 'region', 'stock_clean'))
 unique(d1$stock_clean)
 
 
@@ -122,7 +123,7 @@ d2 <- d2 %>%
   group_by(stock_clean) %>%
   mutate(slope = ifelse(is.na(slope), mean(slope, na.rm = TRUE), slope)) # fill in assessment rows
 
-select(d2, species, region, index, slope) %>% distinct()
+select(d2, species, region, slope) %>% distinct()
 
 cols <- RColorBrewer::brewer.pal(3, name = "Dark2")
 cols <- c("#00000050", cols)
