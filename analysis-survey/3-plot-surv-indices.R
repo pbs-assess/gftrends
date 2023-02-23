@@ -1,8 +1,12 @@
 library(dplyr)
 library(ggplot2)
 source("analysis/utils.R")
-#source("analysis/stock_df.R")
-source("analysis/stock_df2.R")
+
+#source("analysis/stock_df2.R")
+
+stock_df <- 
+  read_csv('data-raw/stock_lookup.csv') %>% 
+  select(-old_spp_regions_2021)  # kept in lookup for JD to compare with how things were done last year
 
 # ---------------------------------------------------------------------
 # Run first part only if you have all indices saved in separate files
@@ -10,17 +14,16 @@ source("analysis/stock_df2.R")
 mydir <- paste0("data-generated/indices/")
 myfiles <- list.files(path = mydir, pattern = "*.rds", full.names = TRUE)
 all_indices <- do.call(bind_rows, lapply(myfiles, readRDS))
-saveRDS(all_indices, file = paste0("data-generated/sopo-2021-indices.rds"))
+saveRDS(all_indices, file = paste0("data-generated/sopo-2022-indices.rds"))
 
 # ---------------------------------------------------------------------
 
-all_indices <- readRDS(paste0("data-generated/sopo-2021-indices.rds")) %>%
+all_indices <- readRDS(paste0("data-generated/sopo-2022-indices.rds")) %>%
   rename(gear = type)
 dat <- readRDS("data-generated/b-status-dat.rds") %>%
   filter(year >= 1960) %>%
-  rename(dfo_area = region) %>%
-  select(-species)
-dat <- left_join(dat, stock_df)
+  rename(dfo_area = region)
+dat <- left_join(dat, stock_df, by = c('species' = 'assessment_species', 'dfo_area' = 'dfo_area'))
 
 g <- ggplot(all_indices, aes(year, est, group = model)) +
   geom_line(aes(colour = model)) +
@@ -50,7 +53,7 @@ keep <- group_by(se_check, species, gear, region, surveys) %>%
 nrow(keep)
 # keep$model[keep$species == "Redstripe Rockfish" & keep$region == "WCHG only"] <- "Tweedie"
 
-all_indices <- left_join(keep, all_indices)
+all_indices <- left_join(keep, all_indices, multiple = "all")  # will have multiple matches; as long as nrow(all_indices) before is double nrow(all_indices) after things are fine
 
 g <- ggplot(all_indices, aes(year, est, group = model)) +
   geom_line(aes(colour = model)) +
