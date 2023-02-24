@@ -41,6 +41,7 @@ g <- ggplot(all_indices, aes(year, est, group = model)) +
   facet_wrap(vars(paste(species, region)), scales = "free_y") +
   ggsidekick::theme_sleek() +
   theme(axis.text.y = element_blank())
+g
 ggsave("figs/delta-vs-tweedie-all.pdf", width = 22, height = 12)
 
 se_check <- all_indices %>%
@@ -53,7 +54,8 @@ group_by(se_check, species, gear, region, surveys) %>%
   table()
 
 keep <- group_by(se_check, species, gear, region, surveys) %>%
-  filter(avg_se == min(avg_se))
+  filter(avg_se == min(avg_se)) %>% 
+  ungroup()
 nrow(keep)
 # keep$model[keep$species == "Redstripe Rockfish" & keep$region == "WCHG only"] <- "Tweedie"
 
@@ -99,6 +101,7 @@ g <- all_indices %>%
   facet_wrap(vars(forcats::fct_reorder(id, -slope)), scales = "free_y") +
   ggsidekick::theme_sleek() +
   theme(axis.text.y = element_blank())
+g
 ggsave("figs/index-best-by-slope.pdf", width = 17, height = 12)
 
 all_indices <- left_join(all_indices, slopes)
@@ -112,7 +115,6 @@ d <-
   mutate(mean_est = exp(mean(log(est), na.rm = TRUE))) %>%
   ungroup()
 
-# SHOULDN'T HAVE NA values here
 unique(dat$stock_clean)
 d1 <- full_join(dat, d)
 unique(d1$stock_clean)
@@ -127,9 +129,13 @@ unique(d2$stock_clean)
 
 d2 <- d2 %>%
   group_by(stock_clean) %>%
-  mutate(slope = ifelse(is.na(slope), mean(slope, na.rm = TRUE), slope)) # fill in assessment rows
+  mutate(slope = ifelse(is.na(slope), mean(slope, na.rm = TRUE), slope)) %>%   # fill in assessment rows
+  ungroup()
 
-select(d2, species, region, slope) %>% distinct()
+select(d2, stock_clean, stock, index, slope) %>% distinct() %>% view
+
+#d2 <- distinct(d2, stock_clean, index, slope, .keep_all = TRUE)
+
 
 cols <- RColorBrewer::brewer.pal(3, name = "Dark2")
 cols <- c("#00000050", cols)
