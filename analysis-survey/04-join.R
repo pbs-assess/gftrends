@@ -12,8 +12,7 @@ d <- full_join(ind, dat) |>
   mutate(stock_clean = paste(panel_title1, panel_title2)) |>
   arrange(stock_clean, year)
 
-# filter(d, assess_species == "arrowtooth") |> View()
-
+# This survey isn't usually used:
 d$est[d$species == "Sablefish"] <- NA
 d$lwr[d$species == "Sablefish"] <- NA
 d$upr[d$species == "Sablefish"] <- NA
@@ -45,58 +44,4 @@ d <- group_by(d, stock_clean) %>%
     }
   })
 
-d <- mutate(d, gear_type = ifelse(grepl("trawl", gear), "Longline", "Trawl"))
-
-d <- mutate(d, facet_label = paste(panel_title1, panel_title2, sep = "\n"))
-
-gg <- d %>%
-    ggplot() +
-    geom_ribbon(aes(year,
-      ymin = q0.05_blrp / mean_blrp, ymax = q0.95_blrp / mean_blrp,
-      group = stock_clean
-    ), fill = "black", alpha = 0.2) +
-    geom_line(aes(year, exp(log_blrp) / mean_blrp, group = stock_clean),
-      linetype = 1, alpha = 0.4, colour = "black"
-    ) +
-    geom_line(aes(year, est / mean_est, colour = type, lty = gear_type)) +
-    geom_ribbon(aes(year,
-      ymin = lwr / mean_est, ymax = upr / mean_est,
-      fill = type, lty = gear_type
-    ), alpha = 0.3) +
-    ylab("Relative biomass or abundance estimate") +
-    # scale_colour_manual(values = cols) +
-    # scale_fill_manual(values = cols) +
-    ggsidekick::theme_sleek() +
-    theme(
-      axis.text.y = element_blank(), axis.title.x = element_blank(),
-      axis.ticks.y = element_blank(),
-      panel.grid.major.x = element_line(colour = "grey85", linetype = 2),
-      panel.spacing.x = unit(15, "points"),
-      panel.spacing.y = unit(3, "points")
-    ) +
-    coord_cartesian(expand = FALSE) +
-    scale_y_continuous(limits = c(0, NA), expand = c(0, 0)) +
-    scale_x_continuous(expand = c(0, 0)) +
-    labs(colour = "Type", fill = "Type")
-
-  # if (arrange_by == "slope") {
-    # gg <- gg +
-      # facet_wrap(vars(forcats::fct_reorder(stock_clean, -slope)),
-      # facet_wrap(vars(facet_label), ncol = 5L, scales = "free_y")
-  # } else {
-  #   gg <- gg + facet_wrap(vars(forcats::fct_inorder(stock_clean)),
-  #     ncol = ncol, scales = "free_y")
-  # }
-  # geom_vline(aes(xintercept = min_geo_mean), lty = 1) + # testing
-  # geom_vline(aes(xintercept = max_geo_mean), lty = 1) # testing
-
-  gg <- gg + xlab("Year") +
-    scale_color_brewer(palette = "Dark2") +
-    scale_fill_brewer(palette = "Dark2") +
-    scale_linetype_manual(values = c("Trawl" = 1, "Longline" = 2)) +
-    facet_wrap(vars(forcats::fct_reorder(facet_label, -slope)), scales = "free_y", ncol = 5) +
-    labs(fill = "Species\ngroup", colour = "Species\ngroup", linetype = "Gear")+
-    ggsidekick::theme_sleek() +
-    theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
-
-  print(gg)
+saveRDS(d, "data-generated/assessments-surveys-joined.rds")
