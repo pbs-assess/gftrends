@@ -10,7 +10,7 @@ stock_df <- tibble::tribble(
   "pcod_3CD", "Pacific Cod 3CD", "Cod",
   "pcod_5abcd", "Pacific Cod 5ABCD", "Cod",
   "quillback_BC_Outside", "Quillback BC Outside", "Rockfish",
-  "quillback_WCVI_Inside", "Quillback VI Inside", "Rockfish",
+  "quillback_4B", "Quillback VI Inside", "Rockfish",
   "redstripe_rockfish_BC_North", "Redstripe Rockfish BC N", "Rockfish",
   "redstripe_rockfish_BC_South", "Redstripe Rockfish BC S", "Rockfish",
   "rocksole_5AB", "Rocksole 5AB", "Flatfish",
