@@ -57,7 +57,7 @@ keep <- group_by(se_check, species, gear, region, surveys) %>%
 nrow(keep)
 # keep$model[keep$species == "Redstripe Rockfish" & keep$region == "WCHG only"] <- "Tweedie"
 
-all_indices <- left_join(keep, all_indices, multiple = "all")  # will have multiple matches; as long as nrow(all_indices) before is double nrow(all_indices) after things are fine
+all_indices <- left_join(keep, all_indices, multiple = "all")  # should have half as many all_indices after binding to keep
 
 g <- ggplot(all_indices, aes(year, est, group = model)) +
   geom_line(aes(colour = model)) +
