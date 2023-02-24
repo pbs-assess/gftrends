@@ -2,6 +2,8 @@
 # remotes::install_github("pbs-assess/sdmTMB", ref = "delta")
 library(dplyr)
 
+source("analysis-survey/make-grids.R")
+
 # add for Gabe
 # to_fit0 <- tribble(
 #   ~species, ~region,
@@ -149,47 +151,30 @@ fit_index <- function(region, species) {
       params = list(
         species = species,
         region = region,
-        update_delta = FALSE,
-        update_model = FALSE,
-        update_index = FALSE,
         silent = TRUE
-        # update_index = FALSE
       ),
       output_file = paste0(spp, name, "-", region_name, ".html")
     )
   })
 }
 
-# purrr::pwalk(to_fit, fit_index)
-purrr::pwalk(to_fit4, fit_index)
-beepr::beep()
-# set.seed(1)1
-# i <- sample(seq_len(nrow(to_fit)), nrow(to_fit))
-# to_fit <- to_fit[i, ]
-
-# if (Sys.info()[["user"]] == "seananderson") {
-#   to_fit <- to_fit[1:28, ]
-# } else {
-#   to_fit <- to_fit[29:nrow(to_fit), ]
-# }
+# test
+# purrr::pwalk(to_fit4[1,], fit_index)
+# beepr::beep()
 
 is_rstudio <- !is.na(Sys.getenv("RSTUDIO", unset = NA))
 is_unix <- .Platform$OS.type == "unix"
+cores <- parallel::detectCores() - 2
 if (is_unix && !is_rstudio) {
-  future::plan(future::multicore, workers = 4L)
+  future::plan(future::multicore, workers = cores)
 } else {
-  future::plan(future::multisession, workers = 4L)
+  future::plan(future::multisession, workers = cores)
 }
 options(future.rng.onMisuse = "ignore")
 
 # furrr::future_pwalk(to_fit[c(36, 26),,drop = FALSE], fit_index)
+
 furrr::future_pwalk(to_fit, fit_index)
-furrr::future_pwalk(to_fit1, fit_index)
-furrr::future_pwalk(to_fit2, fit_index)
-furrr::future_pwalk(to_fit3, fit_index)
-furrr::future_pwalk(to_fit4, fit_index)
-furrr::future_pwalk(to_fit5, fit_index)
-furrr::future_pwalk(to_fit6, fit_index)
 beepr::beep()
 
 future::plan(future::sequential)

@@ -7,29 +7,26 @@ params:
     # species: "Canary Rockfish"
     # species: "Arrowtooth Flounder"
     # species: "Big Skate"
-    species: "North Pacific Spiny Dogfish"
+    # species: "North Pacific Spiny Dogfish"
+    species: "Redstripe Rockfish"
     # species: "Pacific Ocean Perch"
     # species: "Bocaccio"
     # species: "Splitnose Rockfish"
     #species: "Pacific Sand Lance"
     # species: "Longspine Thornyhead"
     # species: "Sandpaper Skate"
-    region: "Coast-wide trawl surveys"
+    # region: "Coast-wide trawl surveys"
     # region: "HBLL outside surveys"
     # region: "HBLL inside surveys"
-    # region: "WCHG only"
+    region: "WCHG only"
     name: "-rw-no-covs" # covariate string used to name model rds
-    update_delta: FALSE 
-    update_model: FALSE
-    # update_model: TRUE # will over write past models; will always attempt a model if none exists
-    update_index: FALSE
-    silent: FALSE
+    silent: TRUE
 ---
 
 ```{r global_options, include=FALSE}
+dir.create("data-generated", showWarnings = FALSE)
 knitr::opts_chunk$set(
   fig.width = 11, fig.height = 8.5,
-  # fig.path=paste0("figs/", spp, "/"),
   echo = FALSE, warning = FALSE, message = FALSE
 )
 library(dplyr)
@@ -38,7 +35,6 @@ library(gfplot)
 library(gfdata)
 library(sdmTMB)
 
-# options(scipen = 999)
 theme_set(
   gfplot::theme_pbs(base_size = 14)
 )
@@ -49,10 +45,6 @@ theme_set(
 species <- params$species
 region <- params$region
 name <- params$name
-
-update_delta <- params$update_delta
-update_model <- params$update_model
-update_index <- params$update_index
 
 paste("region =", region)
 paste("model label =", name)
@@ -162,30 +154,27 @@ if (region == "HBLL inside surveys") {
 }
 
 if (region != "HBLL inside surveys") {
-  #all_data <- readRDS(here::here("data-raw/all-survey-sets-2021.rds")) %>%
   all_data <- readRDS(here::here("data-raw/all_surv_catch.rds")) %>%
-    filter(species_common_name == tolower(species)) #%>%
-    #rename(survey_series_id = survey_series_id.x)
+    filter(species_common_name == tolower(species))
 } else {
-  #all_data <- readRDS(here::here("data-raw/all-inside-hbll-2021.rds")) %>%
     all_data <- readRDS(here::here("data-raw/all_surv_catch.rds")) %>%
     filter(stringr::str_detect(survey_abbrev, "HBLL INS")) %>% 
     filter(species_common_name == tolower(species))
 }
 ```
 
-
 Filter data 
+
 ```{r}
 if (type == "Synoptic trawl") {
   d <- all_data %>%
-    filter(survey_abbrev %in% survey)
+    dplyr::filter(survey_abbrev %in% survey)
   units <- "density_kgpm2"
   d$density <- d[[units]] * 1000000 # change from per m2 to per km2
   family <- tweedie(link = "log") # to be used if not a delta model
 } else {
   d <- all_data %>%
-    filter(survey_abbrev %in% survey)
+    dplyr::filter(survey_abbrev %in% survey)
   units <- "density_ppkm2"
   d$density <- d[[units]] # change from per m2 to per km2
   family <- tweedie(link = "log")
@@ -193,20 +182,20 @@ if (type == "Synoptic trawl") {
 }
 
 if (region == "North (PMFC 5DE)") {
-  d <- d %>% filter(survey_abbrev == "SYN WCHG" | latitude > 53.3)
+  d <- d %>% dplyr::filter(survey_abbrev == "SYN WCHG" | latitude > 53.3)
 }
 
 if (region == "South (PMFC 3CD5ABC)") {
-  d <- d %>% filter(survey_abbrev != "SYN WCHG" & latitude < 53.3)
+  d <- d %>% dplyr::filter(survey_abbrev != "SYN WCHG" & latitude < 53.3)
 }
 
 if (region == "South 5 only (PMFC 5ABC)") {
-  d <- d %>% filter(survey_abbrev %in% c("SYN QCS", "SYN HS") & latitude < 53.3)
+  d <- d %>% dplyr::filter(survey_abbrev %in% c("SYN QCS", "SYN HS") & latitude < 53.3)
 }
 
-positive_sets <- filter(d, density != 0)
+positive_sets <- dplyr::filter(d, density != 0)
 prop_pos <- round(nrow(positive_sets) / nrow(d), digits = 3)
-data <- d %>% filter(survey_abbrev %in% unique(positive_sets$survey_abbrev))
+data <- d %>% dplyr::filter(survey_abbrev %in% unique(positive_sets$survey_abbrev))
 ssid_string <- paste0(unique(data$survey_series_id), collapse = "n")
 surv_string <- paste0(unique(data$survey_abbrev), collapse = ", ")
 data <- sdmTMB::add_utm_columns(data, c("longitude", "latitude"), utm_crs = 32609)
@@ -233,22 +222,7 @@ plot(spde)
 ```
 
 ```{r}
-# Check if a models already exist
 dir.create(here::here("data-generated/models"), showWarnings = FALSE)
-
-f1 <- here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-delta.rds"))
-if (file.exists(f1)) {
-  m1 <- readRDS(f1)
-} else {
-  update_delta <- TRUE
-}
-
-f <- here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds"))
-if (file.exists(f)) {
-  m <- readRDS(f)
-} else {
-  update_model <- TRUE
-}
 ```
 
 Run sdmTMB model
@@ -262,9 +236,8 @@ missing_years <- anti_join(all_years, data, by = "year") %>%
 missing_years <- missing_years$year
 if (length(missing_years) == 0L) missing_years <- NULL
 
-if (update_delta) {
-  tictoc::tic()
-  try({
+tictoc::tic()
+try({
   m1 <- sdmTMB(
     density ~ 1,
     data,
@@ -274,50 +247,38 @@ if (update_delta) {
     family = delta_gamma(),
     spatial = "on",
     spatiotemporal = "RW",
-    silent = params$silent
-  )
-  })
-  tictoc::toc()
-  if (!exists("m1")) { m1 <- NULL}
-    
-  saveRDS(m1, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-delta.rds")))
-
-}
-
-if (update_model) {
-  tictoc::tic()
-  try({
-    m <- sdmTMB(
-    density ~ 1,
-    data,
-    mesh = spde,
-    time = "year",
-    extra_time = missing_years,
-    family = family,
-    spatial = "on",
-    spatiotemporal = "RW",
     silent = params$silent,
     control = sdmTMBcontrol(newton_loops = 1L)
   )
+})
+tictoc::toc()
+if (!exists("m1")) { m1 <- NULL}
+
+saveRDS(m1, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-delta.rds")))
+ok <- all(unlist(sanity(m1)))
+
+if (!ok) {
+  tictoc::tic()
+  try({
+    m <- sdmTMB(
+      density ~ 1,
+      data,
+      mesh = spde,
+      time = "year",
+      extra_time = missing_years,
+      family = family,
+      spatial = "on",
+      spatiotemporal = "RW",
+      silent = params$silent,
+      control = sdmTMBcontrol(newton_loops = 1L)
+    )
   })
   tictoc::toc()
   if (!exists("m")) { m <- NULL}
   saveRDS(m, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, ".rds")))
+} else {
+  m <- m1
 }
-# if (update_plg) {
-#     m2 <- sdmTMB(
-#       density ~ 1,
-#       data,
-#       mesh = spde,
-#       time = "year",
-#       extra_time = missing_years,
-#       family = delta_poisson_link_gamma(),
-#       spatial = "on",
-#       spatiotemporal = "RW",
-#       silent = FALSE
-#     )
-#     saveRDS(m2, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-plg.rds")))
-# }
 ```
 
 ```{r}
@@ -330,82 +291,13 @@ p <- function(x) {
   )
   return(out)
 }
-
 p(m)
-
-try({
-  max(m$gradients)
-})
-try({
-  paste("Hessian positive and definite =", m$sd_report$pdHess)
-})
-try({
-  paste("Bad eigen =", m$bad_eig)
-})
-
-try({
- (tw_re <- tidy(m, effects = "ran_pars", conf.int = TRUE))
-})
-
-try({
-  simulate(m, nsim = 200) %>% dharma_residuals(m)
-})
-
-try({
-  if (max(m1$gradients) > 0.01) {
-    m1 <- run_extra_optimization(m1, newton_loops = 1L, nlminb_loops = 0L)
-    saveRDS(m1, file = here::here(paste0("models/m-", spp, "-", string, name, "-delta.rds")))
-  }
-})
-
-p(m1)
-
-try({
-  max(m1$gradients)
-})
-try({
-  paste("Hessian positive and definite =", m1$sd_report$pdHess)
-})
-try({
-  paste("Bad eigen =", m1$bad_eig)
-})
-try({
-  (d_re1 <- tidy(m1, effects = "ran_pars", conf.int = TRUE, model = 1))
-})
-try({
-  (d_re2 <- tidy(m1, effects = "ran_pars", conf.int = TRUE, model = 2))
-})
-
-# try({
-#   simulate(m1, nsim = 200) %>% dharma_residuals(m1)
-# })
-
-try({
-  tw <- m
-  delta <- m1
-  AIC(tw, delta)
-})
+sanity(m)
 ```
 
 Get simulated index
 ```{r}
 dir.create(here::here("data-generated/indices"), showWarnings = FALSE)
-
-f1 <- here::here(paste0("data-generated/indices/i-", spp, "-", ssid_string, name, "-delta.rds"))
-
-if (file.exists(f1)) {
-  i1 <- readRDS(f1)
-} else {
-  update_index <- TRUE
-}
-
-f <- here::here(paste0("data-generated/indices/i-", spp, "-", ssid_string, name, ".rds"))
-
-if (file.exists(f)) {
-  i <- readRDS(f)
-} else {
-  update_index <- TRUE
-}
 
 make_grid <- function(x, years) {
   .x <- filter(x, year == min(year)) # take one
@@ -419,19 +311,11 @@ make_grid <- function(x, years) {
 }
 
 converged <- function(fit) {
-  all(
-    max(fit$gradients) < 0.01,
-    !fit$bad_eig,
-    fit$pos_def_hessian,
-    sum(is.infinite(tidy(fit, effects = "ran_pars", conf.int = TRUE)$conf.high))<1
-  )
+  all(unlist(sanity(fit)))
 }
 
-if (!is.null(m1)) {
-  if (converged(m1) && update_index 
-      ## if you don't want any infinite confidence intervals
-      # && sum(is.infinite(tidy(m1, effects = "ran_pars", conf.int = TRUE, model = 2)$conf.high))<1
-      ) {
+if (!is.null(m)) {
+  if (converged(m)) {
     fitted_yrs <- sort(unique(m$data$year))
     nd <- make_grid(nd_all, years = fitted_yrs)
 
@@ -449,10 +333,10 @@ if (!is.null(m1)) {
       mutate(freq = n / sum(n), total = sum(n)) %>%
       filter(n == max(n)) %>%
       select(year, dominant_surv = survey_abbrev, total, freq)
-    tictoc::tic()
-    p1 <- predict(m1, newdata = nd, return_tmb_object = TRUE)
+    
+    p1 <- predict(m, newdata = nd, return_tmb_object = TRUE)
     i1 <- get_index(p1, area = nd$area, bias_correct = TRUE)
-    tictoc::toc()
+    
     i1 <- i1 %>% mutate(
       species = species,
       type = type,
@@ -461,48 +345,10 @@ if (!is.null(m1)) {
       ssids = paste(unique(positive_sets$survey_series_id), collapse = ", "),
       ssid_string = ssid_string,
       model = "delta-gamma",
-      max_grad = max(m1$gradients)
-    )
-    i1 <- left_join(i1, samples)
-    saveRDS(i1, here::here(paste0("data-generated/indices/i-", spp, "-", ssid_string, name, "-delta.rds")))
-  }
-}
- 
-if (!is.null(m)) {
-  if (converged(m) && update_index) {
-    fitted_yrs <- sort(unique(m$data$year))
-    nd <- make_grid(nd_all, years = fitted_yrs)
-
-    if (type == "Synoptic trawl") {
-      nd <- filter(nd, survey %in% unique(positive_sets$survey_abbrev))
-    } else {
-      nd <- filter(nd, ssid %in% unique(positive_sets$survey_series_id))
-    }
-    nd <- na.omit(nd)
-    nd$year <- as.integer(nd$year)
-
-    samples <- data %>%
-      count(year, survey_abbrev) %>%
-      group_by(year) %>%
-      mutate(freq = n / sum(n), total = sum(n)) %>%
-      filter(n == max(n)) %>%
-      select(year, dominant_surv = survey_abbrev, total, freq)
-    tictoc::tic()
-    p <- predict(m, newdata = nd, return_tmb_object = TRUE)
-    i <- get_index(p, area = nd$area, bias_correct = TRUE) 
-    tictoc::toc()
-    i <- i %>% mutate(
-      species = species,
-      type = type,
-      region = region,
-      surveys = paste(unique(positive_sets$survey_abbrev), collapse = ", "),
-      ssids = paste(unique(positive_sets$survey_series_id), collapse = ", "),
-      ssid_string = ssid_string,
-      model = "Tweedie",
       max_grad = max(m$gradients)
     )
-    i <- left_join(i, samples)
-    saveRDS(i, here::here(paste0("data-generated/indices/i-", spp, "-", ssid_string, name, ".rds")))
+    i1 <- left_join(i1, samples)
+    saveRDS(i1, here::here(paste0("data-generated/indices/i-", spp, "-", ssid_string, name, ".rds")))
   }
 }
 ```
@@ -510,52 +356,14 @@ if (!is.null(m)) {
 ```{r}
 dir.create(here::here("figs"), showWarnings = FALSE)
 
-if (region %in% c("North (PMFC 5DE)", "WCHG only")) {
-  try({
-    y_threshold <- max(i$upr)
-  })
-  try({
-    y_threshold <- max(i1$upr)
-  })
-  try({
-    y_threshold <- max(i$upr, i1$upr)
-  })
-} else {
-  y_threshold <- 5
-}
-
-if (exists("i")) {
-  if (exists("i1")) {
-    g <- ggplot(i, aes(year, est / 1000)) +
-      geom_line() +
-      geom_ribbon(aes(ymin = lwr / 1000, ymax = upr / 1000), alpha = 0.2) +
-      geom_line(data = i1, colour = "red") +
-      geom_ribbon(data = i1, aes(year, est / 1000, ymin = lwr / 1000, ymax = upr / 1000), alpha = 0.2, fill = "red", ) +
-      coord_cartesian(ylim = c(0, ifelse(
-        max(i$upr) < y_threshold * max(i$est, i1$est), max(i$upr) / 1000, max(i$est, i1$est) * 3 / 1000
-      )))
-  } else {
-    g <- ggplot(i, aes(year, est / 1000)) +
-      geom_line() +
-      geom_ribbon(aes(ymin = lwr / 1000, ymax = upr / 1000), alpha = 0.2) +
-      coord_cartesian(ylim = c(0, ifelse(
-        max(i$upr) < y_threshold * max(i$est), max(i$upr) / 1000, max(i$est) * 3 / 1000
-      )))
-  }
-} else {
-  if (exists("i1")) {
-    g <- ggplot(i1, aes(year, est / 1000)) +
-      geom_line(colour = "red") +
-      geom_ribbon(aes(ymin = lwr / 1000, ymax = upr / 1000), alpha = 0.2, fill = "red") +
-      coord_cartesian(ylim = c(0, ifelse(
-        max(i$upr) < y_threshold * max(i1$est), max(i$upr) / 1000, max(i1$est) * 3 / 1000
-      )))
-  }
-}
-try({
+if (exists("i1")) {
+  g <- ggplot(i1, aes(year, est / 1000)) +
+    geom_line(colour = "red") +
+    geom_ribbon(aes(ymin = lwr / 1000, ymax = upr / 1000), alpha = 0.2, fill = "red") +
+    coord_cartesian(ylim = c(0, NA))
   g <- g + ylab("Biomass (tonnes)") +
-    ggtitle(paste(species), subtitle = paste0(region, " (", surv_string, ", black = tweedie, red = delta)"))
-  ggsave(here::here(paste0("figs/", spp, "-", ssid_string, name, "-both.png")), height = 4, width = 6)
+    ggtitle(paste(species), subtitle = paste0(region, " (", surv_string))
+  ggsave(here::here(paste0("figs/", spp, "-", ssid_string, name, ".png")), height = 4, width = 6)
   g
-})
+}
 ```
