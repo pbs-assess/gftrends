@@ -21,7 +21,8 @@ saveRDS(all_indices, file = paste0("data-generated/sopo-2022-indices.rds"))
 # ---------------------------------------------------------------------
 
 all_indices <- readRDS(paste0("data-generated/sopo-2022-indices.rds")) %>%
-  rename(gear = type)
+  rename(gear = type) %>% 
+  left_join(stock_df2, by = c('species', 'region'))
 dat <- readRDS("data-generated/b-status-dat.rds") %>%
   filter(year >= 1960) %>%
   rename(dfo_area = region) %>%
