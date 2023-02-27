@@ -6,10 +6,20 @@ source("analysis/stock_df.R")
 
 d <- readRDS("data-generated/all-mcmc.rds")
 
+# d |> group_by(species, region) |>
+#   summarise(last_mcmc_year = max(year)) |>
+#   readr::write_csv("~/Downloads/spp.csv")
+
+last <- readr::read_csv("data-raw/last-assess-years.csv")
+# last <- mutate(last, last_year_use = ifelse(plus_one > 0, last_data_year + 1, last_data_year))
+last <- mutate(last, last_year_use = last_data_year + 1)
+
+d <- left_join(d, last, by = join_by(species, region))
+
 dat <- d %>%
   group_by(species, region) %>%
-  filter(year <= 2021) %>%
-  filter(year == max(year)) %>%
+  filter(year <= 2022) %>%
+  filter(year == last_year_use) %>%
   # sample_n(2000L, replace = TRUE) %>%
   mutate(
     mean_blrp = mean(blrp, na.rm = TRUE),
@@ -53,36 +63,70 @@ data_plot <- dat %>%
 
 years <- select(data_plot, ratio, stock_clean, year) %>%
   distinct() %>%
-  filter(ratio == "B/LRP") %>%
-  mutate(ratio_value = 9.6) %>%
+  filter(ratio == "B/USR") %>%
+  mutate(ratio_value = 5) %>%
   mutate(ratio = factor(ratio, levels = (c("B/LRP", "B/USR", "B/B[MSY]"))))
 
+scales_fun <- function(x) sprintf("%.1f", x)
+
+data_plot <- data_plot |> filter(ratio != "B/B[MSY]") |>
+  droplevels()
+years <- years |> filter(ratio != "B/B[MSY]") |>
+  droplevels()
+lines <- lines |> filter(ratio != "B/B[MSY]") |>
+  droplevels()
+
+data_plot <- data_plot |>
+  group_by(stock_clean) |>
+  mutate(prob_usr_0.5 = mean(b > usr)) |>
+  ungroup()
+
+years2 <- years
+years2$ratio_value <- 0
+
 g <- data_plot %>%
-  ggplot(aes(x = ratio_value, y = stock_clean, fill = (mean_blrp), group = stock_clean)) +
+  mutate(stock_clean = paste0(stock_clean, " (", year, ")")) |>
+  # mutate(stock_clean = paste0(stock_clean, "\n", year, ")")) |>
+  mutate(stock_clean = forcats::fct_reorder(stock_clean, year)) |>
+  ggplot(aes(x = ratio_value, y = stock_clean, fill = mean_blrp, group = stock_clean)) +
+  # ggplot(aes(x = ratio_value, y = stock_clean, fill = prob_usr_0.5, group = stock_clean)) +
   geom_vline(
     data = lines, mapping = aes(xintercept = ratio_value),
-    lty = 2, lwd = 0.4, colour = "grey70"
+    lty = 2, lwd = 0.45, colour = "grey55"
   ) +
   facet_wrap(vars(ratio), labeller = label_parsed, scales = "free_x") +
-  geom_density_ridges2(scale = 4, alpha = 0.7, lwd = 0.4, colour = "grey30") +
-  scale_x_continuous(trans = "sqrt", breaks = c(0.2, 1, 2, 5)) +
-  scale_fill_viridis_c(direction = 1, option = "D", end = 0.82) +
+  geom_density_ridges2(scale = 4, alpha = 0.7, size = 0.4, colour = "grey30") +
+  scale_x_continuous(trans = "sqrt", breaks = c(0.2, 1, 2, 5, 10), labels = scales_fun) +
+  # scale_fill_viridis_c(direction = 1, option = "D", end = 1) +
+  scale_fill_viridis_c(direction = -1, option = "B", end = 0.71) +
+  # scale_fill_distiller(palette = "RdBu", direction = 1) +
+  # scale_fill_distiller(palette = "Spectral", direction = 1) +
+  # scale_fill_gradient2(midpoint = 0.5) +
   theme_sleek() +
-  coord_cartesian(expand = FALSE) +
+  coord_cartesian(expand = FALSE, clip = "off") +
   labs(x = "Ratio value", fill = "Mean\nB/LRP") +
   theme(
     axis.title.y = element_blank(),
     axis.title.x = element_text(size = 9.5),
     axis.text.x = element_text(size = 7.5),
-    axis.text.y = element_text(size = 8.25),
-    axis.text.y.left = element_text(vjust = -0.8)
+    axis.text.y = element_text(size = 7.5),
+    axis.text.y.left = element_text(vjust = -1),
+    panel.background = element_rect(fill = NA),
+    panel.border = element_rect(colour = "grey60", linewidth = 0.5)
   ) +
-  geom_text(
-    mapping = aes(x = ratio_value, y = stock_clean, label = year),
-    data = years, size = 2.5, color = "grey30", nudge_y = 0.7,
-    inherit.aes = FALSE
-  ) +
+  # geom_text(
+  #   mapping = aes(x = ratio_value, y = stock_clean, label = year),
+  #   data = years, size = 2.6, color = "grey20", nudge_y = 0.50,
+  #   inherit.aes = FALSE
+  # ) +
   guides(fill = "none")
+  # geom_text(
+  #   mapping = aes(x = ratio_value, y = stock_clean, label = year),
+  #   data = years2, size = 2.6, color = "grey20", nudge_y = 0.50,
+  #   inherit.aes = FALSE
+  # )
+  # annotate(geom = "text", x = 0, y = years$stock_clean, label = "test")
 
-ggsave("figs/ridges.pdf", width = 5.8, height = 5.8)
-ggsave("figs/ridges.png", width = 5.8, height = 5.8)
+ggsave("figs/ridges.pdf", width = 4.5, height = 6.6)
+# ggsave("figs/ridges.png", width = 4.5, height = 6.6)
+

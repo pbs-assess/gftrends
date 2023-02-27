@@ -1,8 +1,8 @@
 species,gear,region,assess_stock,type,panel_title1,panel_title2
 Arrowtooth Flounder,Synoptic trawl,Coast-wide trawl surveys,arrowtooth_BC,Flatfish,Arrowtooth Flounder,BC
-Big Skate,HBLL (inside),HBLL inside surveys,,"Sharkes, skates, chimeras",Big Skate,4B (VI Inside)
-Big Skate,HBLL (outside),HBLL outside surveys,,"Sharkes, skates, chimeras",Big Skate,BC (Outside)
-Big Skate,Synoptic trawl,Coast-wide trawl surveys,,"Sharkes, skates, chimeras",Big Skate,BC (Outside)
+Big Skate,HBLL (inside),HBLL inside surveys,,"Sharks, skates, chimeras",Big Skate,4B (VI Inside)
+Big Skate,HBLL (outside),HBLL outside surveys,,"Sharks, skates, chimeras",Big Skate,BC (Outside)
+Big Skate,Synoptic trawl,Coast-wide trawl surveys,,"Sharks, skates, chimeras",Big Skate,BC (Outside)
 Bocaccio,Synoptic trawl,Coast-wide trawl surveys,bocaccio_BC,Shelf rockfish,Bocaccio,BC
 Canary Rockfish,Synoptic trawl,Coast-wide trawl surveys,canary_BC,Shelf rockfish,Canary Rockfish,BC
 Dover Sole,Synoptic trawl,Coast-wide trawl surveys,,Flatfish,Dover Sole,BC
@@ -10,12 +10,12 @@ English Sole,Synoptic trawl,Coast-wide trawl surveys,,Flatfish,English Sole,BC
 Lingcod,HBLL (inside),HBLL inside surveys,lingcod_4B,Roundfish,Lingcod,4B (VI Inside)
 Lingcod,HBLL (outside),HBLL outside surveys,,Roundfish,Lingcod,BC (Outside)
 Lingcod,Synoptic trawl,Coast-wide trawl surveys,,Roundfish,Lingcod,BC (Outside)
-Longnose Skate,HBLL (inside),HBLL inside surveys,,"Sharkes, skates, chimeras",Longnose Skate,4B (VI Inside)
-Longnose Skate,HBLL (outside),HBLL outside surveys,,"Sharkes, skates, chimeras",Longnose Skate,BC (Outside)
-Longnose Skate,Synoptic trawl,Coast-wide trawl surveys,,"Sharkes, skates, chimeras",Longnose Skate,BC (Outside)
-North Pacific Spiny Dogfish,HBLL (inside),HBLL inside surveys,,"Sharkes, skates, chimeras",Pacific Spiny Dogfish,4B
-North Pacific Spiny Dogfish,HBLL (outside),HBLL outside surveys,,"Sharkes, skates, chimeras",Pacific Spiny Dogfish,BC (Outside)
-North Pacific Spiny Dogfish,Synoptic trawl,Coast-wide trawl surveys,,"Sharkes, skates, chimeras",Pacific Spiny Dogfish,BC (Outside)
+Longnose Skate,HBLL (inside),HBLL inside surveys,,"Sharks, skates, chimeras",Longnose Skate,4B (VI Inside)
+Longnose Skate,HBLL (outside),HBLL outside surveys,,"Sharks, skates, chimeras",Longnose Skate,BC (Outside)
+Longnose Skate,Synoptic trawl,Coast-wide trawl surveys,,"Sharks, skates, chimeras",Longnose Skate,BC (Outside)
+North Pacific Spiny Dogfish,HBLL (inside),HBLL inside surveys,,"Sharks, skates, chimeras",Pacific Spiny Dogfish,4B
+North Pacific Spiny Dogfish,HBLL (outside),HBLL outside surveys,,"Sharks, skates, chimeras",Pacific Spiny Dogfish,BC (Outside)
+North Pacific Spiny Dogfish,Synoptic trawl,Coast-wide trawl surveys,,"Sharks, skates, chimeras",Pacific Spiny Dogfish,BC (Outside)
 Pacific Cod,Synoptic trawl,Both odd year trawl surveys,pcod_5abcd,Roundfish,Pacific Cod,5ABCD
 Pacific Cod,Synoptic trawl,WCVI only,pcod_3CD,Roundfish,Pacific Cod,3CD
 Pacific Ocean Perch,Synoptic trawl,QCS only,pacific_ocean_perch_5ABC,Slope rockfish,Pacific Ocean,Perch 5ABC
@@ -34,7 +34,7 @@ Shortspine Thornyhead,Synoptic trawl,Coast-wide trawl surveys,shortspine_thornyh
 Silvergray Rockfish,Synoptic trawl,Coast-wide trawl surveys,silvergray_BC,Shell rockfish,Silvergray Rockfish,BC
 Southern Rock Sole,Synoptic trawl,HS only,rocksole_5CD,Flatfish,Southern Rock Sole,5CD
 Southern Rock Sole,Synoptic trawl,QCS only,rocksole_5AB,Flatfish,Southern Rock Sole,5AB
-Spotted Ratfish,Synoptic trawl,Coast-wide trawl surveys,,"Sharkes, skates, chimeras",Spotted Ratfish,BC
+Spotted Ratfish,Synoptic trawl,Coast-wide trawl surveys,,"Sharks, skates, chimeras",Spotted Ratfish,BC
 Walleye Pollock,Synoptic trawl,HS & WCHG,walleye_pollock_BC_North,Roundfish,Walleye Pollock,BC N
 Walleye Pollock,Synoptic trawl,QCS & WCVI,walleye_pollock_BC_South,Roundfish,Walleye Pollock,BC S
 Widow Rockfish,Synoptic trawl,Coast-wide trawl surveys,widow_rockfish_BC,Shelf rockfish,Widow Rockfish,BC
