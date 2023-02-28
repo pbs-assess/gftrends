@@ -45,6 +45,11 @@ d <- d %>%
   ) %>%
   ungroup()
 
+d <- mutate(d, stock = paste(species, region)) %>%
+  mutate(stock = gsub(" ", "_", stock)) %>%
+  mutate(stock = gsub("-", "_", stock)) %>%
+  select(species, region, stock, year, everything())
+
 saveRDS(d, "data-generated/all-mcmc.rds")
 
 out <- d %>%

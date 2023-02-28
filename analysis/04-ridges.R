@@ -2,7 +2,7 @@ library(ggplot2)
 library(dplyr)
 library(ggsidekick)
 library(ggridges)
-source("analysis/stock_df.R")
+# source("analysis/stock_df.R")
 
 d <- readRDS("data-generated/all-mcmc.rds")
 
@@ -10,32 +10,62 @@ d <- readRDS("data-generated/all-mcmc.rds")
 #   summarise(last_mcmc_year = max(year)) |>
 #   readr::write_csv("~/Downloads/spp.csv")
 
+d <- rename(d, assess_stock = stock)
+
+lu <- readr::read_csv("data-raw/surveys_to_assessments.csv")
+d <- left_join(d, select(lu, -species, -region), by = join_by(assess_stock))
+
+d <- mutate(d, stock_clean = paste(panel_title1, panel_title2))
+# d2 |> select(stock_clean) |> distinct()
+
+d$stock_clean <- gsub(" \\(VI Inside\\)", "", d$stock_clean)
+
+d |>
+  select(species, region, type, stock_clean) |>
+  distinct() |>
+  as.data.frame()
+
 last <- readr::read_csv("data-raw/last-assess-years.csv")
 # last <- mutate(last, last_year_use = ifelse(plus_one > 0, last_data_year + 1, last_data_year))
 last <- mutate(last, last_year_use = last_data_year + 1)
 
 d <- left_join(d, last, by = join_by(species, region))
 
+d <- group_by(d, species, region) |>
+  mutate(last_year_use = ifelse(last_year_use < max(year), last_year_use, max(year)))
+
+d |>
+  select(species, region, type, stock_clean, last_year_use) |>
+  arrange(-last_year_use) |>
+  distinct() |>
+  as.data.frame()
+
 dat <- d %>%
   group_by(species, region) %>%
-  filter(year <= 2022) %>%
+  # filter(year <= 2022) %>%
   filter(year == last_year_use) %>%
-  # sample_n(2000L, replace = TRUE) %>%
   mutate(
     mean_blrp = mean(blrp, na.rm = TRUE),
     mean_bbmsy = mean(bbmsy, na.rm = TRUE),
     mean_busr = mean(busr, na.rm = TRUE)
-  ) %>%
-  ungroup() %>%
-  mutate(stock = paste(species, region, sep = "_")) %>%
-  arrange(year, stock) %>%
-  mutate(stock = gsub(" ", "_", stock)) %>%
-  mutate(stock = gsub("-", "_", stock)) %>%
-  left_join(stock_df)
+  )
+# ungroup() %>%
+# mutate(stock = paste(species, region, sep = "_")) %>%
+# arrange(year, stock) %>%
+# mutate(stock = gsub(" ", "_", stock)) %>%
+# mutate(stock = gsub("-", "_", stock)) %>%
+# left_join(stock_df)
+
+dat |>
+  select(species, region, type, stock_clean) |>
+  distinct() |>
+  as.data.frame()
 
 dat_sum <- group_by(dat, stock_clean) %>%
-  summarize(p_lrp = mean(blrp < 1), p_usr = mean(busr < 1),
-    p_bbmsy = mean(bbmsy < 1, na.rm = TRUE)) %>%
+  summarize(
+    p_lrp = mean(blrp < 1), p_usr = mean(busr < 1),
+    p_bbmsy = mean(bbmsy < 1, na.rm = TRUE)
+  ) %>%
   arrange(-p_lrp)
 
 saveRDS(dat_sum, "data-generated/p-thresh.rds")
@@ -69,11 +99,14 @@ years <- select(data_plot, ratio, stock_clean, year) %>%
 
 scales_fun <- function(x) sprintf("%.1f", x)
 
-data_plot <- data_plot |> filter(ratio != "B/B[MSY]") |>
+data_plot <- data_plot |>
+  filter(ratio != "B/B[MSY]") |>
   droplevels()
-years <- years |> filter(ratio != "B/B[MSY]") |>
+years <- years |>
+  filter(ratio != "B/B[MSY]") |>
   droplevels()
-lines <- lines |> filter(ratio != "B/B[MSY]") |>
+lines <- lines |>
+  filter(ratio != "B/B[MSY]") |>
   droplevels()
 
 data_plot <- data_plot |>
@@ -112,7 +145,7 @@ g <- data_plot %>%
     axis.text.y = element_text(size = 7.5),
     axis.text.y.left = element_text(vjust = -1),
     panel.background = element_rect(fill = NA),
-    panel.border = element_rect(colour = "grey60", linewidth = 0.5)
+    panel.border = element_rect(colour = "grey70", linewidth = 0.5)
   ) +
   # geom_text(
   #   mapping = aes(x = ratio_value, y = stock_clean, label = year),
@@ -120,13 +153,12 @@ g <- data_plot %>%
   #   inherit.aes = FALSE
   # ) +
   guides(fill = "none")
-  # geom_text(
-  #   mapping = aes(x = ratio_value, y = stock_clean, label = year),
-  #   data = years2, size = 2.6, color = "grey20", nudge_y = 0.50,
-  #   inherit.aes = FALSE
-  # )
-  # annotate(geom = "text", x = 0, y = years$stock_clean, label = "test")
+# geom_text(
+#   mapping = aes(x = ratio_value, y = stock_clean, label = year),
+#   data = years2, size = 2.6, color = "grey20", nudge_y = 0.50,
+#   inherit.aes = FALSE
+# )
+# annotate(geom = "text", x = 0, y = years$stock_clean, label = "test")
 
-ggsave("figs/ridges.pdf", width = 4.5, height = 6.6)
-# ggsave("figs/ridges.png", width = 4.5, height = 6.6)
-
+ggsave("figs/ridges.pdf", width = 4.5, height = 7)
+ggsave("figs/ridges.png", width = 4.5, height = 7)
