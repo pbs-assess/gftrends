@@ -70,6 +70,10 @@ dat_sum <- group_by(dat, stock_clean) %>%
 
 saveRDS(dat_sum, "data-generated/p-thresh.rds")
 
+dat_sum |>
+  ungroup() |>
+  knitr::kable(digits = 2, format = "markdown")
+
 lines <- tibble(
   ratio = c("B/B[MSY]", "B/B[MSY]", "B/B[MSY]", "B/LRP", "B/USR"),
   ratio_value = c(0.4, 0.8, 1, 1, 1)
