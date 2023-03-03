@@ -75,11 +75,18 @@ ggsave("figs/SOPO_presentation/shelf-rockfish_assesses-indices-join.png", width 
 g <- d %>%
   filter(type == "Slope rockfish") %>% 
   mutate(facet_label = forcats::fct_reorder(facet_label, -slope)) %>% 
-  plot_pres_trends(ncol = 2, base_size = 14)
-ggsave("figs/SOPO_presentation/slope-rockfish_assesses-indices-join.png", width = 7.5, height = 6)
+  plot_pres_trends(ncol = 3, base_size = 14)
+ggsave("figs/SOPO_presentation/slope-rockfish_assesses-indices-join.png", width = 9, height = 6)
+
+g <- d %>%
+  filter(type == "Flatfish") %>% 
+  mutate(facet_label = forcats::fct_reorder(facet_label, -slope)) %>% 
+  plot_pres_trends(ncol = 3, base_size = 14)
+ggsave("figs/SOPO_presentation/flatfish_assesses-indices-join.png", width = 9, height = 6)
 
 g <- d %>%
   filter(type == "Sharks, skates, chimeras") %>% 
   mutate(facet_label = forcats::fct_reorder(facet_label, -slope)) %>% 
-  plot_pres_trends(ncol = 2, base_size = 14)
-ggsave("figs/SOPO_presentation/sharks-skates-chimeras_assesses-indices-join.png", width = 7.5, height = 6)
+  plot_pres_trends(ncol = 3, base_size = 14) + 
+  scale_x_continuous(expand = c(0, 0), breaks = c(1960, 1980, 2000, 2020), limits = c(1960, 2022))
+ggsave("figs/SOPO_presentation/sharks-skates-chimeras_assesses-indices-join.png", width = 9, height = 6)
