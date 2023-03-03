@@ -54,7 +54,8 @@ plot_pres_trends <- function(data, ncol, base_size = 11) {
 g <- d %>%
   filter(type == "Roundfish") %>% 
   filter(species != "Sablefish") %>% 
-  mutate(facet_label = forcats::fct_reorder(facet_label, -slope)) %>% 
+  mutate(species_order = factor(species, levels = c('Pacific Cod', 'Walleye Pollock', 'Lingcod'))) %>%
+  mutate(facet_label = forcats::fct_reorder(facet_label, as.numeric(species_order))) %>%
   plot_pres_trends(ncol = 2, base_size = 14)
 ggsave("figs/SOPO_presentation/roundfish_assesses-indices-join.png", width = 7.5, height = 6)
 
