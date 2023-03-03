@@ -59,3 +59,8 @@ g <- d %>%
 ggsave("figs/SOPO_presentation/roundfish_assesses-indices-join.png", width = 7.5, height = 6)
 
 
+g <- d %>%
+  filter(type == "Inshore rockfish") %>% 
+  plot_pres_trends(ncol = 2, base_size = 14)
+ggsave("figs/SOPO_presentation/inshore-rockfish_assesses-indices-join.png", width = 7.5, height = 5)
+
