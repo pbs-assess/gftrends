@@ -1,6 +1,7 @@
 library(dplyr)
 library(ggplot2)
 
+source('analysis/04-ridges.R')
 dir.create("figs/SOPO_presentation", showWarnings = FALSE)
 
 # Set colour for source column
@@ -89,4 +90,31 @@ g <- d %>%
   mutate(facet_label = forcats::fct_reorder(facet_label, -slope)) %>% 
   plot_pres_trends(ncol = 3, base_size = 14) + 
   scale_x_continuous(expand = c(0, 0), breaks = c(1960, 1980, 2000, 2020), limits = c(1960, 2022))
-ggsave("figs/SOPO_presentation/sharks-skates-chimeras_assesses-indices-join.png", width = 9, height = 6)
+ggsave("figs/SOPO_presentation/sharks-skates-chimeras_assesses-indices-join.png", width = 9, height = 6)g <- data_plot %>%
+  mutate(stock_clean = paste0(stock_clean, "   ", year)) |>
+  mutate(stock_clean = forcats::fct_reorder(stock_clean, year)) |>
+  ggplot(aes(x = ratio_value, y = stock_clean, fill = mean_blrp, group = stock_clean)) +
+  geom_vline(
+    data = lines, mapping = aes(xintercept = ratio_value),
+    lty = 2, lwd = 0.45, colour = "grey55"
+  ) +
+  facet_wrap(vars(ratio), labeller = label_parsed, scales = "free_x") +
+  geom_density_ridges2(scale = 4, alpha = 0.7, size = 0.4, colour = "grey30") +
+  scale_x_continuous(trans = "sqrt", breaks = c(0.2, 1, 2, 5, 10), labels = scales_fun) +
+  scale_fill_viridis_c(direction = -1, option = "B", end = 0.71) +
+  theme_sleek() +
+  coord_cartesian(expand = FALSE, clip = "off") +
+  labs(x = "Ratio value", fill = "Mean\nB/LRP") +
+  theme(
+    axis.title.y = element_blank(),
+    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size = 11),
+    axis.text.y.left = element_text(vjust = -1),
+    strip.text = element_text(size = 14), 
+    panel.spacing.x = unit(15, "points"),
+    panel.background = element_rect(fill = NA),
+    panel.border = element_rect(colour = "grey70", linewidth = 0.5)
+  ) +
+  guides(fill = "none")  
+ggsave("figs/SOPO_presentation/status-as-of-last-assessment.png", width = 8.3, height = 7)
