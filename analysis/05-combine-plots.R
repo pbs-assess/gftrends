@@ -8,8 +8,8 @@ source("analysis/utils.R")
 source("analysis/stock_df.R")
 dir.create("figs", showWarnings = FALSE)
 
-m <- readRDS("data-generated/b-ratio-fits-2022.rds")
-d <- readRDS("data-generated/b-ratio-fits-data-2022.rds")
+m <- readRDS("data-generated/b-ratio-fits.rds")
+d <- readRDS("data-generated/b-ratio-fits-data.rds")
 dat <- readRDS("data-generated/b-status-dat.rds")
 dm <- readRDS("data-generated/all-mcmc.rds")
 
@@ -108,7 +108,7 @@ stock_df <- stock_df %>% mutate(stock_clean = factor(stock_clean,
 
 dat2 <- dm %>%
   group_by(species, region) %>%
-  filter(year <= 2021) %>%
+  filter(year <= 2022) %>%
   filter(year == max(year)) %>%
   # sample_n(2000L, replace = TRUE) %>%
   mutate(
@@ -218,5 +218,4 @@ unique(data_plot$ratio)
 wrap_plots(g1, g2) +
   plot_layout(ncol = 2, widths = c(1, 2))
 
-ggsave("figs/combined-2022.pdf", width = 10, height = 8)
-
+ggsave("figs/combined.pdf", width = 10, height = 8)

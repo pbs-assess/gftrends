@@ -12,9 +12,10 @@ d <- all_data %>% dplyr::filter(survey_abbrev %in% c("SYN QCS", "SYN HS", "SYN W
 # four surveys
 time <- sort(unique(d$year))
 # Building out the grid for each year a survey existed (function is now in sdmTMB)
-nd_whole_coast_index <- sdmTMB::replicate_df(grid_locs, "year", time)
+nd_whole_coast_index <- sdmTMB::replicate_df(grid_locs, "year", time) |>
+  mutate(area = 4)
 
-saveRDS(nd_whole_coast_index, file = paste0(here::here("data-generated/nd_whole_coast_index.rds")))
+saveRDS(nd_whole_coast_index, file = paste0(here::here("data-generated/synoptic-grid.rds")))
 
 # Use better version of grids for HBLL? Check that they are different from gfplot::hbll_n_grid$grid?
 grid_locs <- readRDS(here::here("data-raw/All_HBLL_Blocks_Area_Water.rds")) %>%
@@ -28,7 +29,7 @@ time <- sort(unique(d$year))  # get year of the outside LL surveys
 nd_outside_index <- sdmTMB::replicate_df(nd_out, "year", time)
 nd_outside_index <- sdmTMB::add_utm_columns(nd_outside_index, c("longitude", "latitude"), utm_crs = 32609)
 
-saveRDS(nd_outside_index, file = here::here("data-generated/nd_hbll_outside_index.rds"))
+saveRDS(nd_outside_index, file = here::here("data-generated/hbll-outside-grid.rds"))
 
 # grid for inside HBLL indices
 nd_in <- filter(grid_locs, ssid %in% c(39, 40))
@@ -38,5 +39,5 @@ time <- sort(unique(d$year))
 nd_inside_index <- sdmTMB::replicate_df(nd_in, "year", time)
 nd_inside_index <- sdmTMB::add_utm_columns(nd_inside_index, c("longitude", "latitude"), utm_crs = 32609)
 
-saveRDS(nd_inside_index, file = here::here("data-generated/nd_hbll_inside_index.rds"))
+saveRDS(nd_inside_index, file = here::here("data-generated/hbll-inside-grid.rds"))
 # plot(nd_all)

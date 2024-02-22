@@ -26,7 +26,7 @@ d |>
   as.data.frame()
 
 last <- readr::read_csv("data-raw/last-assess-years.csv")
-# last <- mutate(last, last_year_use = ifelse(plus_one > 0, last_data_year + 1, last_data_year))
+last <- mutate(last, last_year_use = ifelse(plus_one > 0, last_data_year + 1, last_data_year))
 last <- mutate(last, last_year_use = last_data_year + 1)
 
 d <- left_join(d, last, by = join_by(species, region))

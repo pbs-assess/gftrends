@@ -1,0 +1,187 @@
+---
+title: "placeholder - delete"
+#output: html_document
+output:
+  word_document:
+    reference_docx: "29_anderson-etal-gf2023-sopo_JD.docx"
+---
+
+## Trends in Pacific Canadian groundfish stock status and surveys
+
+Sean C. Anderson, Philina A. English, Jillian C. Dunic, Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo, B.C.,   Sean.Anderson@dfo-mpo.gc.ca, Philina.English@dfo-mpo.gc.ca, Jillian.Dunic@dfo-mpo.gc.ca 
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
+library(dplyr)
+library(ggplot2)
+
+# Values to update every year:
+end_year <- 2023
+surveys_run <- paste("HBLL outside north", 
+                     "HBLL inside north", 
+                     "synoptic HS", 
+                     "synoptic QCS", 
+                     "and Sablefish", sep = ", ")
+
+ind <- readRDS(here::here("data-generated", "survey-dat-minimal.rds"))
+
+# Calculate approximate trend bin (based on change  ∆10% 
+ind_trend_text <- 
+  ind |> 
+  distinct(species, region, slope) |>
+    mutate(slope_bin = case_when(slope <= -0.01 ~ 'declined for ~', 
+      (slope > -0.01 & slope < 0.01) ~ 'remained neutral for ~', 
+      slope >= 0.01 ~ 'increased for ~')) |>
+      count(slope_bin) |>
+      mutate(prop = round(100 * n / sum(n))) |>
+      mutate(text = paste0(slope_bin, prop, "%")) |>
+      pull(text)
+
+prop_dg <- distinct(ind, species, region, model)
+
+refpt <- readRDS(here::here("data-generated/p-thresh.rds"))
+
+n_assessed <- nrow(refpt)
+n_analysed <- nrow(distinct(ind, species, region))
+
+
+# Section 29.4
+ts_mcmc <- readRDS(here::here("data-generated/x_t_posterior.rds")) |>
+  filter(year == end_year)
+
+make_quant_text <- function(ts_mcmc, ratio_name) {
+  ts_rp <- filter(ts_mcmc, ratio == ratio_name) |>
+    pull(.value)
+  qrp <- sprintf("%.1f", round(quantile(ts_rp, probs = c(0.025, 0.5, 0.975)), 1))
+  paste0(qrp[2], " (95% CI: ", qrp[1], "--", qrp[3], ")")
+}
+
+# We estimated the overall mean B/LRP (biomass divided by the LRP) in XXXX to be
+qlrp_text <- make_quant_text(ts_mcmc, ratio_name = "B/LRP")
+qusr_text <- make_quant_text(ts_mcmc, ratio_name = "B/USR")
+qbmsy_text <- make_quant_text(ts_mcmc, ratio_name = "B/B[MSY]")
+
+# Reference point threshold notes
+filter(refpt, p_lrp > 0.05)
+
+# Proportion of species with >25% probability of being under USR 
+prop_under_usr <- count(refpt, p_usr > 0.25) |>
+  mutate(prop = paste0(n, '/', sum(n))) |>
+  filter(`p_usr > 0.25` == TRUE) |>
+  pull('prop')
+
+```
+
+### Highlights
+
+* Average groundfish stock status declined from 1950 to around 2000, and following management changes, has remained relatively stable since then. 
+
+* In `r end_year`, assessments were updated for five stocks (Pacific Ocean Perch 3CD, 5ABC, 5DE; outside Quillback Rockfish; Pacific Cod 3CD). 
+The Pacific Ocean Perch and outside Quillback Rockfish stocks were estimated to be above their Limit Reference Point (LRP) with very high probability (>99%) and above their Upper Stock Reference (USR) with very high probability. 
+Pacific Cod had a 23% probability of being below the LRP and a >99% probability of being below the USR.
+
+* Over the last two decades, survey indices `r ind_trend_text[2]` of stocks, `r ind_trend_text[3]`, and `r ind_trend_text[1]` stocks.
+
+* All assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, Yellowtail) and several slope rockfish increased in surveyed biomass over the last 5–-7 years; surveyed biomass also increased for several flatfish (Petrale, English, Rex, and Dover Sole) but declined for Arrowtooth Flounder over the last 5–-10 years.
+
+* Survey indices for Pacific Spiny Dogfish stocks had the steepest declines across all stocks—particularly for the outside stock, which excludes inside Vancouver Island waters—despite low fishing pressure compared to historical levels.
+
+### Introduction
+
+DFO conducts a suite of randomized surveys using bottom trawl, longline hook, and longline trap gear that, in aggregate, cover Canada’s Pacific Coast (Anderson et al. 2019). 
+Synoptic trawl surveys in Queen Charlotte Sound (Areas 5A and 5B) and Hecate Strait (Areas 5C and 5D) are conducted in odd numbered years, while the West Coast of Vancouver Island (WCVI; Areas 3C and 3D) and the West Coast of Haida Gwaii (WCHG; Area 5E) surveys are conducted in even numbered years. 
+In addition, four biennial Hard Bottom Longline (HBLL) surveys are conducted, two in “inside” waters (east of Vancouver Island; Area 4B) and two in “outside” waters (everywhere else). 
+Lastly, a coast-wide longline trap survey targeting Sablefish is conducted every year and DFO collects biological information from the International Pacific Halibut Commission (IPHC) Setline Survey. 
+In `r end_year`, the `r surveys_run` surveys were run.
+
+Assessment scientists conduct stock assessments for major fish stocks in B.C. 
+These assessments combine fishery-dependent data (such as commercial catches) with fishery-independent data (data from scientific surveys) to estimate quantities such as spawning stock biomass, growth, and maturity, and to derive measures of fishing intensity and stock status. 
+Stock status is typically assessed with respect to two reference points: (1) the Limit Reference Point (LRP), a “status below which serious harm is occurring to the stock”; and (2) the Upper Stock Reference Point (USR), which represents the “threshold below which removals must be progressively reduced in order to avoid reaching the LRP” (DFO 2009). 
+While stock assessments represent the gold-standard of estimated trends in population status, assessments are time and labour intensive and therefore frequently lag behind high quality datasets such as indices of abundance from scientific surveys, which often closely reflect population trends from assessments. 
+Geostatistical spatiotemporal models allow spatially adjacent areas surveyed in various years to be combined into single annual indices that can help track changes in surveyed abundance between assessments.
+
+Here, we explore population trends for groundfish stocks using two methods: (1) we update a hierarchical Bayesian state-space time-series model (Anderson et al. 2021) to explore trends until the year `r end_year`, and (2) we develop model-based indices from relevant surveys for all assessed stocks, as well as stocks with outstanding requests for Science Advice.
+
+### Description of the time series
+
+We gathered Bayesian posterior distributions of estimated biomass from assessments for `r n_assessed` stocks, including five updated assessments (Pacific Ocean Perch 3CD, 5ABC, 5DE; outside Quillback Rockfish; Pacific Cod 3CD). 
+From these distributions, we modelled overall (i.e., all stocks combined) mean log stock status as a latent random walk with individual stocks assumed to have an auto-regressive observation model with their ‘true’ status drawn from their stock-assessed posterior distribution. 
+The approach is an extension of a model in Hilborn et al. 2020, that includes uncertainty on stock status and is implemented in Stan (Carpenter et al. 2017); details are available in Anderson et al. (2021).
+
+For these `r n_assessed` stocks, as well as stocks with outstanding requests for Science Advice, and stocks with assessments that lacked the necessary posterior distributions for inclusion in the above model, we selected the relevant surveys (`r n_analysed` total stocks). 
+We combined regional surveys that used the same gear and protocols (selecting among longline surveys or combinations of synoptic trawl surveys). 
+We then fit geostatistical models to abundance or biomass density with the R package sdmTMB (Anderson et al. 2022). 
+These models accounted for latent spatial factors with a constant spatial Gaussian random field and allowed spatiotemporal deviations to evolve as a Guassian random field random walk. 
+For each stock–survey type combination, we fit the delta-gamma (binomial and gamma) observation error models. 
+We then predicted and summed biomass or abundance density across the appropriate 2 x 2 km survey grid(s) (e.g., Anderson et al. 2019) and scaled the survey index to the existing stock assessment biomass trend based on the geometric mean in overlapping years. 
+Data and code to reproduce our analysis are available at https://github.com/pbs-assess/gftrends.
+
+### Status and trends
+
+Across all stocks, there was a decline in average stock status until approximately 2000 (Figure 29-1). 
+The late 1990s and early 2000s marked the beginning of a relatively stable average status. 
+We estimated the overall mean B/LRP (biomass divided by the LRP) in `r end_year` to be `r qlrp_text`. The overall mean B/USR and B/BMSY (biomass divided by biomass at maximum sustainable yield) in `r end_year` was `r qusr_text` and `r qbmsy_text`, respectively (Figure 29-1, 29-2). 
+Despite the overall pattern in the average biological status, there was considerable variation within and across individual stocks, especially when recent survey trends are also considered (Figure 29-3).
+
+```{r, fig.width=3.6}
+
+knitr::include_graphics(here::here("figs", "ts-summary.png"))
+
+```
+
+Figure 29-1: Overall mean biomass status across all stocks for B/LRP, B/USR, and B/BMSY (see text for definitions) from the hierarchical time-series model. Dark lines represent the posterior median and shaded ribbons represent 95% quantile credible intervals. ITQ = individual transferable quota.
+
+Estimated biomass was above the LRP and USR for most stocks as of the most recent assessment (Figure 29-2). 
+Of the stocks with full posterior distributions available, inside (4B) Lingcod, inside Quillback Rockfish, and Pacific Cod 3CD were the only stocks with 5% posterior density below their LRP as of their most recent assessments (Figure 29-2). 
+Coastwide Bocaccio had 5% posterior density below its LRP in 2020 (DFO 2020a) but effectively 0% by 2021 after a large recruitment cohort in 2016 (DFO 2022a). 
+Quillback Rockfish in the outside waters and a 99% probability of being above the LRP and USR (DFO 2023c). 
+Considering the USR instead of the LRP, `r prop_under_usr` of the stocks in Figure 29-2 had > 25% probability of being below their USR as of their most recent assessment. 
+
+When we used survey indices to explore more recent changes across species, additional patterns emerged. 
+Survey indices for all assessed shelf rockfish (Bocaccio, Canary, Redstripe, Silvergray, Widow, Yellowtail), and some slope rockfish (e.g., Yellowmouth) increased in the past ~5--7 years (Figure 29-3). 
+The survey indices also allowed us to explore surveyed population trends of species that have not yet received full assessments, such as many flatfish and Chondrichthyans. 
+Most of the included flatfish (soles: Petrale, English, Rex, Dover) appeared to increase in survey biomass over the last 5--10 years. 
+However, the trawl survey index and stock assessment indicate that Arrowtooth Flounder have declined over the same time span (Figure 29-3). 
+Trends among the skates generally appeared stable or positive. 
+Pacific Spiny Dogfish (herein ‘dogfish’) stocks, however, experienced the steepest declines of all stocks (Figure 29-3), with a particularly steep decline in outside Vancouver Island waters.
+
+```{r, fig.width=4.7}
+
+knitr::include_graphics(here::here("figs", "ridges.png"))
+
+```
+
+Figure 29-2: Posterior distribution of the two measures of stock status for `n_assessed` stocks (Edwards et al. 2011, 2013; Edwards et al. 2014; DFO 2015, 2019, 2020a, 2020b, 2020c, 2020d, 2022b; Holt et al. 2016a, 2016b; Starr et al. 2016; Starr and Haigh 2017, 2021a; DFO 2021; Starr and Haigh 2021b; Grandin et al. 2023; Starr and Haigh 2023; DFO 2023a; DFO 2023b; DFO 2023c, DFO 2024). Stocks are arranged in order of assessment with the most recent assessments at the top; years in the first column indicate the year the status represents. Colours represent the mean B/LRP value such that black is highest and orange is lowest. Vertical dashed lines are at values of 1.0 in all columns. The x-axis has been square-root transformed to slightly compress high ratio values for visualization. Years shown in parentheses indicate the year in which the assessment focused on biomass status, which is usually the year of the assessment and usually one year beyond the last year of data.
+
+```{r, fig.width=4.5}
+
+knitr::include_graphics(here::here("figs", "assesses-indices-join.png"))
+
+```
+
+Figure 29-3: Trends for `r n_analysed` B.C. groundfish stocks with assessments in the last ~15 years or outstanding requests for Science Advice. Dark grey lines and ribbons represent output from stock assessments: trajectories of median B/LRP 95% quantile credible intervals (see citations in Figure 29-2 caption). Coloured lines and ribbons represent model-based indices for the most relevant survey(s) for each stock. Survey trends are scaled to existing assessments based on the geometric mean in overlapping years to account for survey catchability. Sablefish are indexed through a trap survey, which is not modelled here; however; the assessed biomass extends to `r end_year`.
+
+### Factors influencing trends
+The long term overall groundfish trend is likely to have been primarily influenced by fishery removals and management interventions. 
+The transition from declining average B/LRP and B/USR to a relatively stable trajectory coincided with the implementation of individual transferable quotas (ITQs) for the trawl fleet, the introduction of 100% at-sea observer coverage over the period 1992--1997 (Turris 2000), and the initiation of the current synoptic trawl surveys in 2003. 
+Furthermore, ITQs and electronic at-sea monitoring were introduced into the longline and trap fisheries in 2006 (Stanley et al. 2015). 
+
+Other patterns may be driven by species interactions and climatic effects. 
+For example, dogfish are not currently heavily affected by any fishery, so the cause of their survey declines is unknown. 
+One possibility is that climate change is driving a northward range shift or that seasonal distribution patterns have changed as seen in the northwest Pacific Ocean (Kanamori et al. 2022). 
+For several species, there is evidence that temperature velocity—the pace a fish would have to move to maintain consistent temperature—may be related to a fine-scale redistribution of population density in Canadian Pacific waters (English et al. 2022). 
+Effects of recent oceanographic conditions on spawning habitat are hypothesized to have led to years of low recruitment in some groundfish (e.g., Pacific Cod in nearby Alaskan waters, Laurel and Rogers 2020). 
+On the other hand, after decades of consistently low recruitment, recent increases in several shelf rockfishe species—most notably Bocaccio—may in part be driven by transient availability of oxygen-rich water at depth during gestation (Schroeder et al. 2019; DFO 2022a). 
+
+### Implications of those trends
+The Sustainable Fisheries Framework and the Fish Stocks provisions of the Fisheries Act require that major fish stocks be maintained above their LRP with high probability (≥75% if subject to the Fish Stocks provisions). 
+Three stocks had >5% probability of being below their LRP as of their last assessment and neither is currently a Major Stock.
+Roughly one-third of assessed stocks had  25% probability of being in the cautious zone where removals should be progressively reduced to avoid reaching the LRP. 
+Rebuilding and precautionary management of stocks in the critical and cautious zones, respectively, should help ensure stock status improves over time in response to reduced fishing pressure and favourable environmental conditions if and when they occur.
+
+### Acknowledgements
+We thank Rowan Haigh, Brendan Connors, Robyn Forrest, Chris Grandin, Dana Haggarty, and Kendra Holt for providing stock assessment output data and contributing to the initial version of the time series model (Anderson et al. 2021). We thank all those involved in coordinating and conducting the synoptic and longline surveys (especially Malcolm Wyeth, Norm Olsen, Maria Cornthwaite, and Dana Haggarty) as well as the many others who have contributed to the collection of survey data that make analyses such as these possible.
+
+### References
+
+Add manually for now. Feature for next year ;)? 

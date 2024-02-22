@@ -54,49 +54,49 @@ Load data
 spp <- gsub(" ", "-", gsub("\\/", "-", tolower(species)))
 
 if (region == "Both odd year trawl surveys") {
-  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds"))
   survey <- c("SYN QCS", "SYN HS")
   type <- "Synoptic trawl"
   model_ssid <- c(1, 3)
 }
 
 if (region == "QCS only") {
-  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds"))
   survey <- c("SYN QCS")
   type <- "Synoptic trawl"
   model_ssid <- c(1)
 }
 
 if (region == "HS only") {
-  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds"))
   survey <- c("SYN HS")
   type <- "Synoptic trawl"
   model_ssid <- c(3)
 }
 
 if (region == "WCVI only") {
-  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds"))
   survey <- c("SYN WCVI")
   type <- "Synoptic trawl"
   model_ssid <- c(4)
 }
 
 if (region == "WCHG only") {
-  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds"))
   survey <- c("SYN WCHG")
   type <- "Synoptic trawl"
   model_ssid <- c(16)
 }
 
 if (region == "Coast-wide trawl surveys") {
-  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds"))
   survey <- c("SYN QCS", "SYN HS", "SYN WCVI", "SYN WCHG")
   type <- "Synoptic trawl"
   model_ssid <- c(1, 3, 4, 16)
 }
 
 if (region == "North (PMFC 5DE)") {
-  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds"))
   nd_5D <- filter(nd_all, survey == "SYN HS") %>% filter(Y > 5907.814)
   nd_5E <- filter(nd_all, survey == "SYN WCHG")
   nd_all <- bind_rows(nd_5D, nd_5E)
@@ -106,7 +106,7 @@ if (region == "North (PMFC 5DE)") {
 }
 
 if (region == "South (PMFC 3CD5ABC)") {
-  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds"))
   nd_5C <- filter(nd_all, survey == "SYN HS") %>% filter(Y < 5907.814)
   nd_south <- filter(nd_all, survey %in% c("SYN QCS", "SYN WCVI"))
   nd_all <- bind_rows(nd_5C, nd_south)
@@ -116,7 +116,7 @@ if (region == "South (PMFC 3CD5ABC)") {
 }
 
 if (region == "South 5 only (PMFC 5ABC)") {
-  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds"))
   nd_5C <- filter(nd_all, survey == "SYN HS") %>% filter(Y < 5907.814)
   nd_QCS <- filter(nd_all, survey %in% c("SYN QCS"))
   nd_all <- bind_rows(nd_5C, nd_QCS)
@@ -126,28 +126,28 @@ if (region == "South 5 only (PMFC 5ABC)") {
 }
 
 if (region == "HS & WCHG") {
-  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds"))
   survey <- c("SYN HS", "SYN WCHG")
   type <- "Synoptic trawl"
   model_ssid <- c(3, 16)
 }
 
 if (region == "QCS & WCVI") {
-  nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>% mutate(area = 4)
+  nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds"))
   survey <- c("SYN QCS", "SYN WCVI")
   type <- "Synoptic trawl"
   model_ssid <- c(1, 4)
 }
 
 if (region == "HBLL outside surveys") {
-  nd_all <- readRDS(here::here("data-generated/nd_hbll_outside_index.rds"))
+  nd_all <- readRDS(here::here("data-generated/hbll-outside-grid.rds"))
   survey <- c("HBLL OUT N", "HBLL OUT S")
   type <- "HBLL (outside)"
   model_ssid <- c(22, 36)
 }
 
 if (region == "HBLL inside surveys") {
-  nd_all <- readRDS(here::here("data-generated/nd_hbll_inside_index.rds"))
+  nd_all <- readRDS(here::here("data-generated/hbll-inside-grid.rds"))
   survey <- c("HBLL INS N", "HBLL INS S")
   type <- "HBLL (inside)"
   model_ssid <- c(39, 40)
@@ -354,7 +354,7 @@ if (!is.null(m)) {
 ```
 
 ```{r}
-dir.create(here::here("figs"), showWarnings = FALSE)
+dir.create(here::here("figs", "spp-inds"), showWarnings = FALSE)
 
 if (exists("i1")) {
   g <- ggplot(i1, aes(year, est / 1000)) +
@@ -363,7 +363,7 @@ if (exists("i1")) {
     coord_cartesian(ylim = c(0, NA))
   g <- g + ylab("Biomass (tonnes)") +
     ggtitle(paste(species), subtitle = paste0(region, " (", surv_string))
-  ggsave(here::here(paste0("figs/", spp, "-", ssid_string, name, ".png")), height = 4, width = 6)
+  ggsave(here::here(paste0(here::here("figs", "spp-inds"), spp, "-", ssid_string, name, ".png")), height = 4, width = 6)
   g
 }
 ```

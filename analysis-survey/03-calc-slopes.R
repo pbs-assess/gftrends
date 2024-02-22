@@ -12,7 +12,7 @@
 library(dplyr)
 library(ggplot2)
 
-all_indices <- readRDS("data-generated/sopo-2022-indices.rds") |>
+all_indices <- readRDS(file.path("data-generated", "sopo-combined-indices.rds")) |>
   rename(gear = type)
 
 se_check <- all_indices %>%
@@ -30,11 +30,12 @@ keep <- group_by(se_check, species, gear, region, surveys) %>%
 nrow(keep)
 # keep$model[keep$species == "Redstripe Rockfish" & keep$region == "WCHG only"] <- "Tweedie"
 
-nrow(all_indices)
-all_indices <- left_join(keep, all_indices, multiple = "all")  # should have half as many all_indices after binding to keep
-nrow(all_indices)
+# nrow(all_indices)
+# all_indices <- left_join(keep, all_indices, multiple = "all")  # should have half as many all_indices after binding to keep
+# nrow(all_indices)
 
-g <- ggplot(all_indices, aes(year, est, group = model)) +
+g <- all_indices |>
+ggplot(data = _, aes(year, est, group = model)) +
   geom_line(aes(colour = model)) +
   geom_ribbon(aes(
     ymin = lwr, ymax = upr, fill = model
@@ -43,9 +44,10 @@ g <- ggplot(all_indices, aes(year, est, group = model)) +
   scale_y_log10() +
   scale_color_brewer(palette = "Dark2") +
   scale_fill_brewer(palette = "Dark2") +
-  facet_wrap(vars(paste(species, region)), scales = "free_y") +
+  facet_wrap(vars(paste(species, region)), scales = "free_y", nrow = 10) +
   ggsidekick::theme_sleek() +
-  theme(axis.text.y = element_blank())
+  theme(axis.text.y = element_blank(), 
+        legend.position = 'bottom')
 g
 
 slopes <- all_indices %>%
@@ -59,7 +61,7 @@ slopes <- all_indices %>%
 
 all_indices <- left_join(all_indices, slopes)
 
-ind <- select(all_indices, species, gear, region, year, est, lwr, upr, slope)
+ind <- select(all_indices, species, gear, region, year, est, lwr, upr, slope, model)
 # ind <- filter(ind, species != "Sablefish")
 saveRDS(ind, file = "data-generated/survey-dat-minimal.rds")
 

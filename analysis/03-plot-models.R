@@ -4,13 +4,16 @@ source("analysis/utils.R")
 source("analysis/stock_df.R")
 dir.create("figs", showWarnings = FALSE)
 
-m <- readRDS("data-generated/b-ratio-fits-2022.rds")
-d <- readRDS("data-generated/b-ratio-fits-data-2022.rds")
+message("Plotting data up to year: ", end_year)
+
+m <- readRDS("data-generated/b-ratio-fits.rds")
+d <- readRDS("data-generated/b-ratio-fits-data.rds")
 dat <- readRDS("data-generated/b-status-dat.rds")
 
 plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.95,
                      # .type = c("Rockfish", "Flatfish", "Cod", "Cod allies"), # in case you want a subset
-                     ylab = "", ylim = c(0, 10), example = FALSE) {
+                     ylab = "", ylim = c(0, 10), example = FALSE, 
+                     max_year = end_year) {
 
   last_dat <- dat %>%
     group_by(stock) %>%
@@ -94,7 +97,7 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
     scale_colour_viridis_c(direction = 1, option = "D", end = 0.82) +
     scale_fill_viridis_c(direction = 1, option = "D", end = 0.82) +
     ggsidekick::theme_sleek() +
-    coord_cartesian(xlim = c(1950, 2022), ylim = ylim, expand = FALSE) +
+    coord_cartesian(xlim = c(1950, max_year), ylim = ylim, expand = FALSE) +
     geom_hline(yintercept = 1, lty = 2, col = "grey40") +
     # scale_y_log10() +
     facet_wrap(~stock_clean, ncol = 5L) +
@@ -124,10 +127,10 @@ g <- plot_x_t(x_t[["blrp"]], y_true[["blrp"]], d[["blrp"]]$filtered_dat,
   log_blrp, q0.05_blrp, q0.95_blrp,
   ylab = expression(B / LRP), ylim = c(0, 11.5)
 )
-ggsave("figs/blrp-x-t-2022.pdf", width = 8, height = 8)
-ggsave("figs/blrp-x-t-2022.png", width = 8, height = 8)
+ggsave("figs/blrp-x-t.pdf", width = 8, height = 8)
+ggsave("figs/blrp-x-t.png", width = 8, height = 8)
 
-ggsave("figs/blrp-x-t-2022-small.png", width = 8.2, height = 6)
+ggsave("figs/blrp-x-t-small.png", width = 8.2, height = 6)
 
 # ggsave("figs/blrp-x-t-example-2022.png", width = 4, height = 3, dpi = 200)
 

@@ -104,8 +104,8 @@ d %>% saveRDS("data-raw/yelloweye-4b-mcmc.rds")
 
 # one 'Run':
 format_rowan_raw_data <- function(sheet1, sheet2, .species, .region) {
-  b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
-  d <- dplyr::left_join(b, d2) %>%
+  b <- tidyr::pivot_longer(sheet1, cols = -1, names_to = "year", values_to = "B")
+  d <- dplyr::left_join(b, sheet2) %>% 
     mutate(year = as.character(year))
   # ggplot(d, aes(year, B / Bmsy, group = sample)) + geom_line()
   mutate(d, species = .species, region = .region) %>%
@@ -136,7 +136,7 @@ d <- dplyr::left_join(b, d2) %>%
   rename(iter = sample)
 d %>% saveRDS("data-raw/pop-5abcd-mcmc.rds")
 
-# POP 3CD -----------------------------------------------------------------
+# POP 3CD 2012  -------------------------------------------------------------
 
 format_rowan_mcmc_data1 <- function(sheet1, sheet2, .species, .region) {
   b <- tidyr::pivot_longer(sheet1, cols = -1, names_to = "year", values_to = "B")
@@ -557,3 +557,67 @@ d %>% ggplot(aes(year, blrp, group = paste(iter, run))) + geom_line(alpha = 0.05
 d %>% ggplot(aes(year, busr, group = paste(iter, run))) + geom_line(alpha = 0.05) + scale_y_log10()
 
 d %>% saveRDS("data-raw/quillback-inside-mcmc.rds")
+
+# quillback outside 2023 ------------------------------------------------------
+d1 <- readRDS("data-raw/model-output/quillback-outside-2023-bbmsy.rds")
+d <- d1 |>
+  filter(scen != "(A) Low steepness") |>
+  mutate(bbmsy = SpawnBio / SSBMSY) |>
+  mutate(blrp = bbmsy / 0.4, busr = bbmsy / 0.8) |>
+  mutate(species = "quillback", region = "BC Outside") |>
+  mutate(run = as.integer(as.factor(scen))) |>
+  rename(year = "Yr", iter = "Sim")
+
+d %>% saveRDS("data-raw/quillback-outside-mcmc.rds")
+# d %>% ggplot(aes(year, blrp, group = paste(iter, run))) + geom_line(alpha = 0.05) + scale_y_log10()
+# d %>% ggplot(aes(year, busr, group = paste(iter, run))) + geom_line(alpha = 0.05) + scale_y_log10()
+
+# POP 3CD 2023  ----------------------------------------------------------------
+d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-3CD-2023-MCMC(B)-forSean.csv') |>
+  select("...1":"2023")
+
+d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-3CD-2023-MCMC(Bmsy)-forSean.csv')
+
+format_rowan_mcmc_data_2023 <- function(sheet1, sheet2, .species, .region) {
+  b <- tidyr::pivot_longer(sheet1, cols = -1, names_to = "year", values_to = "B")
+  dplyr::left_join(b, sheet2) %>%
+    mutate(year = as.integer(as.character(year))) %>%
+    rename(b = B, bmsy = Bmsy) %>%
+    mutate(run = "1") %>%
+    mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
+    mutate(species = .species, region = .region) %>%
+    mutate(iter = as.numeric(as.factor(`...1`))) |> 
+    select(-"...1") |>
+    filter(!is.na(bmsy))
+}
+
+format_rowan_mcmc_data_2023(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "3CD") |>
+saveRDS("data-raw/pop-3cd-mcmc.rds")
+
+# POP 5ABC 2023  ----------------------------------------------------------------
+d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5ABC-2023-MCMC(B)-forSean.csv') |>
+  select("...1":"2023")
+
+d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5ABC-2023-MCMC(Bmsy)-forSean.csv') |>
+  filter(!is.na(Bmsy))
+
+format_rowan_mcmc_data_2023(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5ABC") |>
+saveRDS("data-raw/pop-5abc-mcmc.rds")
+
+# POP 5DE 2023  ----------------------------------------------------------------
+d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5DE-2023-MCMC(B)-forSean.csv') |>
+  select("...1":"2023")
+
+d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5DE-2023-MCMC(Bmsy)-forSean.csv') |>
+  filter(!is.na(Bmsy))
+
+format_rowan_mcmc_data_2023(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5DE") |>
+saveRDS("data-raw/pop-5de-mcmc.rds")
+
+# PCOD 5DE 2023  ----------------------------------------------------------------
+d <- readRDS("data-raw/model-output/pcod-2023.rds")
+
+d |>
+  select(year, blrp = b_lrp, busr = b_usr, iter) |>
+  mutate(species = 'pcod', region = '3CD', run = 1) |>
+  saveRDS("data-raw/pcod-3cd-mcmc.rds")

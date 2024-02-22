@@ -4,16 +4,16 @@ arrowtooth,BC,2022,2021,1
 bocaccio,BC,2022,2021,1
 sablefish,BC,2022,2021,1
 yellowmouth,BC,2022,2020,2
-pcod,3CD,2021,2020,1
+pcod,3CD,2023,2022,1
 pcod,5abcd,2021,2020,1
 quillback,4B,2021,2021,0
+quillback,BC Outside,2021,2021,0
 rougheye/blackspotted,BC North,2021,2020,1
 rougheye/blackspotted,BC South,2021,2020,1
 widow-rockfish,BC,2019,2018,1
 yelloweye,4B,2019,2019,0
 redstripe rockfish,BC North,2018,2017,1
 redstripe rockfish,BC South,2018,2017,1
-pacific-ocean-perch,5ABC,2017,2016,1
 walleye-pollock,BC North,2017,2016,1
 walleye-pollock,BC South,2017,2016,1
 shortspine thornyhead,BC,2016,2015,1
@@ -22,5 +22,6 @@ lingcod,4B,2014,2014,0
 rocksole,5AB,2014,2013,1
 rocksole,5CD,2014,2013,1
 silvergray,BC,2014,2013,1
-pacific-ocean-perch,3CD,2013,2012,1
-pacific-ocean-perch,5DE,2013,2012,1
+pacific-ocean-perch,3CD,2023,2022,1
+pacific-ocean-perch,5ABC,2023,2022,1
+pacific-ocean-perch,5DE,2023,2022,1

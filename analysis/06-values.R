@@ -1,28 +1,32 @@
 library(dplyr)
+end_year <- 2023
+
 refpt <- readRDS(here::here("data-generated/p-thresh.rds"))
-ts_mcmc <- readRDS(here::here("data-generated/x_t_posterior.rds"))
-ts_2021_lrp <- dplyr::filter(ts_mcmc, year == 2022, ratio == "B/LRP") %>%
+ts_mcmc <- readRDS(here::here("data-generated/x_t_posterior.rds")) |>
+  filter(year == 2023)
+ts_lrp <- dplyr::filter(ts_mcmc, ratio == "B/LRP") %>%
   pull(.value)
-ts_2021_usr <- dplyr::filter(ts_mcmc, year == 2022, ratio == "B/USR") %>%
+ts_usr <- dplyr::filter(ts_mcmc, year == end_year, ratio == "B/USR") %>%
   pull(.value)
-ts_2021_bmsy <- dplyr::filter(ts_mcmc, year == 2022, ratio == "B/B[MSY]") %>%
+ts_bmsy <- dplyr::filter(ts_mcmc, year == end_year, ratio == "B/B[MSY]") %>%
   pull(.value)
-q2021lrp <- sprintf("%.1f", round(quantile(ts_2021_lrp, probs = c(0.025, 0.5, 0.975)), 1))
+q_lrp <- sprintf("%.1f", round(quantile(ts_lrp, probs = c(0.025, 0.5, 0.975)), 1))
 
 make_quant_text <- function(x) {
   paste0(x[2], " (95% CI: ", x[1], "--", x[3], ")")
 }
 
-(q2021usr <- sprintf("%.1f", round(quantile(ts_2021_usr, probs = c(0.025, 0.5, 0.975)), 1)))
+(q_usr <- sprintf("%.1f", round(quantile(ts_usr, probs = c(0.025, 0.5, 0.975)), 1)))
 
-(q2021msy <- sprintf("%.1f", round(quantile(ts_2021_bmsy, probs = c(0.025, 0.5, 0.975)), 1)))
+(q_msy <- sprintf("%.1f", round(quantile(ts_bmsy, probs = c(0.025, 0.5, 0.975)), 1)))
 
+# Section 29.4
 # We estimated the overall mean B/LRP (biomass divided by the LRP) in 2021 to be
-make_quant_text(q2021lrp)
+make_quant_text(q_lrp)
 # The overall mean B/USR and B/B~MSY~ (biomass divided by biomass at maximum sustainable yield) in 2021 was
-make_quant_text(q2021usr)
+make_quant_text(q_usr)
 # and
-make_quant_text(q2021msy)
+make_quant_text(q_msy)
 # respectively (Figure \@ref(fig:pa-framework), \@ref(fig:ridges)).
 
 # Considering the USR instead of the LRP,

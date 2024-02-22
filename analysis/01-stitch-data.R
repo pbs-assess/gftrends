@@ -2,6 +2,9 @@ library(dplyr)
 library(ggplot2)
 dir.create("data-generated", showWarnings = FALSE)
 
+end_year <- 2023
+message("Stitching up to year: ", end_year)
+
 # f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
 # f <- f[!grepl("-mcmc", f)]
 # d <- purrr::map_dfr(f, readRDS)
@@ -27,6 +30,7 @@ f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
 f <- f[grepl("-mcmc", f)]
 .readRDS <- function(x) {
   res <- readRDS(x)
+  stopifnot('`run` column missing' = 'run' %in% names(res))
   res$run <- as.character(res$run)
   res
 }
@@ -75,7 +79,7 @@ out <- d %>%
 
     .groups = "drop"
   )
-out <- bind_rows(out, readRDS("data-raw/quillback-outside.rds"))
+#out <- bind_rows(out, readRDS("data-raw/quillback-outside.rds"))
 
 out <- mutate(out, stock = paste(species, region)) %>%
   mutate(stock = gsub(" ", "_", stock)) %>%

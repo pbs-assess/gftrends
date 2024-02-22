@@ -2,7 +2,8 @@ library(dplyr)
 library(ggplot2)
 
 source('analysis/04-ridges.R')
-dir.create("figs/SOPO_presentation", showWarnings = FALSE)
+pres_dir <- file.path("figs", "SOPO_presentation", format(Sys.Date(), "%Y"))
+dir.create(pres_dir, showWarnings = FALSE)
 
 # Set colour for source column
 cols <- RColorBrewer::brewer.pal(3, name = "Dark2")
@@ -54,39 +55,38 @@ g <- d %>%
   mutate(species_order = factor(species, levels = c('Pacific Cod', 'Walleye Pollock', 'Lingcod'))) %>%
   mutate(facet_label = forcats::fct_reorder(facet_label, as.numeric(species_order))) %>%
   plot_pres_trends(ncol = 2, base_size = 16)
-ggsave("figs/SOPO_presentation/roundfish_assesses-indices-join.png", width = 7.5, height = 6)
-
+ggsave(file.path(pres_dir, "roundfish_assesses-indices-join.png"), width = 7.5, height = 6)
 
 g <- d %>%
   filter(type == "Inshore rockfish") %>% 
   plot_pres_trends(ncol = 2, base_size = 16)
-ggsave("figs/SOPO_presentation/inshore-rockfish_assesses-indices-join.png", width = 7.5, height = 5)
+ggsave(file.path(pres_dir, "inshore-rockfish_assesses-indices-join.png"), width = 7.5, height = 5)
 
 g <- d %>%
   filter(type == "Shelf rockfish") %>% 
   mutate(facet_label = forcats::fct_reorder(facet_label, -slope)) %>% 
   plot_pres_trends(ncol = 2, base_size = 16)
-ggsave("figs/SOPO_presentation/shelf-rockfish_assesses-indices-join.png", width = 7.5, height = 6)
+ggsave(file.path(pres_dir, "shelf-rockfish_assesses-indices-join.png"), width = 7.5, height = 6)
 
 
 g <- d %>%
   filter(type == "Slope rockfish") %>% 
   mutate(facet_label = forcats::fct_reorder(facet_label, -slope)) %>% 
   plot_pres_trends(ncol = 3, base_size = 16)
-ggsave("figs/SOPO_presentation/slope-rockfish_assesses-indices-join.png", width = 9, height = 6)
+ggsave(file.path(pres_dir, "slope-rockfish_assesses-indices-join.png"), width = 9, height = 6)
 
 g <- d %>%
   filter(type == "Flatfish") %>% 
   mutate(facet_label = forcats::fct_reorder(facet_label, -slope)) %>% 
   plot_pres_trends(ncol = 3, base_size = 16)
-ggsave("figs/SOPO_presentation/flatfish_assesses-indices-join.png", width = 9, height = 6)
+ggsave(file.path(pres_dir, "flatfish_assesses-indices-join.png"), width = 9, height = 6)
 
 g <- d %>%
   filter(type == "Sharks, skates, chimeras") %>% 
   mutate(facet_label = forcats::fct_reorder(facet_label, -slope)) %>% 
   plot_pres_trends(ncol = 3, base_size = 16)
   scale_x_continuous(expand = c(0, 0), breaks = c(1960, 1980, 2000, 2020), limits = c(1960, 2022))
-ggsave("figs/SOPO_presentation/sharks-skates-chimeras_assesses-indices-join.png", width = 9, height = 6)
+ggsave(file.path(pres_dir, "sharks-skates-chimeras_assesses-indices-join.png"), width = 9, height = 6)
 
 
 
@@ -118,4 +118,4 @@ g <- data_plot %>%
     panel.border = element_rect(colour = "grey70", linewidth = 0.5)
   ) +
   guides(fill = "none")  
-ggsave("figs/SOPO_presentation/status-as-of-last-assessment.png", width = 8.3, height = 7)
+ggsave(file.path(pres_dir, "status-as-of-last-assessment.png"), width = 8.3, height = 7)

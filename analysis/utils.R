@@ -1,6 +1,6 @@
-format_stan_data <- function(dat, column_mean, column_sd) {
+format_stan_data <- function(dat, column_mean, column_sd, max_year) {
   dat <- dplyr::filter(dat, !is.na({{column_mean}}), !is.na({{column_sd}})) %>%
-    filter(year >= 1950, year <= 2022)
+    filter(year >= 1950, year <= max_year)
   dat <- arrange(dat, stock, year)
   dat_wide <- tidyr::pivot_wider(dat,
     id_cols = year,

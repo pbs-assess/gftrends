@@ -13,9 +13,9 @@ dat[dat$species == "sablefish","sd_log_busr"] <-
   dat[dat$species == "sablefish","sd_log_busr"] * 2
 
 d <- list()
-d$blrp <- format_stan_data(dat, log_blrp, sd_log_blrp)
-d$bbmsy <- format_stan_data(dat, log_bbmsy, sd_log_bbmsy)
-d$busr <- format_stan_data(dat, log_busr, sd_log_busr)
+d$blrp <- format_stan_data(dat, log_blrp, sd_log_blrp, max_year = end_year)
+d$bbmsy <- format_stan_data(dat, log_bbmsy, sd_log_bbmsy, max_year = end_year)
+d$busr <- format_stan_data(dat, log_busr, sd_log_busr, max_year = end_year)
 
 pars <- c("rho", "sigma_eps", "sigma_x", "x", "alpha", "y_true", "x_t_intercept")
 m <- purrr::map(d, function(.d) {
@@ -48,5 +48,5 @@ purrr::walk(m, print, pars = pars[!pars %in% c("y_true", "x")])
 # lapply(m, rstan::stan_rhat)
 # lapply(m, rstan::stan_diag)
 
-saveRDS(m, "data-generated/b-ratio-fits-2022.rds")
-saveRDS(d, "data-generated/b-ratio-fits-data-2022.rds")
+saveRDS(m, "data-generated/b-ratio-fits.rds")
+saveRDS(d, "data-generated/b-ratio-fits-data.rds")

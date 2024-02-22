@@ -4,127 +4,7 @@ library(dplyr)
 
 source("analysis-survey/make-grids.R")
 
-# add for Gabe
-# to_fit0 <- tribble(
-#   ~species, ~region,
-#   # # "Canary Rockfish", "HBLL outside surveys",
-#   "Copper Rockfish", "HBLL outside surveys",
-#   "Darkblotched Rockfish", "Coast-wide trawl surveys",
-#   # "Longspine Thornyhead", "Coast-wide trawl surveys",
-#   "Longspine Thornyhead", "WCHG only",
-#   "Greenstriped Rockfish", "Coast-wide trawl surveys",
-#   "Flathead Sole", "Coast-wide trawl surveys",
-#   "Kelp Greenling", "Coast-wide trawl surveys",
-#   "Kelp Greenling", "HBLL outside surveys",
-#   # "Kelp Greenling", "HBLL inside surveys",
-#   "Sandpaper Skate", "Coast-wide trawl surveys",
-#   "Sandpaper Skate", "HBLL outside surveys",
-#   "Sharpchin Rockfish", "Coast-wide trawl surveys",
-#   "Splitnose Rockfish", "Coast-wide trawl surveys",
-#   "Butter Sole", "Both odd year trawl surveys"
-# )
-
-to_fit1 <- tribble(
-  ~species, ~region,
-  "North Pacific Spiny Dogfish", "Coast-wide trawl surveys",
-  "Arrowtooth Flounder", "Coast-wide trawl surveys",
-  "Bocaccio", "Coast-wide trawl surveys",
-  "Sablefish", "Coast-wide trawl surveys",
-  "Shortspine Thornyhead", "Coast-wide trawl surveys",
-  "Silvergray Rockfish", "Coast-wide trawl surveys",
-  "Widow Rockfish", "Coast-wide trawl surveys",
-  "Yellowmouth Rockfish", "Coast-wide trawl surveys",
-  "Yellowtail Rockfish", "Coast-wide trawl surveys",
-  "Big Skate", "Coast-wide trawl surveys",
-  "Longnose Skate", "Coast-wide trawl surveys",
-  "Spotted Ratfish", "Coast-wide trawl surveys",
-  "Lingcod", "Coast-wide trawl surveys",
-  "Petrale Sole", "Coast-wide trawl surveys",
-  "Rex Sole", "Coast-wide trawl surveys",
-  "Dover Sole", "Coast-wide trawl surveys",
-  "English Sole", "Coast-wide trawl surveys",
-  "Canary Rockfish", "Coast-wide trawl surveys",
-  "Shortraker Rockfish", "Coast-wide trawl surveys"
-)
-
-to_fit2 <- tribble(
-  ~species, ~region,
-  "North Pacific Spiny Dogfish", "HBLL outside surveys",
-  "Big Skate", "HBLL outside surveys",
-  "Longnose Skate", "HBLL outside surveys",
-  "Lingcod", "HBLL outside surveys",
-  "Quillback Rockfish", "HBLL outside surveys",
-  "Yelloweye Rockfish", "HBLL outside surveys"
-)
-
-to_fit3 <- to_fit2
-to_fit3$region <- "HBLL inside surveys"
-
-to_fit4 <- expand.grid(
-  species = c(
-    "Redstripe Rockfish",
-    "Rougheye/Blackspotted Rockfish Complex"
-  ),
-  region = c("WCHG only", "QCS & WCVI"), stringsAsFactors = FALSE
-)
-
-to_fit6 <- expand.grid(
-  species = c(
-    "Walleye Pollock"
-  ),
-  region = c("HS & WCHG", "QCS & WCVI"),
-  stringsAsFactors = FALSE
-)
-
-make_dat <- function(r, s) {
-  expand.grid(
-    species = s,
-    region = r,
-    stringsAsFactors = FALSE
-  )
-}
-
-list_regions <- c("Both odd year trawl surveys", "WCVI only")
-list_species <- c(
-  "Pacific Cod"
-)
-to_fit5 <- make_dat(list_regions, list_species)
-
-list_regions <- c("WCHG only", "QCS & WCVI")
-list_species <- c(
-  "Redstripe Rockfish",
-  "Rougheye/Blackspotted Rockfish Complex"
-)
-to_fit5 <- bind_rows(to_fit5, make_dat(list_regions, list_species))
-
-list_regions <- c("QCS only", "WCVI only", "WCHG only")
-list_species <- c(
-  "Pacific Ocean Perch"
-)
-to_fit5 <- bind_rows(to_fit5, make_dat(list_regions, list_species))
-
-list_regions <- c("QCS only", "HS only")
-list_species <- c(
-  "Southern Rock Sole"
-)
-to_fit5 <- bind_rows(to_fit5, make_dat(list_regions, list_species))
-
-list_regions <- c("HS & WCHG", "QCS & WCVI")
-list_species <- c(
-  "Walleye Pollock"
-)
-to_fit5 <- bind_rows(to_fit5, make_dat(list_regions, list_species))
-
-to_fit <- bind_rows(
-  list(
-    # to_fit0, # for gabe
-    to_fit1,
-    to_fit2,
-    to_fit3,
-    to_fit4,
-    to_fit5
-  )
-)
+to_fit <- readr::read_csv('data-raw/species-regions-tofit.csv')
 
 # # # # add interesting (possibly expanding north?) species
 # to_fit <- tribble(
@@ -147,7 +27,7 @@ fit_index <- function(region, species) {
   name <- "-RW-no-covs" # string describing model covariates
   region_name <- region
   try({
-    render_separately("analysis-survey/1-index-new-deltas.Rmd",
+    render_separately("analysis-survey/01-index-new-deltas.Rmd",
       params = list(
         species = species,
         region = region,
@@ -175,9 +55,18 @@ options(future.rng.onMisuse = "ignore")
 # furrr::future_pwalk(to_fit[c(36, 26),,drop = FALSE], fit_index)
 
 furrr::future_pwalk(to_fit, fit_index)
-beepr::beep()
 
 future::plan(future::sequential)
+
+# Run first part only if you have all indices saved in separate files
+# AND the combined file needs updating
+ind_dir = file.path("data-generated", "indices")
+f <- list.files(path = ind_dir, pattern = "*.rds", full.names = TRUE)
+f
+all_indices <- do.call(rbind, lapply(f, readRDS))
+glimpse(all_indices)
+saveRDS(all_indices, file = file.path("data-generated", "sopo-combined-indices.rds"))
+
 
 # # full list from 2 years ago
 # list_species <- c(

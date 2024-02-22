@@ -64,10 +64,10 @@ raw_HBLL <- filter(data, species_common_name == "north pacific spiny dogfish") %
                  years = c(2021),
                  density_column = "density_ppkm2")
 
-nd_hbll <- readRDS(("data-generated/nd_hbll_inside_index.rds"))%>%
+nd_hbll <- readRDS(("data-generated/hbll-inside-grid.rds"))%>%
   mutate(combined = depth)
 
-nd_all <- readRDS(here::here("data-generated/nd_whole_coast_index.rds")) %>%
+nd_all <- readRDS(here::here("data-generated/synoptic-grid.rds")) %>%
   mutate(combined = depth, akima_depth = depth)
 
 ##### just HBLL MAP
