@@ -65,9 +65,9 @@ qbmsy_text <- make_quant_text(ts_mcmc, ratio_name = "B/B[MSY]")
 filter(refpt, p_lrp > 0.05)
 
 # Proportion of species with >25% probability of being under USR 
-prop_under_usr <- count(refpt, p_usr > 0.25) |>
+prop_under_usr <- count(refpt, p_usr >= 0.25) |>
   mutate(prop = paste0(n, '/', sum(n))) |>
-  filter(`p_usr > 0.25` == TRUE) |>
+  filter(`p_usr >= 0.25` == TRUE) |>
   pull('prop')
 
 ```

@@ -41,6 +41,32 @@ saveRDS(all_surv, file = "data-raw/all_surv_catch.rds")
 
 all_surv <- readRDS("data-raw/all_surv_catch.rds")
 ####
+# Get survey locations for current year for presentation plot
+select_year <- 2023
+
+survey_locations <- gfdata::run_sql(database = "GFBioSQL",
+  glue::glue_sql("SELECT
+    t.trip_id,
+    ts.survey_id,
+    s.survey_desc,
+    s.survey_series_id,
+    ss.survey_series_desc,
+    fe.fishing_event_id,
+    fe.fe_begin_retrieval_time,
+    fe.fe_start_lattitude_degree + fe.fe_start_lattitude_minute / 60 as latitude,
+    -(fe.fe_start_longitude_degree + fe.fe_start_longitude_minute / 60) as longitude,
+    fe.fe_end_lattitude_degree + fe.fe_end_lattitude_minute / 60 as latitude_end,
+    -(fe.fe_end_longitude_degree + fe.fe_end_longitude_minute / 60) as longitude_end
+  FROM trip AS t
+    LEFT JOIN trip_survey AS ts ON t.trip_id = ts.trip_id
+    LEFT JOIN survey AS s ON ts.survey_id = s.survey_id
+    LEFT JOIN survey_series AS ss ON s.survey_series_id = ss.survey_series_id
+    LEFT JOIN fishing_event AS fe ON t.trip_id = fe.trip_id
+  WHERE YEAR(t.trip_start_date) = {select_year};"
+  )
+)
+
+survey_locations |> saveRDS(file.path("data-raw", paste0(select_year, '-survey-locations.rds')))
 
 #species codes not captured with above method
 
