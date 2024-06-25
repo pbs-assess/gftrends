@@ -1,6 +1,6 @@
 # Trends in Pacific Canadian groundfish stock status
 
-An annual analysis of trends in Pacific Canadian groundfish stock status for the annual [State of the Pacific Ocean](https://www.dfo-mpo.gc.ca/oceans/soto-rceo/pacific-pacifque/index-eng.html) conference and associated Technical Report.
+An analysis of trends in Pacific Canadian groundfish stock status for the annual [State of the Pacific Ocean](https://www.dfo-mpo.gc.ca/oceans/soto-rceo/pacific-pacifque/index-eng.html) conference and associated Canadian Technical Report of Fisheries and Aquatic Sciences.
 
 Previously published reports:
 
