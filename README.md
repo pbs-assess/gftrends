@@ -4,7 +4,7 @@ An analysis of trends in Pacific Canadian groundfish stock status for the annual
 
 Previously published reports:
 
-* 2023 Tech Report: In press
+* [2023 Tech Report](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41260879.pdf) page 157
 * [2022 Tech Report PDF](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41199248.pdf) (page 141)
 * [2021 Tech Report PDF](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41067113.pdf) (page 112)
 * [2020 Tech Report PDF](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/4098297x.pdf) (page 127)
