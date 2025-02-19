@@ -37,6 +37,12 @@ filter_grid <- function(region) {
 
 # Prepare data
 survey_dat <- readRDS("data-raw/all_surv_catch.rds")
+bait_counts <- readRDS("data-raw/bait-counts.rds")
+
+survey_dat <- 
+  left_join(survey_dat, bait_counts) |>
+  mutate(units )
+
 
 prep_data <- function(survey_dat, species, region)
   syn_regions <- c(

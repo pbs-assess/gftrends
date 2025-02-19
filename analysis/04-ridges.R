@@ -26,13 +26,14 @@ d |>
   as.data.frame()
 
 last <- readr::read_csv("data-raw/last-assess-years.csv")
-last <- mutate(last, last_year_use = ifelse(plus_one > 0, last_data_year + 1, last_data_year))
+#last <- mutate(last, last_year_use = ifelse(plus_one > 0, last_data_year + 1, last_data_year))
 last <- mutate(last, last_year_use = last_data_year + 1)
 
 d <- left_join(d, last, by = join_by(species, region))
 
 d <- group_by(d, species, region) |>
-  mutate(last_year_use = ifelse(last_year_use < max(year), last_year_use, max(year)))
+  # mutate(last_year_use = ifelse(last_year_use < max(year), last_year_use, max(year)))
+  mutate(last_year_use = last_data_year)
 
 d |>
   select(species, region, type, stock_clean, last_year_use) |>
@@ -164,5 +165,5 @@ g <- data_plot %>%
 # )
 # annotate(geom = "text", x = 0, y = years$stock_clean, label = "test")
 
-ggsave("figs/ridges.pdf", width = 4.5, height = 7)
-ggsave("figs/ridges.png", width = 4.5, height = 7)
+ggsave("figs/ridges.pdf", width = 5.5, height = 7)
+ggsave("figs/ridges.png", width = 5.5, height = 7)
