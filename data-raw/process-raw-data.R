@@ -614,10 +614,11 @@ d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-
 format_rowan_mcmc_data_2023(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5DE") |>
 saveRDS("data-raw/pop-5de-mcmc.rds")
 
-# PCOD 5DE 2023  ----------------------------------------------------------------
+# PCOD 3CD 2023  ----------------------------------------------------------------
 d <- readRDS("data-raw/model-output/pcod-2023.rds")
 
 d |>
   select(year, blrp = b_lrp, busr = b_usr, iter) |>
   mutate(species = 'pcod', region = '3CD', run = 1) |>
   saveRDS("data-raw/pcod-3cd-mcmc.rds")
+
