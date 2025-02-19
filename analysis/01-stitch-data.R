@@ -2,7 +2,7 @@ library(dplyr)
 library(ggplot2)
 dir.create("data-generated", showWarnings = FALSE)
 
-end_year <- 2023
+end_year <- 2024
 message("Stitching up to year: ", end_year)
 
 # f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
@@ -27,7 +27,14 @@ message("Stitching up to year: ", end_year)
 #   theme(axis.title.x = element_blank())
 
 f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
+f <- f[!grepl("bocaccio-bc\\.rds", f)]
+f <- f[!grepl("bocaccio-bc-mcmc\\.rds", f)]
+## these get stitched on later:
+f <- f[!grepl("bocaccio-bc-mcmc-summarized-2024\\.rds", f)]
+f <- f[!grepl("dogfish-bc-2023\\.rds", f)]
 f <- f[grepl("-mcmc", f)]
+f
+
 .readRDS <- function(x) {
   res <- readRDS(x)
   stopifnot('`run` column missing' = 'run' %in% names(res))
@@ -79,7 +86,9 @@ out <- d %>%
 
     .groups = "drop"
   )
-#out <- bind_rows(out, readRDS("data-raw/quillback-outside.rds"))
+
+out <- bind_rows(out, readRDS("data-raw/bocaccio-bc-mcmc-summarized-2024.rds"))
+out <- bind_rows(out, readRDS("data-raw/dogfish-bc-2023.rds"))
 
 out <- mutate(out, stock = paste(species, region)) %>%
   mutate(stock = gsub(" ", "_", stock)) %>%
