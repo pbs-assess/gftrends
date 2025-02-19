@@ -8,9 +8,10 @@ This repository contains:
 * text for the preprint (`preprint`)
 
 ### A. Adding and processing the latest assessment data
-1. Use the `data-raw/process-raw-dat.R` file to clean any newly added/updated assessment data (raw data can be placed in `data-raw/model-output`). This script saves outputs as: `data-raw/species-region-mcmc.rds`, where species name is often abbreviated 
+
+1. Use the `data-raw/process-raw-dat.R` file to clean any newly added/updated assessment data (raw data can be placed in `data-raw/model-output`). This script saves outputs as: `data-raw/species-region-mcmc-year.rds`, where species name is often abbreviated and year is the last year with included data.
     - Contact people for the latest MCMCs of the biomass trend and Bmsy (or other LRP and USR MCMC's). LRP and USR are generally 0.4 * Bmsy and 0.8 * Bmsy (e.g., see: [A fishery decision-making framework incorporating the precautionary approach](https://www.dfo-mpo.gc.ca/reports-rapports/regs/sff-cpd/precaution-eng.htm)) or some fraction of B_0 or historical biomass. Double check the stock assessment document to confirm. 
-    - For example: Bmsy is not used for Arrowtooth Flounder [e.g., see pg 5](https://www.dfo-mpo.gc.ca/csas-sccs/Publications/SAR-AS/2023/2023_042-eng.pdf), Pacific Cod [e.g., see pg 4](https://publications.gc.ca/collections/collection_2021/mpo-dfo/fs70-7/Fs70-7-2021-002-eng.pdf), and Walleye Pollock [e.g., see pg 3](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/40987395.pdf)
+    - For example: Bmsy is not used for Arrowtooth Flounder [e.g., see pg 5](https://www.dfo-mpo.gc.ca/csas-sccs/Publications/SAR-AS/2023/2023_042-eng.pdf), Pacific Cod [e.g., see pg 4](https://publications.gc.ca/collections/collection_2021/mpo-dfo/fs70-7/Fs70-7-2021-002-eng.pdf), Walleye Pollock [e.g., see pg 3](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/40987395.pdf), or Dogfish
 
 If the LRP and USR are based on fractions of Bmsy, process new data to get dataframe of the format: 
 
@@ -28,19 +29,17 @@ If the LRP and USR are not based on fractions of Bmsy, the dataframe will look l
 | 1918 | 9.00 | 4.50 | 2    | quillback | 4B     | 1   |
 | 1918 | 8.34 | 4.17 | 3    | quillback | 4B     | 1   |
 
-
 - If there is no `run` column, you will need to add a placeholder, e.g., `mutate(run = 1)`
-
 
 2. Add any new stocks (if any) to the `analysis/stock_df.R` and `data-raw/species-regions-tofit.csv` (see [Section C](#section-C))
 
 3. Update the `data-raw/last-assess-years.csv`, grab the info from the latest stock assessments/stock assessment drafts in review.
 
-
 ### B. Analyse the assessment data {#section-B}
+
 The scripts contained in `analysis` summarise the **assessment data**. The following scripts should be run in order (as numbered) and should not need to be modified year to year. With the exception of updating `end_year` in `analysis/01-stitch-data.R` L.5 and `analysis/stock_df.R`.
 
-1. `analysis/01-stitch-data.R` can be run once the mcmc data files have been updated, collates the processed assessment data. **UPDATE THE `end_year` on L5**. This script also outputs a figure that you can use to check that all the B status ratios loaded properly and were updated properly before you fit the Stan model.
+1. `analysis/01-stitch-data.R` can be run once the MCMC data files have been updated, collates the processed assessment data. **UPDATE THE `end_year` at the top of the file**. This script also outputs a figure that you can use to check that all the B status ratios loaded properly and were updated properly before you fit the Stan model.
 
 2. `analysis/02-fit-models.R` compiles and fits the Stan model.
 
@@ -53,6 +52,7 @@ The scripts contained in `analysis` summarise the **assessment data**. The follo
 6. `analysis/06-values.R` --> archive
 
 ### C. Analyse the survey data {#section-C}
+
 The scripts contained in `analysis-survey` summarise the **survey data**. The following scripts should be run in order (as numbered) and should not need to be modified year to year. 
 
 If new species or assessment regions are added, you will need to update:
