@@ -105,7 +105,7 @@ d %>% saveRDS("data-raw/yelloweye-4b-mcmc.rds")
 # one 'Run':
 format_rowan_raw_data <- function(sheet1, sheet2, .species, .region) {
   b <- tidyr::pivot_longer(sheet1, cols = -1, names_to = "year", values_to = "B")
-  d <- dplyr::left_join(b, sheet2) %>% 
+  d <- dplyr::left_join(b, sheet2) %>%
     mutate(year = as.character(year))
   # ggplot(d, aes(year, B / Bmsy, group = sample)) + geom_line()
   mutate(d, species = .species, region = .region) %>%
@@ -586,7 +586,7 @@ format_rowan_mcmc_data_2023 <- function(sheet1, sheet2, .species, .region) {
     mutate(run = "1") %>%
     mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
     mutate(species = .species, region = .region) %>%
-    mutate(iter = as.numeric(as.factor(`...1`))) |> 
+    mutate(iter = as.numeric(as.factor(`...1`))) |>
     select(-"...1") |>
     filter(!is.na(bmsy))
 }
@@ -614,7 +614,7 @@ d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-
 format_rowan_mcmc_data_2023(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5DE") |>
 saveRDS("data-raw/pop-5de-mcmc.rds")
 
-# PCOD 5DE 2023  ----------------------------------------------------------------
+# PCOD 3CD 2023  ----------------------------------------------------------------
 d <- readRDS("data-raw/model-output/pcod-2023.rds")
 
 d |>
