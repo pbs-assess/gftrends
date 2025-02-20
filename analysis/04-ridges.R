@@ -9,7 +9,8 @@ d0 <- readr::read_rds("data-generated/all-mcmc.rds")
 # hack on bocaccio 2024 until Rowan sends data...
 bor <- readRDS("data-raw/bocaccio-bc-mcmc-summarized-2024.rds") |>
   filter(year == max(year))
-bor_mcmc <- data.frame(species = "bocaccio", region = "BC", year = bor$year, iter = 1:2e3, run = "1", busr = rnorm(2e3, mean = bor$log_busr, sd = bor$sd_log_busr), blrp = rnorm(2e3, mean = bor$log_blrp, sd = bor$sd_log_blrp), stock = "bocaccio_BC", stringsAsFactors = FALSE)
+set.seed(1)
+bor_mcmc <- data.frame(species = "bocaccio", region = "BC", year = bor$year, iter = 1:5e3, run = "1", busr = exp(rnorm(5e3, mean = bor$log_busr, sd = bor$sd_log_busr)), blrp = exp(rnorm(5e3, mean = bor$log_blrp, sd = bor$sd_log_blrp)), stock = "bocaccio_BC", stringsAsFactors = FALSE)
 d0 <- bind_rows(d0, bor_mcmc)
 
 # d |> group_by(species, region) |>
