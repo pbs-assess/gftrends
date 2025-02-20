@@ -68,7 +68,7 @@ dog <- readRDS("data-raw/dogfish-bc-mcmc-2023.rds") |>
 
 d <- bind_rows(d, dog)
 
-saveRDS(d, "data-generated/all-mcmc.rds")
+readr::write_rds(d, "data-generated/all-mcmc.rds")
 
 out <- d %>%
   group_by(species, region, year) %>%
