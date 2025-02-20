@@ -35,6 +35,8 @@ If the LRP and USR are not based on fractions of Bmsy, the dataframe will look l
 
 3. Update the `data-raw/last-assess-years.csv`, grab the info from the latest stock assessments/stock assessment drafts in review. `mcmc_year` is the last year MCMC samples in the raw data (functionally, this now gets ignored), `last_data_year` is the last year to which data was fitted, and `plus_one` is whether status in the assessment was focussed on the year *after* ("plus one") the last year of fitted data.
 
+4. Update the file `data-raw/surveys_to_assessments.csv` if needed.
+
 ### B. Analyse the assessment data {#section-B}
 
 The scripts contained in `analysis` summarise the **assessment data**. The following scripts should be run in order (as numbered) and should not need to be modified year to year. With the exception of updating `end_year` in `analysis/01-stitch-data.R` L.5 and `analysis/stock_df.R`.
