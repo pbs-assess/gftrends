@@ -2,7 +2,7 @@ library(dplyr)
 library(ggplot2)
 dir.create("data-generated", showWarnings = FALSE)
 
-end_year <- 2023
+end_year <- 2024
 message("Stitching up to year: ", end_year)
 
 # f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
@@ -27,7 +27,15 @@ message("Stitching up to year: ", end_year)
 #   theme(axis.title.x = element_blank())
 
 f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
+f <- f[!grepl("bocaccio-bc\\.rds", f)]
+f <- f[!grepl("bocaccio-bc-mcmc\\.rds", f)]
+## these get stitched on later:
+f <- f[!grepl("bocaccio-bc-mcmc-summarized-2024\\.rds", f)]
+f <- f[!grepl("dogfish-bc-2023\\.rds", f)]
+f <- f[!grepl("dogfish-bc-mcmc-2023\\.rds", f)]
 f <- f[grepl("-mcmc", f)]
+f
+
 .readRDS <- function(x) {
   res <- readRDS(x)
   stopifnot('`run` column missing' = 'run' %in% names(res))
@@ -54,7 +62,13 @@ d <- mutate(d, stock = paste(species, region)) %>%
   mutate(stock = gsub("-", "_", stock)) %>%
   select(species, region, stock, year, everything())
 
-saveRDS(d, "data-generated/all-mcmc.rds")
+dog <- readRDS("data-raw/dogfish-bc-mcmc-2023.rds") |>
+  rename(scen = model, blrp = b_lrp, busr = b_usr) |>
+  mutate(species = "north pacific spiny dogfish", region = "BC", stock = "north_pacific_spiny_dogfish_BC")
+
+d <- bind_rows(d, dog)
+
+readr::write_rds(d, "data-generated/all-mcmc.rds")
 
 out <- d %>%
   group_by(species, region, year) %>%
@@ -79,7 +93,9 @@ out <- d %>%
 
     .groups = "drop"
   )
-#out <- bind_rows(out, readRDS("data-raw/quillback-outside.rds"))
+
+out <- bind_rows(out, readRDS("data-raw/bocaccio-bc-mcmc-summarized-2024.rds"))
+out <- bind_rows(out, readRDS("data-raw/dogfish-bc-2023.rds") |> mutate(species = "north pacific spiny dogfish"))
 
 out <- mutate(out, stock = paste(species, region)) %>%
   mutate(stock = gsub(" ", "_", stock)) %>%
@@ -116,7 +132,8 @@ g <- out %>%
   coord_cartesian(xlim = c(1950, as.numeric(substr(Sys.Date(), 1, 4))), expand = FALSE) +
   ylab("B status ratio") +
   theme(axis.title.x = element_blank()) +
-  gfplot::theme_pbs()
+  gfplot::theme_pbs() +
+  geom_vline(xintercept = 2024, lty = 2, colour = "grey70")
 print(g)
 ggsave("figs/stitch-summary-plot.pdf", width = 11, height = 8)
 ggsave("figs/stitch-summary-plot.png", width = 11, height = 8)

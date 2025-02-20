@@ -1,9 +1,9 @@
 # Rowan was away, need to extract from the SAR
 # https://www.dfo-mpo.gc.ca/csas-sccs/Publications/ScR-RS/2024/2024_033-eng.html
 
-m <- readr::read_csv("data-raw/boc-2024-data-med.csv")
-l <- readr::read_csv("data-raw/boc-2024-data-lwr.csv")
-u <- readr::read_csv("data-raw/boc-2024-data-upr.csv")
+m <- readr::read_csv("data-raw/model-output/boc-2024-data-med.csv")
+l <- readr::read_csv("data-raw/model-output/boc-2024-data-lwr.csv")
+u <- readr::read_csv("data-raw/model-output/boc-2024-data-upr.csv")
 
 range(m$x)
 m$x[1] <- 1935

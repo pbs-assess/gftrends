@@ -511,35 +511,35 @@ d <- arrange(d, iter)
 d %>% ggplot(aes(year, b / bmsy, group = iter)) + geom_line(alpha = 0.05)
 d %>% saveRDS("data-raw/canary-bc-mcmc.rds")
 
-# arrowtooth 2023 -----------------------------------------------------
-
-d1 <- readRDS("data-raw/model-output/arrowtooth-2022-ssb.rds")
-d2 <- readRDS("data-raw/model-output/arrowtooth-2022-params.rds")
-d1$sample <- seq(1, nrow(d1))
-
-b <- tidyr::pivot_longer(d1, cols = seq(1, ncol(d1)-1), names_to = "year", values_to = "B")
-d2 <- data.frame(B0 = d2$sbo, sample = seq(1, length(d2$sbo)))
-
-.species <- "arrowtooth"
-.region <- "BC"
-d <- left_join(b, d2) %>%
-  mutate(year = as.integer(as.character(year))) %>%
-  rename(b = B) %>%
-  mutate(run = 1) %>%
-  mutate(lrp = 0.2 * B0, usr = 0.4 * B0) %>%
-  mutate(species = .species, region = .region) %>%
-  rename(iter = sample) |>
-  select(-B0)
-
-set.seed(123)
-iter_sample <- sample(unique(d$iter), 500L) # downsample
-d <- dplyr::filter(d, iter %in% iter_sample)
-d$iter <- as.numeric(as.factor(as.character(d$iter)))
-d <- arrange(d, iter)
-
-d %>% ggplot(aes(year, b / lrp, group = iter)) + geom_line(alpha = 0.05)
-d %>% ggplot(aes(year, b / usr, group = iter)) + geom_line(alpha = 0.05)
-d %>% saveRDS("data-raw/arrowtooth-bc-mcmc.rds")
+# # arrowtooth 2023 -----------------------------------------------------
+#
+# d1 <- readRDS("data-raw/model-output/arrowtooth-2022-ssb.rds")
+# d2 <- readRDS("data-raw/model-output/arrowtooth-2022-params.rds")
+# d1$sample <- seq(1, nrow(d1))
+#
+# b <- tidyr::pivot_longer(d1, cols = seq(1, ncol(d1)-1), names_to = "year", values_to = "B")
+# d2 <- data.frame(B0 = d2$sbo, sample = seq(1, length(d2$sbo)))
+#
+# .species <- "arrowtooth"
+# .region <- "BC"
+# d <- left_join(b, d2) %>%
+#   mutate(year = as.integer(as.character(year))) %>%
+#   rename(b = B) %>%
+#   mutate(run = 1) %>%
+#   mutate(lrp = 0.2 * B0, usr = 0.4 * B0) %>%
+#   mutate(species = .species, region = .region) %>%
+#   rename(iter = sample) |>
+#   select(-B0)
+#
+# set.seed(123)
+# iter_sample <- sample(unique(d$iter), 500L) # downsample
+# d <- dplyr::filter(d, iter %in% iter_sample)
+# d$iter <- as.numeric(as.factor(as.character(d$iter)))
+# d <- arrange(d, iter)
+#
+# d %>% ggplot(aes(year, b / lrp, group = iter)) + geom_line(alpha = 0.05)
+# d %>% ggplot(aes(year, b / usr, group = iter)) + geom_line(alpha = 0.05)
+# d %>% saveRDS("data-raw/arrowtooth-bc-mcmc.rds")
 
 # quillback 2023 ------------------------------------------------------
 
@@ -621,3 +621,43 @@ d |>
   select(year, blrp = b_lrp, busr = b_usr, iter) |>
   mutate(species = 'pcod', region = '3CD', run = 1) |>
   saveRDS("data-raw/pcod-3cd-mcmc.rds")
+
+# arrowtooth 2023 data SR, maybe be published ultimately in 2024 or 2025
+
+d <- readRDS("data-raw/model-output/arrowtooth-2023-data-SR-01-base-model.rds")
+if (FALSE) {
+  d$mcmc |> names()
+  d$mcmc$sbt |> str()
+  d$mcmc$proj |> str()
+  d$mcmccalcs |> names()
+  d$mcmccalcs$depl_quants
+}
+yrs <- as.numeric(colnames(d$mcmc$sbt))
+yrs <- yrs[-length(yrs)]
+sbo <- d$mcmccalcs$params$sbo
+sbt <- d$mcmc$sbt
+depletion <- matrix(ncol = length(yrs), nrow = nrow(sbt))
+blrp <- matrix(ncol = length(yrs), nrow = nrow(sbt))
+busr <- matrix(ncol = length(yrs), nrow = nrow(sbt))
+for (i in seq_along(yrs)) {
+  depletion[,i] <- sbt[,i,drop=TRUE] / sbo
+}
+for (i in seq_along(yrs)) {
+  blrp[,i] <- depletion[,i] / 0.2
+  busr[,i] <- depletion[,i] / 0.4
+}
+busr_long <- reshape2::melt(busr) |> rename(iter = Var1, year_i = Var2)
+blrp_long <- reshape2::melt(blrp) |> rename(iter = Var1, year_i = Var2)
+year_lu <- data.frame(year_i = seq_along(yrs), year = yrs)
+busr_long <- left_join(busr_long, year_lu)
+blrp_long <- left_join(blrp_long, year_lu)
+set.seed(123)
+# i <- sample(1:1000, size = 800)
+dd <- dplyr::bind_cols(select(busr_long, year, busr = value, iter), select(blrp_long, blrp = value))
+# dd <- dplyr::filter(dd, iter %in% i)
+dd$run <- 1
+dd$region <- "BC"
+dd$species <- "arrowtooth flounder"
+ggplot(dd, aes(factor(year), busr)) + geom_violin()
+ggplot(dd, aes(factor(year), blrp)) + geom_violin()
+saveRDS(dd, file = "data-raw/arrowtooth-bc-mcmc-2023.rds")

@@ -25,5 +25,6 @@ stock_df <- tibble::tribble(
   "widow_rockfish_BC", "Widow Rockfish BC", "Rockfish",
   "yelloweye_4B", "Yelloweye Rockfish 4B", "Rockfish",
   "yellowtail_BC", "Yellowtail Rockfish BC", "Rockfish",
-  "yellowmouth_BC", "Yellowmouth Rockfish BC", "Rockfish"
+  "yellowmouth_BC", "Yellowmouth Rockfish BC", "Rockfish",
+  "north_pacific_spiny_dogfish_BC", "Pacific Spiny Dogfish BC", "Sharks",
 )

@@ -32,9 +32,9 @@ m <- purrr::map(d, function(.d) {
   rstan::sampling(
     model,
     data = .d$stan_dat,
-    chains = 6L, iter = 1000L,
+    chains = 6L, iter = 1500L,
     pars = pars,
-    control = list(max_treedepth = 15L, adapt_delta = 0.9),
+    control = list(max_treedepth = 12L, adapt_delta = 0.95),
     seed = 84791
   )
   # rstan::read_stan_csv(fit$output_files())

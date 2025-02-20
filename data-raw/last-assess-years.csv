@@ -1,9 +1,9 @@
 species,region,last_mcmc_year,last_data_year,plus_one
 canary,BC,2023,2021,2
 arrowtooth,BC,2022,2021,1
-bocaccio,BC,2022,2021,1
+bocaccio,BC,2023,2023,0
 sablefish,BC,2022,2021,1
-yellowmouth,BC,2022,2020,2
+yellowmouth,BC,2022,2021,1
 pcod,3CD,2023,2022,1
 pcod,5abcd,2021,2020,1
 quillback,4B,2021,2021,0
@@ -22,6 +22,7 @@ lingcod,4B,2014,2014,0
 rocksole,5AB,2014,2013,1
 rocksole,5CD,2014,2013,1
 silvergray,BC,2014,2013,1
-pacific-ocean-perch,3CD,2023,2022,1
-pacific-ocean-perch,5ABC,2023,2022,1
-pacific-ocean-perch,5DE,2023,2022,1
+pacific-ocean-perch,3CD,2023,2023,1
+pacific-ocean-perch,5ABC,2023,2023,1
+pacific-ocean-perch,5DE,2023,2023,1
+north pacific spiny dogfish,BC,2023,2023,0

@@ -4,7 +4,7 @@ library(ggsidekick)
 library(ggridges)
 # source("analysis/stock_df.R")
 
-d0 <- readRDS("data-generated/all-mcmc.rds")
+d0 <- readr::read_rds("data-generated/all-mcmc.rds")
 
 # d |> group_by(species, region) |>
 #   summarise(last_mcmc_year = max(year)) |>
@@ -13,7 +13,8 @@ d0 <- readRDS("data-generated/all-mcmc.rds")
 d <- rename(d0, assess_stock = stock)
 
 lu <- readr::read_csv("data-raw/surveys_to_assessments.csv")
-d <- left_join(d, select(lu, -species, -region), by = join_by(assess_stock))
+
+d <- left_join(d, select(lu, -species, -region) |> distinct(), by = join_by(assess_stock))
 
 d <- mutate(d, stock_clean = paste(panel_title1, panel_title2))
 # d2 |> select(stock_clean) |> distinct()
