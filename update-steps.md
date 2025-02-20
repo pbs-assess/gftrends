@@ -33,7 +33,7 @@ If the LRP and USR are not based on fractions of Bmsy, the dataframe will look l
 
 2. Add any new stocks (if any) to the `analysis/stock_df.R` and `data-raw/species-regions-tofit.csv` (see [Section C](#section-C))
 
-3. Update the `data-raw/last-assess-years.csv`, grab the info from the latest stock assessments/stock assessment drafts in review.
+3. Update the `data-raw/last-assess-years.csv`, grab the info from the latest stock assessments/stock assessment drafts in review. `mcmc_year` is the last year MCMC samples in the raw data (functionally, this now gets ignored), `last_data_year` is the last year to which data was fitted, and `plus_one` is whether status in the assessment was focussed on the year *after* ("plus one") the last year of fitted data.
 
 ### B. Analyse the assessment data {#section-B}
 
