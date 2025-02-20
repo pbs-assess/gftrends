@@ -14,30 +14,32 @@ This repository contains:
 
 If the LRP and USR are based on fractions of Bmsy, process new data to get dataframe of the format: 
 
-| year | b    | bmsy | run | lrp | usr | species             | region | iter |
-| ---- | ---- | ---- | --- | --- | --- | ------------------- | ------ | ---- |
-| 2018 | 1370 | 523  | 1   | 209 | 418 | pacific-ocean-perch  | 3CD    | 1    |
-| 2019 | 1400 | 523  | 1   | 209 | 418 | pacific-ocean-perch  | 3CD    | 1    |
-| 2020 | 1530 | 523  | 1   | 209 | 418 | pacific-ocean-perch  | 3CD    | 1    |
+| year | b    | bmsy | lrp | usr | species             | region | iter | run |
+| year | b    | bmsy | lrp | usr | species             | region | iter | run |
+| ---- | ---- | ---- | --- | --- | ------------------- | ------ | ---- | --- |
+| 2018 | 1370 | 523  | 209 | 418 | pacific-ocean-perch  | 3CD    | 1    | 1   |
+| 2019 | 1400 | 523  | 209 | 418 | pacific-ocean-perch  | 3CD    | 1    | 1   |
+| 2020 | 1530 | 523  | 209 | 418 | pacific-ocean-perch  | 3CD    | 1    | 1   |
 
 If the LRP and USR are not based on fractions of Bmsy, the dataframe will look like this:
 
-| year | blrp | busr | iter | species   | region | run |
-| ---- | ---- | ---- | ---- | --------- | ------ | --- |
-| 1918 | 7.26 | 3.63 | 1    | quillback | 4B     | 1   |
-| 1918 | 9.00 | 4.50 | 2    | quillback | 4B     | 1   |
-| 1918 | 8.34 | 4.17 | 3    | quillback | 4B     | 1   |
+| year | blrp | busr | species   | region | iter | run |
+| year | blrp | busr | species   | region | iter | run |
+| ---- | ---- | ---- | --------- | ------ | ---- | --- |
+| 1918 | 7.26 | 3.63 | quillback | 4B     | 1    | 1   |
+| 1918 | 9.00 | 4.50 | quillback | 4B     | 2    | 1   |
+| 1918 | 8.34 | 4.17 | quillback | 4B     | 3    | 1   |
 
 
-- If there is no `run` column, you will need to add a placeholder, e.g., `mutate(run = 1)`
+- If there is no `run` column, you will need to add a placeholder, e.g., `mutate(run = 1)`; `run` has been used in the past as column for identifying different scenarios that are run if the final status is generated from an ensemble.
 
 
-2. Add any new stocks (if any) to the `analysis/stock_df.R` and `data-raw/species-regions-tofit.csv` (see [Section C](#section-C))
+2. Add any new stocks (if any) to the `analysis/stock_df.R` and `data-raw/species-regions-tofit.csv` (see [Section C](#a.-Adding-and-processing-the-latest-assessment-data))
 
 3. Update the `data-raw/last-assess-years.csv`, grab the info from the latest stock assessments/stock assessment drafts in review.
 
 
-### B. Analyse the assessment data {#section-B}
+### B. Analyse the assessment data
 The scripts contained in `analysis` summarise the **assessment data**. The following scripts should be run in order (as numbered) and should not need to be modified year to year. With the exception of updating `end_year` in `analysis/01-stitch-data.R` L.5 and `analysis/stock_df.R`.
 
 1. `analysis/01-stitch-data.R` can be run once the mcmc data files have been updated, collates the processed assessment data. **UPDATE THE `end_year` on L5**. This script also outputs a figure that you can use to check that all the B status ratios loaded properly and were updated properly before you fit the Stan model.
@@ -52,7 +54,7 @@ The scripts contained in `analysis` summarise the **assessment data**. The follo
 
 6. `analysis/06-values.R` --> archive
 
-### C. Analyse the survey data {#section-C}
+### C. Analyse the survey data
 The scripts contained in `analysis-survey` summarise the **survey data**. The following scripts should be run in order (as numbered) and should not need to be modified year to year. 
 
 If new species or assessment regions are added, you will need to update:
