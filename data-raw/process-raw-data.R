@@ -657,7 +657,7 @@ dd <- dplyr::bind_cols(select(busr_long, year, busr = value, iter), select(blrp_
 # dd <- dplyr::filter(dd, iter %in% i)
 dd$run <- 1
 dd$region <- "BC"
-dd$species <- "arrowtooth flounder"
+dd$species <- "arrowtooth"
 ggplot(dd, aes(factor(year), busr)) + geom_violin()
 ggplot(dd, aes(factor(year), blrp)) + geom_violin()
 saveRDS(dd, file = "data-raw/arrowtooth-bc-mcmc-2023.rds")
