@@ -32,6 +32,7 @@ f <- f[!grepl("bocaccio-bc-mcmc\\.rds", f)]
 ## these get stitched on later:
 f <- f[!grepl("bocaccio-bc-mcmc-summarized-2024\\.rds", f)]
 f <- f[!grepl("dogfish-bc-2023\\.rds", f)]
+f <- f[!grepl("dogfish-bc-mcmc-2023\\.rds", f)]
 f <- f[grepl("-mcmc", f)]
 f
 
@@ -61,6 +62,12 @@ d <- mutate(d, stock = paste(species, region)) %>%
   mutate(stock = gsub("-", "_", stock)) %>%
   select(species, region, stock, year, everything())
 
+dog <- readRDS("data-raw/dogfish-bc-mcmc-2023.rds") |>
+  rename(scen = model, blrp = b_lrp, busr = b_usr) |>
+  mutate(species = "north pacific spiny dogfish", region = "BC", stock = "north_pacific_spiny_dogfish_BC")
+
+d <- bind_rows(d, dog)
+
 saveRDS(d, "data-generated/all-mcmc.rds")
 
 out <- d %>%
@@ -88,7 +95,7 @@ out <- d %>%
   )
 
 out <- bind_rows(out, readRDS("data-raw/bocaccio-bc-mcmc-summarized-2024.rds"))
-out <- bind_rows(out, readRDS("data-raw/dogfish-bc-2023.rds"))
+out <- bind_rows(out, readRDS("data-raw/dogfish-bc-2023.rds") |> mutate(species = "north pacific spiny dogfish"))
 
 out <- mutate(out, stock = paste(species, region)) %>%
   mutate(stock = gsub(" ", "_", stock)) %>%

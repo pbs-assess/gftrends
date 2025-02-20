@@ -14,8 +14,8 @@ Longnose Skate,HBLL (inside),HBLL inside surveys,,"Sharks, skates, chimeras",Lon
 Longnose Skate,HBLL (outside),HBLL outside surveys,,"Sharks, skates, chimeras",Longnose Skate,BC (Outside)
 Longnose Skate,Synoptic trawl,Coast-wide trawl surveys,,"Sharks, skates, chimeras",Longnose Skate,BC (Outside)
 North Pacific Spiny Dogfish,HBLL (inside),HBLL inside surveys,,"Sharks, skates, chimeras",Pacific Spiny Dogfish,4B
-North Pacific Spiny Dogfish,HBLL (outside),HBLL outside surveys,,"Sharks, skates, chimeras",Pacific Spiny Dogfish,BC (Outside)
-North Pacific Spiny Dogfish,Synoptic trawl,Coast-wide trawl surveys,,"Sharks, skates, chimeras",Pacific Spiny Dogfish,BC (Outside)
+North Pacific Spiny Dogfish,HBLL (outside),HBLL outside surveys,"","Sharks, skates, chimeras",Pacific Spiny Dogfish,BC (Outside)
+North Pacific Spiny Dogfish,Synoptic trawl,Coast-wide trawl surveys,"north_pacific_spiny_dogfish_BC","Sharks, skates, chimeras",Pacific Spiny Dogfish,BC (Outside)
 Pacific Cod,Synoptic trawl,Both odd year trawl surveys,pcod_5abcd,Roundfish,Pacific Cod,5ABCD
 Pacific Cod,Synoptic trawl,WCVI only,pcod_3CD,Roundfish,Pacific Cod,3CD
 Pacific Ocean Perch,Synoptic trawl,QCS only,pacific_ocean_perch_5ABC,Slope rockfish,Pacific Ocean,Perch 5ABC

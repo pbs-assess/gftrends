@@ -211,7 +211,7 @@ g <- plot_data_sub %>%
   xlab("Year") +
   labs(color = "Ratio", fill = "Ratio") +
   ggsidekick::theme_sleek() +
-  theme(legend.position = c(0.13, 0.65), plot.margin = margin(t = 8, r = 13, b = 1, l = 2, unit = "pt")) +
+  theme(legend.position.inside = c(0.13, 0.65), plot.margin = margin(t = 8, r = 13, b = 1, l = 2, unit = "pt")) +
   scale_colour_viridis_d(
     labels = c(expression(B / LRP), expression(B / USR), expression(B / B[MSY])),
     option = "A", end = 0.85, direction = 1
@@ -221,7 +221,6 @@ g <- plot_data_sub %>%
     option = "A", end = 0.85, direction = 1
   ) +
   geom_hline(yintercept = 1, lty = 2, col = "grey60")
-
 
 ggsave("figs/ts-summary.pdf", width = 4.5, height = 4)
 ggsave("figs/ts-summary.png", width = 4.5, height = 4)
