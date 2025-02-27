@@ -21,7 +21,7 @@ Pacific Cod,Synoptic trawl,WCVI only,pcod_3CD,Roundfish,Pacific Cod,3CD
 Pacific Ocean Perch,Synoptic trawl,QCS only,pacific_ocean_perch_5ABC,Slope rockfish,Pacific Ocean,Perch 5ABC
 Pacific Ocean Perch,Synoptic trawl,WCHG only,pacific_ocean_perch_5DE,Slope rockfish,Pacific Ocean,Perch 5DE
 Pacific Ocean Perch,Synoptic trawl,WCVI only,pacific_ocean_perch_3CD,Slope rockfish,Pacific Ocean,Perch 3CD
-Petrale Sole,Synoptic trawl,Coast-wide trawl surveys,,Flatfish,Petrale Sole,BC
+Petrale Sole,Synoptic trawl,Coast-wide trawl surveys,petrale_sole_BC,Flatfish,Petrale Sole,BC
 Quillback Rockfish,HBLL (inside),HBLL inside surveys,quillback_4B,Inshore rockfish,Quillback Rockfish,4B (VI Inside)
 Quillback Rockfish,HBLL (outside),HBLL outside surveys,quillback_BC_Outside,Inshore rockfish,Quillback Rockfish,BC (Outside)
 Redstripe Rockfish,Synoptic trawl,QCS & WCVI,redstripe_rockfish_BC_South,Shelf rockfish,Redstripe Rockfish,BC S

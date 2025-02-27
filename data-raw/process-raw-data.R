@@ -661,3 +661,12 @@ dd$species <- "arrowtooth"
 ggplot(dd, aes(factor(year), busr)) + geom_violin()
 ggplot(dd, aes(factor(year), blrp)) + geom_violin()
 saveRDS(dd, file = "data-raw/arrowtooth-bc-mcmc-2023.rds")
+
+# petrale 2024
+d0 <- readRDS("data-raw/model-output/Petrale_Sole_output-2024.rds")
+
+d <- d0 |>
+  select(year, run = M, b, bmsy, lrp, usr, species, region) |>
+  mutate(year = as.numeric(year), species = "petrale sole", region = "BC", run = as.integer(as.factor(run))) |>
+  filter(!is.na(lrp)) ## Not sure about this
+saveRDS(d, file = "data-raw/petrale-sole-bc-mcmc-2024.rds")
