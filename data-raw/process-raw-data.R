@@ -667,27 +667,20 @@ saveRDS(dd, file = "data-raw/arrowtooth-bc-mcmc-2023.rds")
 d0 <- readRDS("data-raw/model-output/Petrale_Sole_output-2024.rds")
 
 d <- d0 |>
-  select(year, run = M, b, bmsy, lrp, usr, species, region) |>
-  mutate(year = as.numeric(year), species = "petrale sole", region = "BC", run = as.integer(as.factor(run))) |>
-  filter(!is.na(lrp)) ## Not sure about this
+  select(year, run = M, b, bmsy, lrp, usr, species, region, iter) |>
+  mutate(year = as.numeric(year), species = "petrale sole", region = "BC", run = as.integer(as.factor(run))) |> 
+  filter(!is.na(lrp)) ## Not sure about this FIXME
+
+# glimpse(d)
+# mean(is.na(d$lrp))
+# mean(is.na(d$usr))
+# mean(is.na(d$bmsy))
+# group_by(d, run) |> summarise(mean_na = mean(is.na(bmsy)))
+
+unique(d$iter)
+iter_sample <- sample(unique(d$iter), 2000L) # downsample
+d <- filter(d, iter %in% iter_sample)
+group_by(d, year) |> summarise(n = n()) |> as.data.frame()
+
 saveRDS(d, file = "data-raw/petrale-sole-bc-mcmc-2024.rds")
 
-## # petrale coastwide 2024 (Sean version)------------------
-## d <- readRDS("data-raw/model-output/petrale-bc-2024.rds")
-## d <- rename(d, run = M)
-## d$region <- "BC"
-## d$species <- "petrale sole"
-## max(d$year)
-## glimpse(d)
-## # downsample
-## set.seed(42)
-## d$year <- as.numeric(d$year)
-## 
-## length(unique(filter(d, year == 2024)$iter))
-## length(unique(filter(d, year == 2020)$iter))
-## length(unique(filter(d, year == 2020)$iter))
-## iter_sample <- sample(unique(d$iter), 1000L) # downsample
-## d <- filter(d, iter %in% iter_sample)
-## 
-## d |> ggplot(aes(year, b / bmsy, group = year)) +
-##   geom_violin()
