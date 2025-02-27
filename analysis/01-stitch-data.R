@@ -95,7 +95,10 @@ out <- d %>%
   )
 
 out <- bind_rows(out, readRDS("data-raw/bocaccio-bc-mcmc-summarized-2024.rds"))
-# out <- bind_rows(out, readRDS("data-raw/dogfish-bc-2023.rds") |> mutate(species = "north pacific spiny dogfish"))
+
+# dogfish mcmc was only for 2023 above; drop it and use the MLE-based versions:
+out <- filter(out, species != "north pacific spiny dogfish")
+out <- bind_rows(out, readRDS("data-raw/dogfish-bc-2023.rds") |> mutate(species = "north pacific spiny dogfish"))
 
 out <- mutate(out, stock = paste(species, region)) %>%
   mutate(stock = gsub(" ", "_", stock)) %>%
