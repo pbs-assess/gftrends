@@ -316,6 +316,7 @@ converged <- function(fit) {
 
 if (!is.null(m)) {
   if (converged(m)) {
+    survey_type <- type
     fitted_yrs <- sort(unique(m$data$year))
     nd <- make_grid(nd_all, years = fitted_yrs)
 
@@ -336,10 +337,9 @@ if (!is.null(m)) {
     
     p1 <- predict(m, newdata = nd, return_tmb_object = TRUE)
     i1 <- get_index(p1, area = nd$area, bias_correct = TRUE)
-    
     i1 <- i1 %>% mutate(
       species = species,
-      type = type,
+      type = survey_type,
       region = region,
       surveys = paste(unique(positive_sets$survey_abbrev), collapse = ", "),
       ssids = paste(unique(positive_sets$survey_series_id), collapse = ", "),
