@@ -2,7 +2,7 @@
 # remotes::install_github("pbs-assess/sdmTMB", ref = "delta")
 library(dplyr)
 
-source("analysis-survey/make-grids.R")
+source("analysis-survey/00-make-grids.R")
 
 to_fit <- readr::read_csv('data-raw/species-regions-tofit.csv')
 
