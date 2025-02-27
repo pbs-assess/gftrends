@@ -662,6 +662,7 @@ ggplot(dd, aes(factor(year), busr)) + geom_violin()
 ggplot(dd, aes(factor(year), blrp)) + geom_violin()
 saveRDS(dd, file = "data-raw/arrowtooth-bc-mcmc-2023.rds")
 
+
 # petrale 2024
 d0 <- readRDS("data-raw/model-output/Petrale_Sole_output-2024.rds")
 
@@ -670,3 +671,23 @@ d <- d0 |>
   mutate(year = as.numeric(year), species = "petrale sole", region = "BC", run = as.integer(as.factor(run))) |>
   filter(!is.na(lrp)) ## Not sure about this
 saveRDS(d, file = "data-raw/petrale-sole-bc-mcmc-2024.rds")
+
+## # petrale coastwide 2024 (Sean version)------------------
+## d <- readRDS("data-raw/model-output/petrale-bc-2024.rds")
+## d <- rename(d, run = M)
+## d$region <- "BC"
+## d$species <- "petrale sole"
+## max(d$year)
+## glimpse(d)
+## # downsample
+## set.seed(42)
+## d$year <- as.numeric(d$year)
+## 
+## length(unique(filter(d, year == 2024)$iter))
+## length(unique(filter(d, year == 2020)$iter))
+## length(unique(filter(d, year == 2020)$iter))
+## iter_sample <- sample(unique(d$iter), 1000L) # downsample
+## d <- filter(d, iter %in% iter_sample)
+## 
+## d |> ggplot(aes(year, b / bmsy, group = year)) +
+##   geom_violin()
