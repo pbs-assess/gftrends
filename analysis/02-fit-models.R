@@ -5,6 +5,7 @@ source("analysis/utils.R")
 model <- rstan::stan_model("analysis/rw-ss.stan")
 
 dat <- readRDS("data-generated/b-status-dat.rds")
+
 dat[dat$species == "sablefish","sd_log_bbmsy"] <-
   dat[dat$species == "sablefish","sd_log_bbmsy"] * 2
 dat[dat$species == "sablefish","sd_log_blrp"] <-

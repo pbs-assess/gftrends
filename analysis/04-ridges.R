@@ -141,7 +141,7 @@ g <- data_plot %>%
     lty = 2, lwd = 0.45, colour = "grey55"
   ) +
   facet_wrap(vars(ratio), labeller = label_parsed, scales = "free_x") +
-  geom_density_ridges2(scale = 4, alpha = 0.7, size = 0.4, colour = "grey30") +
+  geom_density_ridges2(scale = 4, alpha = 0.7, colour = "grey30") +
   scale_x_continuous(trans = "sqrt", breaks = c(0.2, 1, 2, 5, 10), labels = scales_fun) +
   # scale_fill_viridis_c(direction = 1, option = "D", end = 1) +
   scale_fill_viridis_c(direction = -1, option = "B", end = 0.71) +
