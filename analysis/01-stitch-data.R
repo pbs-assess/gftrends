@@ -137,7 +137,6 @@ g <- out %>%
   theme(axis.title.x = element_blank()) +
   gfplot::theme_pbs() +
   geom_vline(xintercept = 2024, lty = 2, colour = "grey70")
-print(g)
 ggsave("figs/stitch-summary-plot.pdf", width = 11, height = 8)
 ggsave("figs/stitch-summary-plot.png", width = 11, height = 8)
 

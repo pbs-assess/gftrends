@@ -222,7 +222,7 @@ g <- plot_data_sub %>%
   ) +
   geom_hline(yintercept = 1, lty = 2, col = "grey60")
 
-ggsave("figs/ts-summary.pdf", width = 4.5, height = 4)
-ggsave("figs/ts-summary.png", width = 4.5, height = 4)
+ggsave("figs/ts-summary.pdf", width = 5.5, height = 3.9)
+ggsave("figs/ts-summary.png", width = 5.5, height = 3.9)
 
 saveRDS(plot_data, "data-generated/x_t_posterior.rds")
