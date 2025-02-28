@@ -317,8 +317,9 @@ converged <- function(fit) {
 if (!is.null(m)) {
   if (converged(m)) {
     survey_type <- type
-    fitted_yrs <- sort(unique(m$data$year))
-    nd <- make_grid(nd_all, years = fitted_yrs)
+    # fitted_yrs <- sort(unique(m$data$year))
+    yrs <- min(m$data$year):max(m$data$year)
+    nd <- make_grid(nd_all, years = yrs)
 
     if (type == "Synoptic trawl") {
       nd <- filter(nd, survey %in% unique(positive_sets$survey_abbrev))

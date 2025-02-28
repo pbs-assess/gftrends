@@ -1,5 +1,6 @@
 library(dplyr)
 library(ggplot2)
+library(tidyr)
 
 d <- readRDS("data-generated/assessments-surveys-joined.rds")
 d <- mutate(d, gear_type = ifelse(!grepl("trawl", gear), "Longline", "Trawl"))
@@ -7,11 +8,13 @@ d <- mutate(d, facet_label = paste(panel_title1, panel_title2, sep = "\n"))
 
 gg <- d %>%
   ggplot() +
-  geom_ribbon(aes(year,
-    ymin = q0.05_blrp / mean_blrp, ymax = q0.95_blrp / mean_blrp,
-    group = stock_clean
-  ), fill = "black", alpha = 0.2) +
-  geom_line(aes(year, exp(log_blrp) / mean_blrp, group = stock_clean),
+  geom_ribbon(data = d |> drop_na(log_blrp),
+    aes(year, ymin = q0.05_blrp / mean_blrp, ymax = q0.95_blrp / mean_blrp,
+        group = stock_clean),
+    fill = "black", alpha = 0.2
+  ) +
+  geom_line(data = d |> drop_na(log_blrp),
+    aes(year, exp(log_blrp) / mean_blrp, group = stock_clean),
     linetype = 1, alpha = 0.4, colour = "black"
   ) +
   geom_line(aes(year, est / mean_est, colour = type, lty = gear_type)) +
