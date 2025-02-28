@@ -662,25 +662,47 @@ ggplot(dd, aes(factor(year), busr)) + geom_violin()
 ggplot(dd, aes(factor(year), blrp)) + geom_violin()
 saveRDS(dd, file = "data-raw/arrowtooth-bc-mcmc-2023.rds")
 
+## # petrale 2024
+## d0 <- readRDS("data-raw/model-output/Petrale_Sole_output-2024.rds")
+## 
+## d <- d0 |>
+##   select(year, run = M, b, bmsy, lrp, usr, species, region, iter) |>
+##   mutate(year = as.numeric(year), species = "petrale sole", region = "BC", run = as.integer(as.factor(run))) |> 
+##   filter(!is.na(lrp)) ## Not sure about this FIXME
+## 
+## iter_sample <- sample(unique(d$iter), 2000L) # downsample
+## 
+## d <- filter(d, iter %in% iter_sample)
+## group_by(d, year) |> summarise(n = n()) |> as.data.frame()
+## 
+## saveRDS(d, file = "data-raw/petrale-sole-bc-mcmc-2024.rds")
 
-# petrale 2024
-d0 <- readRDS("data-raw/model-output/Petrale_Sole_output-2024.rds")
+# petrale 2024 take 2
 
-d <- d0 |>
-  select(year, run = M, b, bmsy, lrp, usr, species, region, iter) |>
-  mutate(year = as.numeric(year), species = "petrale sole", region = "BC", run = as.integer(as.factor(run))) |> 
-  filter(!is.na(lrp)) ## Not sure about this FIXME
-
-# glimpse(d)
-# mean(is.na(d$lrp))
-# mean(is.na(d$usr))
-# mean(is.na(d$bmsy))
-# group_by(d, run) |> summarise(mean_na = mean(is.na(bmsy)))
-
-unique(d$iter)
-iter_sample <- sample(unique(d$iter), 2000L) # downsample
-d <- filter(d, iter %in% iter_sample)
-group_by(d, year) |> summarise(n = n()) |> as.data.frame()
+d1 <- readr::read_csv("data-raw/model-output/petrale_nuisanceposteriors_med.csv")
+d2 <- readr::read_csv("data-raw/model-output/petrale_nuisanceposteriors_low.csv")
+d3 <- readr::read_csv("data-raw/model-output/petrale_nuisanceposteriors_high.csv")
+d0 <- bind_rows(list(d1, d2, d3))
+s <- select(d0, num_range("SSB_", 1938:2024)) |> mutate(iter = seq_len(n()))
+b <- tidyr::pivot_longer(s, cols = -iter) |>
+  mutate(year = as.numeric(gsub("SSB_", "", name))) |>
+  rename(b = value) |>
+  select(-name)
+bmsy <- select(d0, SSB_MSY) |> mutate(iter = seq_len(n()))
+bmsy <- tidyr::pivot_longer(bmsy, cols = -iter) |>
+  rename(bmsy = value) |>
+  select(-name)
+set.seed(1)
+iter_sample <- sample(unique(b$iter), 2000L) # downsample
+bmsy <- filter(bmsy, iter %in% iter_sample)
+stopifnot(sum(is.na(bmsy$bmsy)) == 0L)
+b <- filter(b, iter %in% iter_sample)
+d <- left_join(b, bmsy)
+d <- mutate(d, lrp = bmsy * 0.4, usr = bmsy * 0.8, species = "petrale sole", region = "BC", run = 1)
+glimpse(d)
 
 saveRDS(d, file = "data-raw/petrale-sole-bc-mcmc-2024.rds")
-
+# ggplot(d, aes(factor(year), b / usr)) +
+#   geom_violin()
+# ggplot(dd, aes(factor(year), b / blrp)) +
+#   geom_violin()
