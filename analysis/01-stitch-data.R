@@ -94,7 +94,7 @@ out <- d %>%
     .groups = "drop"
   )
 
-out <- bind_rows(out, readRDS("data-raw/bocaccio-bc-mcmc-summarized-2024.rds"))
+# out <- bind_rows(out, readRDS("data-raw/bocaccio-bc-mcmc-summarized-2024.rds"))
 
 # dogfish mcmc was only for 2023 above; drop it and use the MLE-based versions:
 out <- filter(out, species != "north pacific spiny dogfish")
