@@ -715,6 +715,12 @@ d <- b |>
   pivot_longer(cols = -Run.Sample, names_to = "year", values_to = "b") |>
   left_join(bmsy) |>
   rename(run = "Run.Sample", bmsy = "Bmsy") |>
-  mutate(lrp = bmsy * 0.4, usr = bmsy * 0.8, species = "bocaccio", region = "BC", run = as.numeric(as.factor(run)))
+  mutate(year = as.numeric(year),
+    lrp = bmsy * 0.4,
+    usr = bmsy * 0.8,
+    species = "bocaccio",
+    region = "BC",
+    run = as.numeric(as.factor(run))
+  )
 
 saveRDS(d, file = "data-raw/bocaccio-bc-mcmc-2024.rds")
