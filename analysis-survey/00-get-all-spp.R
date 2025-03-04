@@ -39,15 +39,15 @@ for (i in species_list) {
 all_surv <- do.call("rbind", all_spp_trawl)
 saveRDS(all_surv, file = "data-raw/all_surv_catch.rds")
 
-# Get bait counts so that the nbinom2() with hook competition can be used. 
-ll_hook_data <- gfdata::get_ll_hook_data(species = 'yelloweye rockfish', ssid = c(22, 36, 39, 40)) 
+# Get bait counts so that the nbinom2() with hook competition can be used.
+ll_hook_data <- gfdata::get_ll_hook_data(species = 'yelloweye rockfish', ssid = c(22, 36, 39, 40))
 
 bait_counts <- ll_hook_data |>
   dplyr::select(ssid, year, fishing_event_id, count_bait_only)
 saveRDS(bait_counts, file.path(path, "bait-counts.rds"))
 
 # Get survey locations for current year for presentation plot
-select_year <- 2023
+select_year <- 2024
 
 survey_locations <- gfdata::run_sql(database = "GFBioSQL",
   glue::glue_sql("SELECT
