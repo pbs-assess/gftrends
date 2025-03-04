@@ -16,16 +16,36 @@ library(dplyr)
 library(ggplot2)
 
 # Values to update every year:
-end_year <- 2023
-surveys_run <- paste("HBLL outside north", 
-                     "HBLL inside north", 
-                     "synoptic HS", 
-                     "synoptic QCS", 
+end_year <- 2024
+
+all_data <- readRDS(here::here("data-raw/all_surv_catch.rds")) 
+
+all_data |> 
+  filter(year == max_year) |>
+  distinct(year, survey_abbrev)
+
+surveys_run <- paste("synoptic WCVI", 
+                     "synoptic WCHG", 
+                     "HBLL outside south", 
+                     "HBLL inside south", 
                      "and Sablefish", sep = ", ")
+
+updated_assessments <- c(
+  "coastwide Arrowtooth Flounder",
+  "coastwide Petrale Sole",
+  "outside Pacific Spiny Dogfish",
+  "coastwide Bocaccio"
+  )
+
+n_updates <- length(updated_assessments)
+
+# coastwide Arrowtooth Flounder, coastwide Petrale Sole, outside Pacific Spiny Dogfish, coastwide Bocaccio
+
+# including five updated assessments (Pacific Ocean Perch 3CD, 5ABC, 5DE; outside Quillback Rockfish; Pacific Cod 3CD)
 
 ind <- readRDS(here::here("data-generated", "survey-dat-minimal.rds"))
 
-# Calculate approximate trend bin (based on change  ∆10% 
+# Calculate approximate trend bin (based on change  ∆10% per decade)
 ind_trend_text <- 
   ind |> 
   distinct(species, region, slope) |>
@@ -44,6 +64,12 @@ refpt <- readRDS(here::here("data-generated/p-thresh.rds"))
 n_assessed <- nrow(refpt)
 n_analysed <- nrow(distinct(ind, species, region))
 
+# For reference to add in section 29.6:
+# n_below_lrp <- sum(refpt$p_lrp >= 0.05)
+refpt[refpt$p_lrp >= 0.05, ] # which stocks
+
+n_below_usr <- sum(refpt$p_usr >= 0.25)
+refpt[refpt$p_usr >= 0.25, ]
 
 # Section 29.4
 ts_mcmc <- readRDS(here::here("data-generated/x_t_posterior.rds")) |>
@@ -71,7 +97,6 @@ prop_under_usr <- count(refpt, p_usr >= 0.25) |>
   pull('prop')
 
 ```
-
 ### Highlights
 
 * Average groundfish stock status declined from 1950 to around 2000, and following management changes, has remained relatively stable since then. 
