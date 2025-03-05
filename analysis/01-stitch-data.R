@@ -27,10 +27,7 @@ message("Stitching up to year: ", end_year)
 #   theme(axis.title.x = element_blank())
 
 f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
-f <- f[!grepl("bocaccio-bc\\.rds", f)]
-f <- f[!grepl("bocaccio-bc-mcmc\\.rds", f)]
-## these get stitched on later:
-f <- f[!grepl("bocaccio-bc-mcmc-summarized-2024\\.rds", f)]
+# these get stitched on later:
 f <- f[!grepl("dogfish-bc-2023\\.rds", f)]
 f <- f[!grepl("dogfish-bc-mcmc-2023\\.rds", f)]
 f <- f[grepl("-mcmc", f)]
@@ -94,8 +91,6 @@ out <- d %>%
     .groups = "drop"
   )
 
-out <- bind_rows(out, readRDS("data-raw/bocaccio-bc-mcmc-summarized-2024.rds"))
-
 # dogfish mcmc was only for 2023 above; drop it and use the MLE-based versions:
 out <- filter(out, species != "north pacific spiny dogfish")
 out <- bind_rows(out, readRDS("data-raw/dogfish-bc-2023.rds") |> mutate(species = "north pacific spiny dogfish"))
@@ -104,7 +99,6 @@ out <- mutate(out, stock = paste(species, region)) %>%
   mutate(stock = gsub(" ", "_", stock)) %>%
   mutate(stock = gsub("-", "_", stock)) %>%
   select(species, region, stock, year, everything())
-# out <- filter(out, !(species == "bocaccio" & year >= 2021))
 
 g <- out %>%
   ggplot(aes(
