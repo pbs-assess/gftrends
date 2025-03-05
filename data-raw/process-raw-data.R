@@ -664,17 +664,17 @@ saveRDS(dd, file = "data-raw/arrowtooth-bc-mcmc-2023.rds")
 
 ## # petrale 2024
 ## d0 <- readRDS("data-raw/model-output/Petrale_Sole_output-2024.rds")
-## 
+##
 ## d <- d0 |>
 ##   select(year, run = M, b, bmsy, lrp, usr, species, region, iter) |>
-##   mutate(year = as.numeric(year), species = "petrale sole", region = "BC", run = as.integer(as.factor(run))) |> 
+##   mutate(year = as.numeric(year), species = "petrale sole", region = "BC", run = as.integer(as.factor(run))) |>
 ##   filter(!is.na(lrp)) ## Not sure about this FIXME
-## 
+##
 ## iter_sample <- sample(unique(d$iter), 2000L) # downsample
-## 
+##
 ## d <- filter(d, iter %in% iter_sample)
 ## group_by(d, year) |> summarise(n = n()) |> as.data.frame()
-## 
+##
 ## saveRDS(d, file = "data-raw/petrale-sole-bc-mcmc-2024.rds")
 
 # petrale 2024 take 2
@@ -706,4 +706,34 @@ saveRDS(d, file = "data-raw/petrale-sole-bc-mcmc-2024.rds")
 #   geom_violin()
 # ggplot(dd, aes(factor(year), b / blrp)) +
 #   geom_violin()
+
+# bocaccio 2024 -------------------------------------------------------
+b <- readr::read_csv("data-raw/model-output/BOR-CST-2024-MCMC(B)-forSean.csv")
+bmsy <- readr::read_csv("data-raw/model-output/BOR-CST-2024-MCMC(Bmsy)-forSean.csv")
+
+d <- b |>
+  pivot_longer(cols = -Run.Sample, names_to = "year", values_to = "b") |>
+  left_join(bmsy) |>
+  rename(iter = "Run.Sample", bmsy = "Bmsy") |>
+  mutate(
+    year = as.numeric(year),
+    lrp = bmsy * 0.4,
+    usr = bmsy * 0.8,
+    species = "bocaccio",
+    region = "BC",
+    iter = as.numeric(as.factor(iter))
+  ) |>
+  mutate(run = "1")
+
+set.seed(1)
+iter_sample <- sample(unique(d$iter), 2000L) # downsample
+d <- filter(d, iter %in% iter_sample)
+
+if (FALSE) {
+  ggplot(d, aes(year, b/bmsy, group = iter)) + geom_line(alpha = 0.1)
+  ggplot(d, aes(year, b/lrp, group = iter)) + geom_line(alpha = 0.1)
+  ggplot(d, aes(year, b/usr, group = iter)) + geom_line(alpha = 0.1)
+}
+
+saveRDS(d, file = "data-raw/bocaccio-bc-mcmc-2024.rds")
 
