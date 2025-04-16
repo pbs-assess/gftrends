@@ -13,6 +13,8 @@ d <- readRDS("data-generated/b-ratio-fits-data.rds")
 dat <- readRDS("data-generated/b-status-dat.rds")
 dm <- readRDS("data-generated/all-mcmc.rds")
 
+year_lim <- max(dm$year)
+
 plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.95,
   # .type = c("Rockfish", "Flatfish", "Cod", "Cod allies"), # in case you want a subset
   ylab = "", ylim = c(0, 10)
@@ -70,7 +72,7 @@ plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.
     scale_colour_viridis_c(direction = 1, option = "D", end = 0.82) +
     scale_fill_viridis_c(direction = 1, option = "D", end = 0.82) +
     ggsidekick::theme_sleek() +
-    coord_cartesian(xlim = c(1950, 2022), ylim = ylim, expand = FALSE) +
+    coord_cartesian(xlim = c(1950, year_lim), ylim = ylim, expand = FALSE) +
     geom_hline(yintercept = 1, lty = 2, col = "grey40") +
     # scale_y_log10() +
     facet_wrap(~stock_clean, ncol = 5L) +
@@ -108,7 +110,6 @@ stock_df <- stock_df %>% mutate(stock_clean = factor(stock_clean,
 
 dat2 <- dm %>%
   group_by(species, region) %>%
-  filter(year <= 2022) %>%
   filter(year == max(year)) %>%
   # sample_n(2000L, replace = TRUE) %>%
   mutate(

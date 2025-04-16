@@ -16,7 +16,8 @@ n_assessed
 n_below_usr <- sum(refpt$p_usr >= 0.25)
 n_below_usr
 # 1/5 assessed stocks had a > 25% chance of being in “Cautious Zone”.
-n_above_usr <- sum(1 - refpt$p_usr >= 0.75)
+# Note: p_usr = mean(busr < 1)
+n_above_usr <- sum(refpt$p_usr >= 0.75)
 n_above_usr
 # 3/4 of assessed stocks had a high (>75%) probability of being in “healthy zone”.
 
@@ -157,10 +158,10 @@ d <- mutate(d, source = ifelse(is.na(est), "Assessment", gear)) %>%
 
 plot_pres_trends <- function(data, ncol, base_size = 16) {
   ggplot(data = data) +
-  geom_ribbon(aes(year, ymin = q0.05_blrp / mean_blrp, ymax = q0.95_blrp / mean_blrp),
+  geom_ribbon(data = data |> drop_na(log_blrp), aes(year, ymin = q0.05_blrp / mean_blrp, ymax = q0.95_blrp / mean_blrp),
     fill = "black", alpha = 0.2
   ) +
-  geom_line(aes(year, exp(log_blrp) / mean_blrp),
+  geom_line(data = data |> drop_na(log_blrp), aes(year, exp(log_blrp) / mean_blrp),
     linetype = 1, alpha = 0.4, linewidth = 1.1
   ) +
   geom_line(aes(year, est / mean_est, colour = source), , linewidth = 1.1) +
@@ -236,7 +237,7 @@ g <- d %>%
   theme(legend.position = "inside",
     legend.position.inside = c(0.85, 0.1))
 g
-ggsave(file.path(pres_dir, "slope-rockfish_assesses-indices-join.png"), width = 9.2, height = 6)
+ggsave(file.path(pres_dir, "slope-rockfish_assesses-indices-join.png"), width = 9.2, height = 6.3)
 
 g <- d %>%
   filter(type == "Flatfish") %>%
@@ -245,10 +246,10 @@ g <- d %>%
   theme(legend.position = "inside",
     legend.position.inside = c(0.7, 0.1))
 g
-ggsave(file.path(pres_dir, "flatfish_assesses-indices-join.png"), width = 9.2, height = 6)
+ggsave(file.path(pres_dir, "flatfish_assesses-indices-join.png"), width = 9.2, height = 6.3)
 
 g <- d %>%
-  filter(type == "Sharks, skates, chimeras") %>%
+  filter(type == "Sharks, skates, chimeras") |>
   mutate(facet_label = forcats::fct_reorder(facet_label, -slope)) %>%
   plot_pres_trends(ncol = 3, base_size = 16) +
   scale_x_continuous(expand = c(0, 0), breaks = c(1960, 1980, 2000, 2020), limits = c(1960, 2023)) +
@@ -256,7 +257,7 @@ g <- d %>%
     legend.position.inside = c(0.7, 0.1),
     strip.clip = "off")
 g
-ggsave(file.path(pres_dir, "sharks-skates-chimeras_assesses-indices-join.png"), width = 9, height = 6)
+ggsave(file.path(pres_dir, "sharks-skates-chimeras_assesses-indices-join.png"), width = 9, height = 6.3)
 
 
 
@@ -276,22 +277,23 @@ survey_labels <- readr::read_csv("data-raw/survey-set-names.csv") |>
   select(survey_series_id, map_label) |>
   distinct() |>
   mutate(map_label = ifelse(map_label == "Dogfish", "Dogfish gear comparison", map_label)) |>
-  mutate(map_label = ifelse(map_label == "Multispecies Small-mesh Bottom Trawl", "Small-mesh Multispecies Bottom Trawl", map_label))
+  mutate(map_label = ifelse(map_label == "Multispecies Small-mesh Bottom Trawl", "Small-mesh Multispecies Bottom Trawl", map_label)) |>
+  mutate(map_label = ifelse(map_label == "Hard Bottom Longline Hook", "Hard Bottom Longline (HBLL)", map_label))
 
 survey_list <- c(
-  "Dogfish gear comparison",
-  "Hard Bottom Longline Hook",
-  #"IPHC FISS", # Omit for now because the data are not found in GFBio every year
-  "Small-mesh Multispecies Bottom Trawl",
-  "Pacific Hake Hydroacoustic",
+  "Synoptic Bottom Trawl",
+  "Hard Bottom Longline (HBLL)",
   "Sablefish Research and Assessment",
-  "SOGERI Acoustic",
-  "Synoptic Bottom Trawl"
+  "Small-mesh Multispecies Bottom Trawl",
+  "Dogfish gear comparison",
+  #"IPHC FISS", # Omit for now because the data are not found in GFBio every year
+  "Pacific Hake Hydroacoustic",
+  "SOGERI Acoustic"
 )
 
 shapes <- c(
   "Dogfish gear comparison" = 8,
-  "Hard Bottom Longline Hook" = 17,
+  "Hard Bottom Longline (HBLL)" = 17,
   "Small-mesh Multispecies Bottom Trawl" = 15,
   "Pacific Hake Hydroacoustic" = 19,
   "Sablefish Research and Assessment" = 7,
@@ -301,7 +303,7 @@ shapes <- c(
 
 survey_cols <- c(
   "Synoptic Bottom Trawl" = "#7570B3",
-  "Hard Bottom Longline Hook" = "#E69F00",
+  "Hard Bottom Longline (HBLL)" = "#E69F00",
   "Sablefish Research and Assessment" = "#0072B2",
   "Small-mesh Multispecies Bottom Trawl" = "#CC79A7",
   "SOGERI Acoustic" = "#000000",
@@ -322,16 +324,15 @@ surveys <- readRDS("data-raw/2024-survey-locations.rds") |>
 
 survey_sf <- surveys |>
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |>
-  st_crop(bc_coast_bbox)
+  st_crop(bc_coast_bbox) |>
+  mutate(map_label = factor(map_label, levels = survey_list))
 
 bbox <- st_bbox(survey_sf)
 
-coast <- rnaturalearth::ne_states(c("canada", "united states of america"), returnclass = "sf")
+# coast <- rnaturalearth::ne_states(c("canada", "united states of america"), returnclass = "sf")
 
-ggplot() +
-  geom_sf(data = survey_sf, aes(colour = map_label, shape = map_label)) +
-  geom_sf(data = coast) +
-  coord_sf(xlim = c(-134.5, -122.5), ylim = c(48, 54.5)) +
+g <- ggplot() +
+  geom_sf(data = pacea::bc_coast) +
   gfplot::theme_pbs(base_size = 16) +
   theme(legend.position = c(0.25, 0.19),
         legend.key.size = unit(1.5, "lines"),
@@ -344,4 +345,25 @@ ggplot() +
   scale_x_continuous(breaks = c(-134, -130, -126, -122)) +
   scale_y_continuous(breaks = c(48, 50, 52, 54))
 
-ggsave(file.path(pres_dir, "survey-set-locations.png"), width = 9, height = 7)
+g + geom_sf(data = survey_sf |> filter(map_label %in% survey_list[1]),
+  aes(colour = map_label, shape = map_label)) +
+  coord_sf(xlim = c(-134.5, -122.5), ylim = c(48, 54.5))
+ggsave(file.path(pres_dir, "survey-set-locations1.png"), width = 9, height = 7)
+
+g + geom_sf(data = survey_sf |>
+  filter(map_label %in% survey_list[1:2]),
+  aes(colour = map_label, shape = map_label)) +
+  coord_sf(xlim = c(-134.5, -122.5), ylim = c(48, 54.5))
+ggsave(file.path(pres_dir, "survey-set-locations2.png"), width = 9, height = 7)
+
+g + geom_sf(data = survey_sf |>
+  filter(map_label %in% survey_list[1:3]),
+  aes(colour = map_label, shape = map_label)) +
+  coord_sf(xlim = c(-134.5, -122.5), ylim = c(48, 54.5))
+ggsave(file.path(pres_dir, "survey-set-locations3.png"), width = 9, height = 7)
+
+g + geom_sf(data = survey_sf |>
+  filter(map_label %in% survey_list),
+  aes(colour = map_label, shape = map_label)) +
+  coord_sf(xlim = c(-134.5, -122.5), ylim = c(48, 54.5))
+ggsave(file.path(pres_dir, "survey-set-locations4.png"), width = 9, height = 7)
