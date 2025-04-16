@@ -6,13 +6,6 @@ library(ggridges)
 
 d0 <- readr::read_rds("data-generated/all-mcmc.rds")
 
-# hack on bocaccio 2024 until Rowan sends data...
-bor <- readRDS("data-raw/bocaccio-bc-mcmc-summarized-2024.rds") |>
-  filter(year == max(year))
-set.seed(1)
-bor_mcmc <- data.frame(species = "bocaccio", region = "BC", year = bor$year, iter = 1:5e3, run = "1", busr = exp(rnorm(5e3, mean = bor$log_busr, sd = bor$sd_log_busr)), blrp = exp(rnorm(5e3, mean = bor$log_blrp, sd = bor$sd_log_blrp)), stock = "bocaccio_BC", stringsAsFactors = FALSE)
-d0 <- bind_rows(d0, bor_mcmc)
-
 # d |> group_by(species, region) |>
 #   summarise(last_mcmc_year = max(year)) |>
 #   readr::write_csv("~/Downloads/spp.csv")
@@ -34,14 +27,12 @@ d |>
   as.data.frame()
 
 last <- readr::read_csv("data-raw/last-assess-years.csv")
-#last <- mutate(last, last_year_use = ifelse(plus_one > 0, last_data_year + 1, last_data_year))
-last <- mutate(last, last_year_use = last_data_year + 1)
 
 d <- left_join(d, last, by = join_by(species, region))
 
 d <- group_by(d, species, region) |>
-  # mutate(last_year_use = ifelse(last_year_use < max(year), last_year_use, max(year)))
-  mutate(last_year_use = last_data_year)
+  mutate(last_year_use = last_mcmc_year)
+  # mutate(last_year_use = ifelse(last_mcmc_year > max(year), last_mcmc_year, max(year)), max_year = max(year))
 
 d |>
   select(species, region, type, stock_clean, last_year_use) |>
@@ -51,7 +42,6 @@ d |>
 
 dat <- d %>%
   group_by(species, region) %>%
-  # filter(year <= 2022) %>%
   filter(year == last_year_use) %>%
   mutate(
     mean_blrp = mean(blrp, na.rm = TRUE),
@@ -131,7 +121,7 @@ years2 <- years
 years2$ratio_value <- 0
 
 g <- data_plot %>%
-  mutate(stock_clean = paste0(stock_clean, " (", year, ")")) |>
+  mutate(stock_clean = paste0(stock_clean, " (", last_year_use, ")")) |>
   # mutate(stock_clean = paste0(stock_clean, "\n", year, ")")) |>
   mutate(stock_clean = forcats::fct_reorder(stock_clean, year)) |>
   ggplot(aes(x = ratio_value, y = stock_clean, fill = mean_blrp, group = stock_clean)) +

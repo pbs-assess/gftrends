@@ -572,13 +572,13 @@ d %>% saveRDS("data-raw/quillback-outside-mcmc.rds")
 # d %>% ggplot(aes(year, blrp, group = paste(iter, run))) + geom_line(alpha = 0.05) + scale_y_log10()
 # d %>% ggplot(aes(year, busr, group = paste(iter, run))) + geom_line(alpha = 0.05) + scale_y_log10()
 
-# POP 3CD 2023  ----------------------------------------------------------------
+# POP 3CD 2024  ----------------------------------------------------------------
 d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-3CD-2023-MCMC(B)-forSean.csv') |>
-  select("...1":"2023")
+  select("...1":"2024")
 
 d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-3CD-2023-MCMC(Bmsy)-forSean.csv')
 
-format_rowan_mcmc_data_2023 <- function(sheet1, sheet2, .species, .region) {
+format_rowan_mcmc_data_2024 <- function(sheet1, sheet2, .species, .region) {
   b <- tidyr::pivot_longer(sheet1, cols = -1, names_to = "year", values_to = "B")
   dplyr::left_join(b, sheet2) %>%
     mutate(year = as.integer(as.character(year))) %>%
@@ -591,30 +591,30 @@ format_rowan_mcmc_data_2023 <- function(sheet1, sheet2, .species, .region) {
     filter(!is.na(bmsy))
 }
 
-format_rowan_mcmc_data_2023(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "3CD") |>
+format_rowan_mcmc_data_2024(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "3CD") |>
 saveRDS("data-raw/pop-3cd-mcmc.rds")
 
-# POP 5ABC 2023  ----------------------------------------------------------------
+# POP 5ABC 2024  ----------------------------------------------------------------
 d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5ABC-2023-MCMC(B)-forSean.csv') |>
-  select("...1":"2023")
+  select("...1":"2024")
 
 d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5ABC-2023-MCMC(Bmsy)-forSean.csv') |>
   filter(!is.na(Bmsy))
 
-format_rowan_mcmc_data_2023(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5ABC") |>
+format_rowan_mcmc_data_2024(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5ABC") |>
 saveRDS("data-raw/pop-5abc-mcmc.rds")
 
-# POP 5DE 2023  ----------------------------------------------------------------
+# POP 5DE 2024  ----------------------------------------------------------------
 d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5DE-2023-MCMC(B)-forSean.csv') |>
-  select("...1":"2023")
+  select("...1":"2024")
 
 d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5DE-2023-MCMC(Bmsy)-forSean.csv') |>
   filter(!is.na(Bmsy))
 
-format_rowan_mcmc_data_2023(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5DE") |>
+format_rowan_mcmc_data_2024(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5DE") |>
 saveRDS("data-raw/pop-5de-mcmc.rds")
 
-# PCOD 3CD 2023  ----------------------------------------------------------------
+# PCOD 3CD 2024  ----------------------------------------------------------------
 d <- readRDS("data-raw/model-output/pcod-2023.rds")
 
 d |>
@@ -622,7 +622,7 @@ d |>
   mutate(species = 'pcod', region = '3CD', run = 1) |>
   saveRDS("data-raw/pcod-3cd-mcmc.rds")
 
-# arrowtooth 2023 data SR, maybe be published ultimately in 2024 or 2025
+# arrowtooth 2023 data SR, maybe be published ultimately in 2024 or 2025 -------
 
 d <- readRDS("data-raw/model-output/arrowtooth-2023-data-SR-01-base-model.rds")
 if (FALSE) {
@@ -677,7 +677,7 @@ saveRDS(dd, file = "data-raw/arrowtooth-bc-mcmc-2023.rds")
 ##
 ## saveRDS(d, file = "data-raw/petrale-sole-bc-mcmc-2024.rds")
 
-# petrale 2024 take 2
+# petrale 2024 take 2 ----------------------------------------------------------
 
 d1 <- readr::read_csv("data-raw/model-output/petrale_nuisanceposteriors_med.csv")
 d2 <- readr::read_csv("data-raw/model-output/petrale_nuisanceposteriors_low.csv")
@@ -707,33 +707,20 @@ saveRDS(d, file = "data-raw/petrale-sole-bc-mcmc-2024.rds")
 # ggplot(dd, aes(factor(year), b / blrp)) +
 #   geom_violin()
 
-# bocaccio 2024 -------------------------------------------------------
+# bocaccio 2024 ----------------------------------------------------------------
 b <- readr::read_csv("data-raw/model-output/BOR-CST-2024-MCMC(B)-forSean.csv")
 bmsy <- readr::read_csv("data-raw/model-output/BOR-CST-2024-MCMC(Bmsy)-forSean.csv")
 
 d <- b |>
   pivot_longer(cols = -Run.Sample, names_to = "year", values_to = "b") |>
   left_join(bmsy) |>
-  rename(iter = "Run.Sample", bmsy = "Bmsy") |>
-  mutate(
-    year = as.numeric(year),
+  rename(run = "Run.Sample", bmsy = "Bmsy") |>
+  mutate(year = as.numeric(year),
     lrp = bmsy * 0.4,
     usr = bmsy * 0.8,
     species = "bocaccio",
     region = "BC",
-    iter = as.numeric(as.factor(iter))
-  ) |>
-  mutate(run = "1")
-
-set.seed(1)
-iter_sample <- sample(unique(d$iter), 2000L) # downsample
-d <- filter(d, iter %in% iter_sample)
-
-if (FALSE) {
-  ggplot(d, aes(year, b/bmsy, group = iter)) + geom_line(alpha = 0.1)
-  ggplot(d, aes(year, b/lrp, group = iter)) + geom_line(alpha = 0.1)
-  ggplot(d, aes(year, b/usr, group = iter)) + geom_line(alpha = 0.1)
-}
+    run = as.numeric(as.factor(run))
+  )
 
 saveRDS(d, file = "data-raw/bocaccio-bc-mcmc-2024.rds")
-

@@ -35,10 +35,10 @@ If the LRP and USR are not based on fractions of Bmsy, the dataframe will look l
 - If there is no `run` column, you will need to add a placeholder, e.g., `mutate(run = 1)`; `run` has been used in the past as column for identifying different scenarios that are run if the final status is generated from an ensemble.
 
 
-2. Add any new stocks (if any) to the `analysis/stock_df.R` and `data-raw/species-regions-tofit.csv` (see [Section C](#a.-Adding-and-processing-the-latest-assessment-data))
+2. Add any new stocks (if any) to the `analysis/stock_df.R` and `data-raw/species-regions-tofit.csv` (see [Section C](#a.-adding-and-processing-the-latest-assessment-data))
 
 
-3. Update the `data-raw/last-assess-years.csv`, grab the info from the latest stock assessments/stock assessment drafts in review. `mcmc_year` is the last year MCMC samples in the raw data (functionally, this now gets ignored), `last_data_year` is the last year to which data was fitted, and `plus_one` is whether status in the assessment was focussed on the year *after* ("plus one") the last year of fitted data.
+3. Update the `data-raw/last-assess-years.csv`, grab the info from the latest stock assessments/stock assessment drafts in review. `mcmc_year` is the last year MCMC samples in the raw MCMC data -- which should be the status year (this is often after the last year of catch as population dynamics defines the biomass the next year before fishing has occured). The `last_data_year` is the last year to which data was fitted, and `plus_one` is how many years in between the last data year and the status year `mcmc_year`. This `plus_one` can probably be removed next year. 
 
 4. Update the file `data-raw/surveys_to_assessments.csv` if needed.
 
