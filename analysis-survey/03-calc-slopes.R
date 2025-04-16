@@ -46,7 +46,7 @@ ggplot(data = _, aes(year, est, group = model)) +
   scale_fill_brewer(palette = "Dark2") +
   facet_wrap(vars(paste(species, region)), scales = "free_y", nrow = 10) +
   ggsidekick::theme_sleek() +
-  theme(axis.text.y = element_blank(), 
+  theme(axis.text.y = element_blank(),
         legend.position = 'bottom')
 g
 

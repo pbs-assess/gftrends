@@ -12,7 +12,7 @@ dat <- readRDS("data-generated/b-status-dat.rds")
 
 plot_x_t <- function(x_t, .y_true, .fitted_dat, col_log_mean, col_q0.05, col_q0.95,
                      # .type = c("Rockfish", "Flatfish", "Cod", "Cod allies"), # in case you want a subset
-                     ylab = "", ylim = c(0, 10), example = FALSE, 
+                     ylab = "", ylim = c(0, 10), example = FALSE,
                      max_year = end_year) {
 
   last_dat <- dat %>%
@@ -220,9 +220,12 @@ g <- plot_data_sub %>%
     labels = c(expression(B / LRP), expression(B / USR), expression(B / B[MSY])),
     option = "A", end = 0.85, direction = 1
   ) +
-  geom_hline(yintercept = 1, lty = 2, col = "grey60")
+  geom_hline(yintercept = 1, lty = 2, col = "grey60") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 4))
 
 ggsave("figs/ts-summary.pdf", width = 5.5, height = 3.9)
 ggsave("figs/ts-summary.png", width = 5.5, height = 3.9)
+
+saveRDS(g, file = "data-generated/ts-summary-plot.rds") # can then be loaded in <06-plot-presentation-figs.R>
 
 saveRDS(plot_data, "data-generated/x_t_posterior.rds")
