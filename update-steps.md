@@ -1,6 +1,6 @@
 This repository contains:
 
-* a script to go from raw data (MCMC samples usually; stored locally) to cleaned and processed data (`data-raw-process/process-raw-data.R`)
+* a script to go from raw data (MCMC samples usually; stored locally) to cleaned and processed data (`data-raw/process-raw-data.R`)
 * the processed data sets themselves as `.rds` files (`data-generated`)
 * the model in Stan `analysis/rw-ss.stan`
 * a simulation test of the model (`analysis`)
