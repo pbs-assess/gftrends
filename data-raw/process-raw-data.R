@@ -124,7 +124,7 @@ format_rowan_raw_data <- function(sheet1, sheet2, .species, .region) {
 d1 <- readxl::read_xls("data-raw/model-output/POP.5ABC.2017.MCMC.forSean.xls", sheet = 1)
 d2 <- readxl::read_xls("data-raw/model-output/POP.5ABC.2017.MCMC.forSean.xls", sheet = 2)
 d <- format_rowan_raw_data(d1, d2, .species = "pacific-ocean-perch", .region = "5ABC")
-d %>% saveRDS("data-raw/pop-5abcd.rds")
+d %>% saveRDS("data-raw/pop-5abc.rds")
 
 b <- tidyr::pivot_longer(d1, cols = -1, names_to = "year", values_to = "B")
 d <- dplyr::left_join(b, d2) %>%
@@ -134,7 +134,7 @@ d <- dplyr::left_join(b, d2) %>%
   mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
   mutate(species = "pacific-ocean-perch", region = "5ABC") %>%
   rename(iter = sample)
-d %>% saveRDS("data-raw/pop-5abcd-mcmc.rds")
+d %>% saveRDS("data-raw/pop-5abc-mcmc.rds")
 
 # POP 3CD 2012  -------------------------------------------------------------
 
@@ -567,9 +567,10 @@ d <- d1 |>
   mutate(species = "quillback", region = "BC Outside") |>
   mutate(run = as.integer(as.factor(scen))) |>
   rename(year = "Yr", iter = "Sim")
-
+d$SpawnBio <- NULL
+d$SSBMSY <- NULL
 d %>% saveRDS("data-raw/quillback-outside-mcmc.rds")
-# d %>% ggplot(aes(year, blrp, group = paste(iter, run))) + geom_line(alpha = 0.05) + scale_y_log10()
+q# d %>% ggplot(aes(year, blrp, group = paste(iter, run))) + geom_line(alpha = 0.05) + scale_y_log10()
 # d %>% ggplot(aes(year, busr, group = paste(iter, run))) + geom_line(alpha = 0.05) + scale_y_log10()
 
 # POP 3CD 2024  ----------------------------------------------------------------
@@ -732,25 +733,67 @@ saveRDS(d, file = "data-raw/bocaccio-bc-mcmc-2024.rds")
 # outside-yelloweye-mcmc-2026-wtdPostsSBtSBmsy.rds
 
 d <- readRDS("data-raw/model-output/outside-yelloweye-mcmc-2026-wtdPostsSBtSBmsy.rds")
-names(d)
-head(d$SBmsy_ip)
-nrow(d$SBmsy_ip)
-d$SBmsy_i
 
-b <- reshape2::melt(d$SB_it) |>
-  rename(iter = Var1, year = Var2, b = value)
-bmsy <- data.frame(iter = 1:length(d$SBmsy_i), bmsy = d$SBmsy_i)
+# combined coastwide:
+# names(d)
+# head(d$SBmsy_ip)
+# nrow(d$SBmsy_ip)
+# d$SBmsy_i
+#
+# b <- reshape2::melt(d$SB_it) |>
+#   rename(iter = Var1, year = Var2, b = value)
+# bmsy <- data.frame(iter = 1:length(d$SBmsy_i), bmsy = d$SBmsy_i)
+#
+# x <- left_join(b, bmsy) |> as_tibble() |>
+#   mutate(year = year + 1917L)
+#
+# x <- mutate(x,
+#   lrp = bmsy * 0.4,
+#   usr = bmsy * 0.8,
+#   species = "yelloweye rockfish",
+#   region = "BC Outside",
+#   run = 1
+# )
+# saveRDS(x, file = "data-raw/yelloweye-outside-mcmc-2025.rds")
 
-x <- left_join(b, bmsy) |> as_tibble() |>
-  mutate(year = year + 1917L)
+# here are the notes I received:
+# Here are arrays for SBt and SBmsy for north, south, and coastwide for the weighted posterior OYE OM. The coastwide arrays (SB_it, SBmsy_i) are the sum across areas for the north and south values from SB_ipt and SBmsy_ip.
+# The p dimension is area (1=north, 2=south)
+# The t dimension is time (t=1 is 1918, t=108 is 2025)
+# The i dimensions is the sample (i=1,…,4000 posterior samples)
+# Note that some OMs start in 1960 and others in 1918, so you will see some NA values in the time series for t=1 to t=42.
 
-x <- mutate(x,
-  lrp = bmsy * 0.4,
-  usr = bmsy * 0.8,
-  species = "yelloweye rockfish",
-  region = "BC Outside"
-)
-saveRDS(x, file = "data-raw/yelloweye-outside-mcmc-2025.rds")
+str(d$SB_ipt)
+str(d$SBmsy_ip)
+
+b_pop <- reshape2::melt(d$SB_ipt) |>
+  rename(iter = Var1, area = Var2, year = Var3, b = value)
+bmsy_pop <- reshape2::melt(d$SBmsy_ip) |>
+  rename(iter = Var1, area = Var2, bmsy = value)
+
+x_pop <- left_join(b_pop, bmsy_pop, by = c("iter", "area")) |>
+  as_tibble() |>
+  mutate(
+    year = year + 1917L,
+    lrp = bmsy * 0.4,
+    usr = bmsy * 0.8,
+    species = "yelloweye rockfish",
+    region = "BC Outside",
+    population = recode(area, `1` = "north", `2` = "south"),
+    run = 1
+  ) |>
+  select(-area) |>
+  filter(!is.na(b))
+
+ggplot(x_pop, aes(year, b/bmsy, group = iter)) + geom_line(alpha = 0.1) + facet_wrap(~population)
+
+x_pop |> filter(population == "north") |> select(-population) |>
+  mutate(region = "BC Outside North") |>
+  saveRDS(file = "data-raw/yelloweye-outside-north-mcmc-2025.rds")
+
+x_pop |> filter(population == "south") |> select(-population) |>
+  mutate(region = "BC Outside South") |>
+  saveRDS(file = "data-raw/yelloweye-outside-north-mcmc-2025.rds")
 
 # yellowtail 2026 -----------------------------------------------------
 
@@ -767,10 +810,16 @@ d <- b |>
     usr = bmsy * 0.8,
     species = "yellowtail",
     region = "BC",
-    run = 1
-  )
+    run = 1,
+    iter = as.numeric(sub(".*\\.", "", iter))
+  ) |>
+  filter(!is.na(bmsy))
 
 saveRDS(d, file = "data-raw/yellowtail-bc-mcmc-2025.rds")
+
+# ggplot(d, aes(year, b/lrp, group = iter)) + geom_line(alpha = 0.1)
+# ggplot(d, aes(year, b/usr, group = iter)) + geom_line(alpha = 0.1)
+# ggplot(d, aes(year, b/bmsy, group = iter)) + geom_line(alpha = 0.1)
 
 # lingcod 2026 --------------------------------------------------------
 
@@ -810,12 +859,14 @@ names(d)
 x <- d$SSB_LRP |>
   mutate(iter = 1:n())
 dlrp <- pivot_longer(x, cols = SSB_1950:SSB_2026, names_to = "year", values_to = "b_lrp") |>
-  mutate(year = as.numeric(gsub("SSB_", "", year)))
+  mutate(year = as.numeric(gsub("SSB_", "", year))) |>
+  filter(iter <= 1000)
 
 x <- d$SSB_USR |>
   mutate(iter = 1:n())
 dusr <- pivot_longer(x, cols = SSB_1950:SSB_2026, names_to = "year", values_to = "b_usr") |>
-  mutate(year = as.numeric(gsub("SSB_", "", year)))
+  mutate(year = as.numeric(gsub("SSB_", "", year))) |>
+  filter(iter <= 1000)
 
 x <- d$SSB_SSBmsyproxy |>
   mutate(iter = 1:n())
@@ -823,7 +874,8 @@ dmsy <- pivot_longer(x, cols = SSB_1950:SSB_2026, names_to = "year", values_to =
   mutate(year = as.numeric(gsub("SSB_", "", year)))
 
 d <- left_join(dlrp, dusr) |> left_join(dmsy) |> filter(year <= 2025) |>
-  filter(iter != 1)
+  filter(iter != 1) |>
+  filter(iter <= 1000)
 
 # d[d$bmsy==min(dmsy$bmsy),]
 

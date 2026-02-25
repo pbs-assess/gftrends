@@ -29,8 +29,11 @@ message("Stitching up to year: ", end_year)
 f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
 # these get stitched on later:
 f <- f[!grepl("dogfish-bc-2023\\.rds", f)]
-f <- f[!grepl("dogfish-bc-mcmc-2023\\.rds", f)]
-f <- f[!grepl("dover-bc-mcmc-2025\\.rds", f)]
+f <- f[!grepl("dogfish-bc-mcmc-2023\\.rds", f)] # below
+f <- f[!grepl("dover-bc-mcmc-2025\\.rds", f)] # below
+f <- f[!grepl("yellowtail-bc-mcmc\\.rds", f)] # old and replaced
+f <- f[!grepl("bocaccio-bc-mcmc\\.rds", f)] # old and replaced
+f <- f[!grepl("pop-5abcd-mcmc\\.rds", f)] # bad file - wrong name from past
 f <- f[grepl("-mcmc", f)]
 f
 
@@ -65,11 +68,14 @@ dog <- readRDS("data-raw/dogfish-bc-mcmc-2023.rds") |>
   mutate(species = "north pacific spiny dogfish", region = "BC", stock = "north_pacific_spiny_dogfish_BC")
 
 dover <- readRDS("data-raw/dover-bc-mcmc-2025.rds") |>
-  mutate(scen = 1) |>
   rename(blrp = b_lrp, busr = b_usr) |>
   mutate(species = "dover sole", region = "BC", stock = "dover_sole_BC")
 
 d <- bind_rows(d, dog)
+d <- bind_rows(d, dover)
+
+d$Area <- NULL
+d$SpawnBio <- NULL
 
 readr::write_rds(d, "data-generated/all-mcmc.rds")
 
