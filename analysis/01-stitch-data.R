@@ -2,7 +2,7 @@ library(dplyr)
 library(ggplot2)
 dir.create("data-generated", showWarnings = FALSE)
 
-end_year <- 2024
+end_year <- 2025
 message("Stitching up to year: ", end_year)
 
 # f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
@@ -30,6 +30,7 @@ f <- list.files("data-raw", pattern = ".rds", full.names = TRUE)
 # these get stitched on later:
 f <- f[!grepl("dogfish-bc-2023\\.rds", f)]
 f <- f[!grepl("dogfish-bc-mcmc-2023\\.rds", f)]
+f <- f[!grepl("dover-bc-mcmc-2025\\.rds", f)]
 f <- f[grepl("-mcmc", f)]
 f
 
@@ -62,6 +63,11 @@ d <- mutate(d, stock = paste(species, region)) %>%
 dog <- readRDS("data-raw/dogfish-bc-mcmc-2023.rds") |>
   rename(scen = model, blrp = b_lrp, busr = b_usr) |>
   mutate(species = "north pacific spiny dogfish", region = "BC", stock = "north_pacific_spiny_dogfish_BC")
+
+dover <- readRDS("data-raw/dover-bc-mcmc-2025.rds") |>
+  mutate(scen = 1) |>
+  rename(blrp = b_lrp, busr = b_usr) |>
+  mutate(species = "dover sole", region = "BC", stock = "dover_sole_BC")
 
 d <- bind_rows(d, dog)
 

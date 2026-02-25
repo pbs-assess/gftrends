@@ -573,46 +573,46 @@ d %>% saveRDS("data-raw/quillback-outside-mcmc.rds")
 # d %>% ggplot(aes(year, busr, group = paste(iter, run))) + geom_line(alpha = 0.05) + scale_y_log10()
 
 # POP 3CD 2024  ----------------------------------------------------------------
-d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-3CD-2023-MCMC(B)-forSean.csv') |>
-  select("...1":"2024")
-
-d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-3CD-2023-MCMC(Bmsy)-forSean.csv')
-
-format_rowan_mcmc_data_2024 <- function(sheet1, sheet2, .species, .region) {
-  b <- tidyr::pivot_longer(sheet1, cols = -1, names_to = "year", values_to = "B")
-  dplyr::left_join(b, sheet2) %>%
-    mutate(year = as.integer(as.character(year))) %>%
-    rename(b = B, bmsy = Bmsy) %>%
-    mutate(run = "1") %>%
-    mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
-    mutate(species = .species, region = .region) %>%
-    mutate(iter = as.numeric(as.factor(`...1`))) |>
-    select(-"...1") |>
-    filter(!is.na(bmsy))
-}
-
-format_rowan_mcmc_data_2024(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "3CD") |>
-saveRDS("data-raw/pop-3cd-mcmc.rds")
+# d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-3CD-2023-MCMC(B)-forSean.csv') |>
+#   select("...1":"2024")
+#
+# d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-3CD-2023-MCMC(Bmsy)-forSean.csv')
+#
+# format_rowan_mcmc_data_2024 <- function(sheet1, sheet2, .species, .region) {
+#   b <- tidyr::pivot_longer(sheet1, cols = -1, names_to = "year", values_to = "B")
+#   dplyr::left_join(b, sheet2) %>%
+#     mutate(year = as.integer(as.character(year))) %>%
+#     rename(b = B, bmsy = Bmsy) %>%
+#     mutate(run = "1") %>%
+#     mutate(lrp = 0.4 * bmsy, usr = 0.8 * bmsy) %>%
+#     mutate(species = .species, region = .region) %>%
+#     mutate(iter = as.numeric(as.factor(`...1`))) |>
+#     select(-"...1") |>
+#     filter(!is.na(bmsy))
+# }
+#
+# format_rowan_mcmc_data_2024(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "3CD") |>
+# saveRDS("data-raw/pop-3cd-mcmc.rds")
 
 # POP 5ABC 2024  ----------------------------------------------------------------
-d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5ABC-2023-MCMC(B)-forSean.csv') |>
-  select("...1":"2024")
-
-d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5ABC-2023-MCMC(Bmsy)-forSean.csv') |>
-  filter(!is.na(Bmsy))
-
-format_rowan_mcmc_data_2024(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5ABC") |>
-saveRDS("data-raw/pop-5abc-mcmc.rds")
+# d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5ABC-2023-MCMC(B)-forSean.csv') |>
+#   select("...1":"2024")
+#
+# d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5ABC-2023-MCMC(Bmsy)-forSean.csv') |>
+#   filter(!is.na(Bmsy))
+#
+# format_rowan_mcmc_data_2024(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5ABC") |>
+# saveRDS("data-raw/pop-5abc-mcmc.rds")
 
 # POP 5DE 2024  ----------------------------------------------------------------
-d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5DE-2023-MCMC(B)-forSean.csv') |>
-  select("...1":"2024")
-
-d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5DE-2023-MCMC(Bmsy)-forSean.csv') |>
-  filter(!is.na(Bmsy))
-
-format_rowan_mcmc_data_2024(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5DE") |>
-saveRDS("data-raw/pop-5de-mcmc.rds")
+# d1 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5DE-2023-MCMC(B)-forSean.csv') |>
+#   select("...1":"2024")
+#
+# d2 <- readr::read_csv('data-raw/model-output/POP-(5ABC,3CD,5DE)-2023-SS3-output-forSean-240215/POP-5DE-2023-MCMC(Bmsy)-forSean.csv') |>
+#   filter(!is.na(Bmsy))
+#
+# format_rowan_mcmc_data_2024(sheet1 = d1, sheet2 = d2, .species = "pacific-ocean-perch", .region = "5DE") |>
+# saveRDS("data-raw/pop-5de-mcmc.rds")
 
 # PCOD 3CD 2024  ----------------------------------------------------------------
 d <- readRDS("data-raw/model-output/pcod-2023.rds")
@@ -724,3 +724,111 @@ d <- b |>
   )
 
 saveRDS(d, file = "data-raw/bocaccio-bc-mcmc-2024.rds")
+
+# 2026 SOPO -----------------------------------------------------------
+
+# yelloweye outside 2026 ----------------------------------------------
+
+# outside-yelloweye-mcmc-2026-wtdPostsSBtSBmsy.rds
+
+d <- readRDS("data-raw/model-output/outside-yelloweye-mcmc-2026-wtdPostsSBtSBmsy.rds")
+names(d)
+head(d$SBmsy_ip)
+nrow(d$SBmsy_ip)
+d$SBmsy_i
+
+b <- reshape2::melt(d$SB_it) |>
+  rename(iter = Var1, year = Var2, b = value)
+bmsy <- data.frame(iter = 1:length(d$SBmsy_i), bmsy = d$SBmsy_i)
+
+x <- left_join(b, bmsy) |> as_tibble() |>
+  mutate(year = year + 1917L)
+
+x <- mutate(x,
+  lrp = bmsy * 0.4,
+  usr = bmsy * 0.8,
+  species = "yelloweye rockfish",
+  region = "BC Outside"
+)
+saveRDS(x, file = "data-raw/yelloweye-outside-mcmc-2025.rds")
+
+# yellowtail 2026 -----------------------------------------------------
+
+b <- readr::read_csv("data-raw/model-output/YTR-BC-2024-MCMC-B.csv")
+bmsy <- readr::read_csv("data-raw/model-output/YTR-BC-2024-MCMC-Bmsy.csv")
+
+d <- b |>
+  pivot_longer(cols = -`...1`, names_to = "year", values_to = "b") |>
+  rename(iter = `...1`) |>
+  left_join(rename(bmsy, iter = `...1`)) |>
+  rename(bmsy = "Bmsy") |>
+  mutate(year = as.numeric(year),
+    lrp = bmsy * 0.4,
+    usr = bmsy * 0.8,
+    species = "yellowtail",
+    region = "BC",
+    run = 1
+  )
+
+saveRDS(d, file = "data-raw/yellowtail-bc-mcmc-2025.rds")
+
+# lingcod 2026 --------------------------------------------------------
+
+d <- readRDS("data-raw/model-output/lingcod-coastwide-2026-mcmc.rds")
+names(d)
+b <- d[,c(1,107:205)] |>
+  pivot_longer(cols = SSB_1927:SSB_2025, names_to = "year", values_to = "b") |>
+  rename(iter = Iter)
+
+bmsy <- d[,c("Iter", "SSB_MSY")] |> rename(iter = Iter, bmsy = SSB_MSY)
+
+d <- left_join(b, bmsy)
+
+d <- mutate(d,
+  year = as.numeric(gsub("SSB_", "",year)))
+
+# d <- group_by(d, iter) |>
+#   mutate(min_val = min(b, na.rm = TRUE))
+
+d <- mutate(d,
+  lrp = bmsy * 0.4,
+  usr = bmsy * 0.8,
+  species = "lingcod",
+  region = "BC",
+  run = 1
+)
+
+# ggplot(d, aes(year, b/bmsy, group = iter)) + geom_line(alpha = 0.1)
+
+saveRDS(d, file = "data-raw/lingcod-bc-mcmc-2025.rds")
+
+# dover sole 2026 -----------------------------------------------------
+
+d <- readRDS("data-raw/model-output/dover-sole-coastwide-2026-mcmc.rds")
+names(d)
+
+x <- d$SSB_LRP |>
+  mutate(iter = 1:n())
+dlrp <- pivot_longer(x, cols = SSB_1950:SSB_2026, names_to = "year", values_to = "b_lrp") |>
+  mutate(year = as.numeric(gsub("SSB_", "", year)))
+
+x <- d$SSB_USR |>
+  mutate(iter = 1:n())
+dusr <- pivot_longer(x, cols = SSB_1950:SSB_2026, names_to = "year", values_to = "b_usr") |>
+  mutate(year = as.numeric(gsub("SSB_", "", year)))
+
+x <- d$SSB_SSBmsyproxy |>
+  mutate(iter = 1:n())
+dmsy <- pivot_longer(x, cols = SSB_1950:SSB_2026, names_to = "year", values_to = "b_bmsy") |>
+  mutate(year = as.numeric(gsub("SSB_", "", year)))
+
+d <- left_join(dlrp, dusr) |> left_join(dmsy) |> filter(year <= 2025) |>
+  filter(iter != 1)
+
+# d[d$bmsy==min(dmsy$bmsy),]
+
+# ggplot(d, aes(year, bmsy, group = iter)) + geom_line()
+# ggplot(d, aes(year, lrp, group = iter)) + geom_line()
+# ggplot(d, aes(year, usr, group = iter)) + geom_line()
+
+saveRDS(d, file = "data-raw/dover-bc-mcmc-2025.rds")
