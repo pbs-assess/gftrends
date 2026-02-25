@@ -17,7 +17,6 @@ redstripe rockfish,BC South,2018,2017,1
 walleye-pollock,BC North,2017,2016,1
 walleye-pollock,BC South,2017,2016,1
 shortspine thornyhead,BC,2016,2015,1
-yellowtail,BC,2015,2014,1
 lingcod,4B,2014,2014,0
 rocksole,5AB,2014,2013,1
 rocksole,5CD,2014,2013,1
@@ -27,3 +26,8 @@ pacific-ocean-perch,5ABC,2024,2023,1
 pacific-ocean-perch,5DE,2024,2023,1
 petrale sole,BC,2024,2024,0
 north pacific spiny dogfish,BC,2023,2023,0
+dover sole,BC,2025,2024,1
+lingcod,BC,2025,2024,1
+yellowtail,BC,2025,2024,1
+yelloweye rockfish,BC Outside North,2025,2024,1
+yelloweye rockfish,BC Outside South,2025,2024,1

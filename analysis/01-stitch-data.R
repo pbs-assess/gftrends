@@ -142,8 +142,8 @@ g <- out %>%
   ylab("B status ratio") +
   theme(axis.title.x = element_blank()) +
   gfplot::theme_pbs() +
-  geom_vline(xintercept = 2024, lty = 2, colour = "grey70")
-ggsave("figs/stitch-summary-plot.pdf", width = 11, height = 8)
-ggsave("figs/stitch-summary-plot.png", width = 11, height = 8)
+  geom_vline(xintercept = end_year, lty = 2, colour = "grey70")
+ggsave("figs/stitch-summary-plot.pdf", width = 14, height = 10)
+ggsave("figs/stitch-summary-plot.png", width = 14, height = 10)
 
 saveRDS(out, "data-generated/b-status-dat.rds")

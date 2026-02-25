@@ -5,11 +5,10 @@ Big Skate,HBLL (outside),HBLL outside surveys,,"Sharks, skates, chimeras",Big Sk
 Big Skate,Synoptic trawl,Coast-wide trawl surveys,,"Sharks, skates, chimeras",Big Skate,BC (Outside)
 Bocaccio,Synoptic trawl,Coast-wide trawl surveys,bocaccio_BC,Shelf rockfish,Bocaccio,BC
 Canary Rockfish,Synoptic trawl,Coast-wide trawl surveys,canary_BC,Shelf rockfish,Canary Rockfish,BC
-Dover Sole,Synoptic trawl,Coast-wide trawl surveys,,Flatfish,Dover Sole,BC
+Dover Sole,Synoptic trawl,Coast-wide trawl surveys,dover_sole_BC,Flatfish,Dover Sole,BC
 English Sole,Synoptic trawl,Coast-wide trawl surveys,,Flatfish,English Sole,BC
 Lingcod,HBLL (inside),HBLL inside surveys,lingcod_4B,Roundfish,Lingcod,4B (VI Inside)
-Lingcod,HBLL (outside),HBLL outside surveys,,Roundfish,Lingcod,BC (Outside)
-Lingcod,Synoptic trawl,Coast-wide trawl surveys,,Roundfish,Lingcod,BC (Outside)
+Lingcod,Synoptic trawl,Coast-wide trawl surveys,lingcod_BC,Roundfish,Lingcod,BC (Outside)
 Longnose Skate,HBLL (inside),HBLL inside surveys,,"Sharks, skates, chimeras",Longnose Skate,4B (VI Inside)
 Longnose Skate,HBLL (outside),HBLL outside surveys,,"Sharks, skates, chimeras",Longnose Skate,BC (Outside)
 Longnose Skate,Synoptic trawl,Coast-wide trawl surveys,,"Sharks, skates, chimeras",Longnose Skate,BC (Outside)
@@ -39,7 +38,8 @@ Walleye Pollock,Synoptic trawl,HS & WCHG,walleye_pollock_BC_North,Roundfish,Wall
 Walleye Pollock,Synoptic trawl,QCS & WCVI,walleye_pollock_BC_South,Roundfish,Walleye Pollock,BC S
 Widow Rockfish,Synoptic trawl,Coast-wide trawl surveys,widow_rockfish_BC,Shelf rockfish,Widow Rockfish,BC
 Yelloweye Rockfish,HBLL (inside),HBLL inside surveys,yelloweye_4B,Inshore rockfish,Yelloweye Rockfish,4B (VI Inside)
-Yelloweye Rockfish,HBLL (outside),HBLL outside surveys,,Inshore rockfish,Yelloweye Rockfish,BC (Outside)
+Yelloweye Rockfish,HBLL (outside),HBLL outside surveys,yelloweye_rockfish_BC_Outside_North,Inshore rockfish,Yelloweye Rockfish,BC (Outside North)
+Yelloweye Rockfish,HBLL (outside),HBLL outside surveys,yelloweye_rockfish_BC_Outside_South,Inshore rockfish,Yelloweye Rockfish,BC (Outside South)
 Yellowmouth Rockfish,Synoptic trawl,Coast-wide trawl surveys,yellowmouth_BC,Slope rockfish,Yellowmouth Rockfish,BC
 Yellowtail Rockfish,Synoptic trawl,Coast-wide trawl surveys,yellowtail_BC,Shelf rockfish,Yellowtail Rockfish,BC
 Sablefish,Synoptic trawl,Coast-wide trawl surveys,sablefish_BC,Roundfish,Sablefish,BC

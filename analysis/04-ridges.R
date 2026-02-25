@@ -14,6 +14,10 @@ d <- rename(d0, assess_stock = stock)
 
 lu <- readr::read_csv("data-raw/surveys_to_assessments.csv")
 
+x1 <- lu$assess_stock |> unique() |> sort()
+x2 <- d$assess_stock |> unique() |> sort()
+stopifnot(identical(x1, x2))
+
 d <- left_join(d, select(lu, -species, -region) |> distinct(), by = join_by(assess_stock))
 
 d <- mutate(d, stock_clean = paste(panel_title1, panel_title2))
@@ -27,6 +31,11 @@ d |>
   as.data.frame()
 
 last <- readr::read_csv("data-raw/last-assess-years.csv")
+
+x1 <- select(last, species, region) |> distinct() |> arrange(species, region) |> as.data.frame()
+x2 <- select(d, species, region) |> distinct() |> arrange(species, region) |> as.data.frame()
+stopifnot(identical(x1$species, x2$species))
+stopifnot(identical(x1$region, x2$region))
 
 d <- left_join(d, last, by = join_by(species, region))
 
@@ -163,5 +172,6 @@ g <- data_plot %>%
 # )
 # annotate(geom = "text", x = 0, y = years$stock_clean, label = "test")
 
-ggsave("figs/ridges.pdf", width = 5.5, height = 7)
-ggsave("figs/ridges.png", width = 5.5, height = 7)
+ggsave("figs/ridges.pdf", width = 5.5, height = 7.6)
+ggsave("figs/ridges.png", width = 5.5, height = 7.6)
+

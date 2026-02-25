@@ -4,6 +4,7 @@ source("analysis/utils.R")
 source("analysis/stock_df.R")
 dir.create("figs", showWarnings = FALSE)
 
+end_year <- 2025
 message("Plotting data up to year: ", end_year)
 
 m <- readRDS("data-generated/b-ratio-fits.rds")
@@ -127,8 +128,8 @@ g <- plot_x_t(x_t[["blrp"]], y_true[["blrp"]], d[["blrp"]]$filtered_dat,
   log_blrp, q0.05_blrp, q0.95_blrp,
   ylab = expression(B / LRP), ylim = c(0, 11.5)
 )
-ggsave("figs/blrp-x-t.pdf", width = 8, height = 8)
-ggsave("figs/blrp-x-t.png", width = 8, height = 8)
+ggsave("figs/blrp-x-t.pdf", width = 10, height = 10)
+ggsave("figs/blrp-x-t.png", width = 10, height = 10)
 
 ggsave("figs/blrp-x-t-small.png", width = 8.2, height = 6)
 
@@ -138,15 +139,15 @@ g <- plot_x_t(x_t[["busr"]], y_true[["busr"]], d[["busr"]]$filtered_dat,
   log_busr, q0.05_busr, q0.95_busr,
   ylab = expression(B / USR), ylim = c(0, 5.5)
 )
-ggsave("figs/busr-x-t.pdf", width = 8, height = 8)
-ggsave("figs/busr-x-t.png", width = 8, height = 8)
+ggsave("figs/busr-x-t.pdf", width = 10, height = 10)
+ggsave("figs/busr-x-t.png", width = 10, height = 10)
 
 g <- plot_x_t(x_t[["bbmsy"]], y_true[["bbmsy"]], d[["bbmsy"]]$filtered_dat,
   log_bbmsy, q0.05_bmsy, q0.95_bmsy,
   ylab = expression(B / B[MSY]), ylim = c(0, 4.75)
 )
-ggsave("figs/bbmsy-x-t.pdf", width = 7, height = 8)
-ggsave("figs/bbmsy-x-t.png", width = 7, height = 8)
+ggsave("figs/bbmsy-x-t.pdf", width = 10, height = 10)
+ggsave("figs/bbmsy-x-t.png", width = 10, height = 10)
 
 # Summary plot --------------------------------------------------------
 

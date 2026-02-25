@@ -771,6 +771,10 @@ b_pop <- reshape2::melt(d$SB_ipt) |>
 bmsy_pop <- reshape2::melt(d$SBmsy_ip) |>
   rename(iter = Var1, area = Var2, bmsy = value)
 
+# sample 2000
+set.seed(10228)
+to_keep <- sample(1:max(b_pop$iter), size = 2000)
+
 x_pop <- left_join(b_pop, bmsy_pop, by = c("iter", "area")) |>
   as_tibble() |>
   mutate(
@@ -783,7 +787,8 @@ x_pop <- left_join(b_pop, bmsy_pop, by = c("iter", "area")) |>
     run = 1
   ) |>
   select(-area) |>
-  filter(!is.na(b))
+  filter(!is.na(b)) |>
+  filter(iter %in% to_keep)
 
 ggplot(x_pop, aes(year, b/bmsy, group = iter)) + geom_line(alpha = 0.1) + facet_wrap(~population)
 
@@ -793,7 +798,7 @@ x_pop |> filter(population == "north") |> select(-population) |>
 
 x_pop |> filter(population == "south") |> select(-population) |>
   mutate(region = "BC Outside South") |>
-  saveRDS(file = "data-raw/yelloweye-outside-north-mcmc-2025.rds")
+  saveRDS(file = "data-raw/yelloweye-outside-south-mcmc-2025.rds")
 
 # yellowtail 2026 -----------------------------------------------------
 
