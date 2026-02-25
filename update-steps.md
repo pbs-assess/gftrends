@@ -64,7 +64,7 @@ The scripts contained in `analysis` summarise the **assessment data**. The follo
 The scripts contained in `analysis-survey` summarise the **survey data**. The following scripts should be run in order (as numbered) and should not need to be modified year to year. 
 
 If new species or assessment regions are added, you will need to update:
-`data-raw/species-regions-tofit.csv` and `analysis-survey/get-all-spp.R`.
+`data-raw/species-regions-tofit.csv` and `analysis-survey/00-get-all-spp.R`.
 
 1. `analysis-survey/00-get-all-spp.R` is run to get the latest data on all the species of interest. This list may or may not need to be updated. Note this queries GFBio and will need to access to the DFO network.
 

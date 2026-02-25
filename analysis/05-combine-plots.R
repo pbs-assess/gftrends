@@ -1,4 +1,6 @@
-# run instead of 03 and 04
+# this file is a combined version of 03 and 04
+# we haven't been using it
+
 library(ggplot2)
 library(dplyr)
 library(ggsidekick)
