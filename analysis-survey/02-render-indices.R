@@ -44,7 +44,7 @@ fit_index <- function(region, species) {
 
 is_rstudio <- !is.na(Sys.getenv("RSTUDIO", unset = NA))
 is_unix <- .Platform$OS.type == "unix"
-cores <- parallel::detectCores() - 2
+cores <- parallel::detectCores()/2 - 1
 if (is_unix && !is_rstudio) {
   future::plan(future::multicore, workers = cores)
 } else {
