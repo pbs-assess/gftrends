@@ -222,7 +222,7 @@ g <- plot_data_sub %>%
     option = "A", end = 0.85, direction = 1
   ) +
   geom_hline(yintercept = 1, lty = 2, col = "grey60") +
-  scale_x_continuous(breaks = scales::pretty_breaks(n = 4))
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 8))
 
 ggsave("figs/ts-summary.pdf", width = 5.5, height = 3.9)
 ggsave("figs/ts-summary.png", width = 5.5, height = 3.9)
