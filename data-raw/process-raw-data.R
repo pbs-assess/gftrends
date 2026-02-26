@@ -735,26 +735,29 @@ saveRDS(d, file = "data-raw/bocaccio-bc-mcmc-2024.rds")
 d <- readRDS("data-raw/model-output/outside-yelloweye-mcmc-2026-wtdPostsSBtSBmsy.rds")
 
 # combined coastwide:
-# names(d)
-# head(d$SBmsy_ip)
-# nrow(d$SBmsy_ip)
-# d$SBmsy_i
-#
-# b <- reshape2::melt(d$SB_it) |>
-#   rename(iter = Var1, year = Var2, b = value)
-# bmsy <- data.frame(iter = 1:length(d$SBmsy_i), bmsy = d$SBmsy_i)
-#
-# x <- left_join(b, bmsy) |> as_tibble() |>
-#   mutate(year = year + 1917L)
-#
-# x <- mutate(x,
-#   lrp = bmsy * 0.4,
-#   usr = bmsy * 0.8,
-#   species = "yelloweye rockfish",
-#   region = "BC Outside",
-#   run = 1
-# )
-# saveRDS(x, file = "data-raw/yelloweye-outside-mcmc-2025.rds")
+b <- reshape2::melt(d$SB_it) |>
+  rename(iter = Var1, year = Var2, b = value)
+bmsy <- data.frame(iter = 1:length(d$SBmsy_i), bmsy = d$SBmsy_i)
+
+x <- left_join(b, bmsy) |> as_tibble() |>
+  mutate(year = year + 1917L)
+
+x <- mutate(x,
+  lrp = bmsy * 0.4,
+  usr = bmsy * 0.8,
+  species = "yelloweye rockfish",
+  region = "BC Outside",
+  run = 1
+)
+
+# sample 2000
+set.seed(10228)
+to_keep <- sample(1:max(b$iter), size = 2000L)
+
+x <- filter(x, !is.na(b)) |>
+  filter(iter %in% to_keep)
+
+saveRDS(x, file = "data-raw/yelloweye-outside-mcmc-2025.rds")
 
 # here are the notes I received:
 # Here are arrays for SBt and SBmsy for north, south, and coastwide for the weighted posterior OYE OM. The coastwide arrays (SB_it, SBmsy_i) are the sum across areas for the north and south values from SB_ipt and SBmsy_ip.

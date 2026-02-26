@@ -28,8 +28,7 @@ stock_df <- tibble::tribble(
   "yellowmouth_BC", "Yellowmouth Rockfish BC", "Rockfish",
   "north_pacific_spiny_dogfish_BC", "Pacific Spiny Dogfish BC", "Sharks",
   "dover_sole_BC", "Dover Sole BC", "Flatfish",
-  "yelloweye_rockfish_BC_Outside_North", "Yelloweye Rockfish Outside North", "Rockfish",
-  "yelloweye_rockfish_BC_Outside_South", "Yelloweye Rockfish Outside South", "Rockfish",
+  "yelloweye_rockfish_BC_Outside", "Yelloweye Rockfish Outside", "Rockfish",
   "yellowtail_BC", "Yellowtail Rockfish BC", "Rockfish",
   "lingcod_BC", "Lingcod Outside", "Cod allies"
 )
