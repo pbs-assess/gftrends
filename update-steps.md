@@ -69,7 +69,7 @@ If new species or assessment regions are added, you will need to update:
 1. `analysis-survey/00-get-all-spp.R` is run to get the latest data on all the species of interest. This list may or may not need to be updated. Note this queries GFBio and will need to access to the DFO network.
 
 2. `analysis-survey/02-render-indices.R` 
-    - `analysis-survey/01-index-new-deltas.Rmd` is not manually run. It generates html files for each species and fits the delta-gamma model. If the delta-gamma fails to converge, the Tweedie is then fit. In 2023 all delta-gamma models converged. 
+    - `analysis-survey/01-index-new-deltas.Rmd` is not manually run (although at one point it was). It is run by `02-render-indices.R`. It generates html files for each species and fits the delta-gamma model. If the delta-gamma fails to converge, the Tweedie is then fit. In 2023 all delta-gamma models converged. 
     - `analysis-survey/00-make-grids.R` is also sourced by `02-render-indices.R`. If prediction grids are updated this can be done here.
 
 3. `analysis-survey/03-calc-slopes.R` calculates the slopes of indices since 2000 so they can be ordered in Figure 3.
