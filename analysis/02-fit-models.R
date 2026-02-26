@@ -4,6 +4,8 @@ source("analysis/utils.R")
 # model <- cmdstanr::cmdstan_model("analysis/rw-ss.stan")
 model <- rstan::stan_model("analysis/rw-ss.stan")
 
+end_year <- 2025
+
 dat <- readRDS("data-generated/b-status-dat.rds")
 
 dat[dat$species == "sablefish","sd_log_bbmsy"] <-
