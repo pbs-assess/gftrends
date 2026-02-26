@@ -1,9 +1,9 @@
 library(dplyr)
-end_year <- 2023
+end_year <- 2025
 
 refpt <- readRDS(here::here("data-generated/p-thresh.rds"))
 ts_mcmc <- readRDS(here::here("data-generated/x_t_posterior.rds")) |>
-  filter(year == 2023)
+  filter(year == end_year)
 ts_lrp <- dplyr::filter(ts_mcmc, ratio == "B/LRP") %>%
   pull(.value)
 ts_usr <- dplyr::filter(ts_mcmc, year == end_year, ratio == "B/USR") %>%
