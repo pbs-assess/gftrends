@@ -5,6 +5,18 @@ ind <- readRDS("data-generated/survey-dat-minimal.rds")
 dat <- readRDS("data-generated/assess-dat-minimal.rds")
 
 lu <- readr::read_csv("data-raw/surveys_to_assessments.csv")
+
+intersect(names(lu), names(ind))
+
+test <- anti_join(ind, lu)
+test
+test <- anti_join(lu, ind)
+test |> as.data.frame()
+if (nrow(test) > 0L) stop("Mismatched lookup table and indices")
+
+test2 <- anti_join(dat, lu)
+if (nrow(test2) > 0L) stop("Mismatched lookup table and assessment data")
+
 ind <- left_join(ind, lu)
 dat <- left_join(dat, lu)
 

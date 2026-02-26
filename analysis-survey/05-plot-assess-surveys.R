@@ -6,7 +6,10 @@ d <- readRDS("data-generated/assessments-surveys-joined.rds")
 d <- mutate(d, gear_type = ifelse(!grepl("trawl", gear), "Longline", "Trawl"))
 d <- mutate(d, facet_label = paste(panel_title1, panel_title2, sep = "\n"))
 
+# make fit - remove english sole?
+
 gg <- d %>%
+  filter(species != "English Sole") |>
   ggplot() +
   geom_ribbon(data = d |> drop_na(log_blrp),
     aes(year, ymin = q0.05_blrp / mean_blrp, ymax = q0.95_blrp / mean_blrp,

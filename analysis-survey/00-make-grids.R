@@ -31,6 +31,22 @@ nd_outside_index <- sdmTMB::add_utm_columns(nd_outside_index, c("longitude", "la
 
 saveRDS(nd_outside_index, file = here::here("data-generated/hbll-outside-grid.rds"))
 
+# grid for outside N HBLL indices
+nd_out <- filter(grid_locs, ssid %in% c(22))
+d <- all_data %>% filter(survey_abbrev %in% c("HBLL OUT N"))
+time <- sort(unique(d$year))  # get year of the outside LL surveys
+nd_outside_index <- sdmTMB::replicate_df(nd_out, "year", time)
+nd_outside_index <- sdmTMB::add_utm_columns(nd_outside_index, c("longitude", "latitude"), utm_crs = 32609)
+saveRDS(nd_outside_index, file = here::here("data-generated/hbll-n-outside-grid.rds"))
+
+# grid for outside N HBLL indices
+nd_out <- filter(grid_locs, ssid %in% c(36))
+d <- all_data %>% filter(survey_abbrev %in% c("HBLL OUT S"))
+time <- sort(unique(d$year))  # get year of the outside LL surveys
+nd_outside_index <- sdmTMB::replicate_df(nd_out, "year", time)
+nd_outside_index <- sdmTMB::add_utm_columns(nd_outside_index, c("longitude", "latitude"), utm_crs = 32609)
+saveRDS(nd_outside_index, file = here::here("data-generated/hbll-s-outside-grid.rds"))
+
 # grid for inside HBLL indices
 nd_in <- filter(grid_locs, ssid %in% c(39, 40))
 # grab an example of inside HBLL data

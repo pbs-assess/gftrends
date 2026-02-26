@@ -8,19 +8,23 @@ params:
     # species: "Arrowtooth Flounder"
     # species: "Big Skate"
     # species: "North Pacific Spiny Dogfish"
-    species: "Redstripe Rockfish"
+    # species: "Yelloweye Rockfish"
+    species: "Yellowtail Rockfish"
+    # species: "Redstripe Rockfish"
     # species: "Pacific Ocean Perch"
     # species: "Bocaccio"
     # species: "Splitnose Rockfish"
     #species: "Pacific Sand Lance"
     # species: "Longspine Thornyhead"
     # species: "Sandpaper Skate"
-    # region: "Coast-wide trawl surveys"
+    region: "Coast-wide trawl surveys"
     # region: "HBLL outside surveys"
     # region: "HBLL inside surveys"
-    region: "WCHG only"
+    # region: "HBLL north outside survey"
+    # region: "HBLL south outside survey"
+    # region: "WCHG only"
     name: "-rw-no-covs" # covariate string used to name model rds
-    silent: TRUE
+    silent: FALSE
 ---
 
 ```{r global_options, include=FALSE}
@@ -146,6 +150,20 @@ if (region == "HBLL outside surveys") {
   model_ssid <- c(22, 36)
 }
 
+if (region == "HBLL south outside survey") {
+  nd_all <- readRDS(here::here("data-generated/hbll-s-outside-grid.rds"))
+  survey <- c("HBLL OUT S")
+  type <- "HBLL (outside)"
+  model_ssid <- c(36)
+}
+
+if (region == "HBLL north outside survey") {
+  nd_all <- readRDS(here::here("data-generated/hbll-n-outside-grid.rds"))
+  survey <- c("HBLL OUT N")
+  type <- "HBLL (outside)"
+  model_ssid <- c(22)
+}
+
 if (region == "HBLL inside surveys") {
   nd_all <- readRDS(here::here("data-generated/hbll-inside-grid.rds"))
   survey <- c("HBLL INS N", "HBLL INS S")
@@ -208,7 +226,7 @@ cutoff <- 20
 if (region %in% c("HBLL outside surveys")) {
   cutoff <- 15
 }
-if (region %in% c("HBLL inside surveys", "QCS only", "HS only", "WCVI only")) {
+if (region %in% c("HBLL south outside survey", "HBLL north outside survey", "HBLL inside surveys", "QCS only", "HS only", "WCVI only")) {
   cutoff <- 10
 }
 if (region %in% c("WCHG only")) {
@@ -248,7 +266,7 @@ try({
     spatial = "on",
     spatiotemporal = "RW",
     silent = params$silent,
-    control = sdmTMBcontrol(newton_loops = 1L)
+    control = sdmTMBcontrol(newton_loops = 2L)
   )
 })
 tictoc::toc()
@@ -256,6 +274,27 @@ if (!exists("m1")) { m1 <- NULL}
 
 saveRDS(m1, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-delta.rds")))
 ok <- all(unlist(sanity(m1)))
+
+if (!ok) {
+  try({
+    m1 <- sdmTMB(
+      density ~ 1,
+      data,
+      mesh = spde,
+      time = "year",
+      extra_time = missing_years,
+      family = delta_gamma(),
+      spatial = list("on", "off"),
+      spatiotemporal = "RW",
+      silent = params$silent,
+      control = sdmTMBcontrol(newton_loops = 2L)
+    )
+  })
+  if (!exists("m1")) { m1 <- NULL}
+  
+  saveRDS(m1, file = here::here(paste0("data-generated/models/m-", spp, "-", ssid_string, name, "-delta.rds")))
+  ok <- all(unlist(sanity(m1)))
+}
 
 if (!ok) {
   tictoc::tic()
@@ -270,7 +309,7 @@ if (!ok) {
       spatial = "on",
       spatiotemporal = "RW",
       silent = params$silent,
-      control = sdmTMBcontrol(newton_loops = 1L)
+      control = sdmTMBcontrol(newton_loops = 2L)
     )
   })
   tictoc::toc()
@@ -295,7 +334,8 @@ p(m)
 sanity(m)
 ```
 
-Get simulated index
+Get index
+
 ```{r}
 dir.create(here::here("data-generated/indices"), showWarnings = FALSE)
 
