@@ -1,9 +1,6 @@
 ---
 title: "placeholder - delete"
-#output: html_document
-output:
-  word_document:
-    reference_docx: "29_anderson-etal-gf2023-sopo_JD.docx"
+output: html_document
 ---
 
 ## Trends in Pacific Canadian groundfish stock status and surveys
@@ -16,7 +13,8 @@ library(dplyr)
 library(ggplot2)
 
 # Values to update every year:
-end_year <- 2024
+end_year <- 2025
+max_year <- 2025
 
 all_data <- readRDS(here::here("data-raw/all_surv_catch.rds")) 
 
@@ -148,11 +146,6 @@ The late 1990s and early 2000s marked the beginning of a relatively stable avera
 We estimated the overall mean B/LRP (biomass divided by the LRP) in `r end_year` to be `r qlrp_text`. The overall mean B/USR and B/BMSY (biomass divided by biomass at maximum sustainable yield) in `r end_year` was `r qusr_text` and `r qbmsy_text`, respectively (Figure 29-1, 29-2). 
 Despite the overall pattern in the average biological status, there was considerable variation within and across individual stocks, especially when recent survey trends are also considered (Figure 29-3).
 
-```{r, fig.width=3.6}
-
-knitr::include_graphics(here::here("figs", "ts-summary.png"))
-
-```
 
 Figure 29-1: Overall mean biomass status across all stocks for B/LRP, B/USR, and B/BMSY (see text for definitions) from the hierarchical time-series model. Dark lines represent the posterior median and shaded ribbons represent 95% quantile credible intervals. ITQ = individual transferable quota.
 
@@ -172,7 +165,7 @@ Pacific Spiny Dogfish (herein ‘dogfish’) stocks, however, experienced the st
 
 ```{r, fig.width=4.7}
 
-knitr::include_graphics(here::here("figs", "ridges.png"))
+# knitr::include_graphics(here::here("figs", "ridges.png"))
 
 ```
 
@@ -180,7 +173,7 @@ Figure 29-2: Posterior distribution of the two measures of stock status for `n_a
 
 ```{r, fig.width=4.5}
 
-knitr::include_graphics(here::here("figs", "assesses-indices-join.png"))
+# knitr::include_graphics(here::here("figs", "assesses-indices-join.png"))
 
 ```
 

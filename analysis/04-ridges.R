@@ -175,3 +175,4 @@ g <- data_plot %>%
 ggsave("figs/ridges.pdf", width = 5.5, height = 7.6)
 ggsave("figs/ridges.png", width = 5.5, height = 7.6)
 
+saveRDS(data_plot, file = "data-generated/ridges-data.rds")

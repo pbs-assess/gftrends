@@ -30,6 +30,7 @@ ts_plot +
   # gfplot::theme_pbs(base_size = 14)
 ggsave(file.path(pres_dir, "ts-summary.png"), width = 7, height = 5.4)
 
+data_plot <- readRDS("data-generated/ridges-data.rds")
 g <- data_plot %>%
   mutate(stock_clean = paste0(stock_clean, "   ", year)) |>
   mutate(stock_clean = forcats::fct_reorder(stock_clean, year)) |>
@@ -69,10 +70,10 @@ ridge_dat_formatted <- data_plot |>
   mutate(stock_clean = forcats::fct_reorder(stock_clean, year))
 
 stock_thisyear <- c(
-  "Petrale Sole BC",
-  "Bocaccio BC",
-  "Pacific Spiny Dogfish BC \\(Outside\\)",
-  "Arrowtooth Flounder BC"
+  "Yellowtail Rockfish BC",
+  "Yelloweye Rockfish BC \\(Outside\\)",
+  "Lingcod BC \\(Outside\\)",
+  "Dover Sole BC"
 ) |> paste(collapse = '|')
 
 
@@ -301,21 +302,32 @@ shapes <- c(
   "SOGERI Acoustic" = 10
 )
 
+okabe_ito <- c(
+  orange        = "#E69F00",
+  sky_blue      = "#56B4E9",
+  bluish_green  = "#009E73",
+  yellow        = "#F0E442",
+  blue          = "#0072B2",
+  vermillion    = "#D55E00",
+  reddish_purple = "#CC79A7",
+  black         = "#000000"
+)
+
 survey_cols <- c(
   "Synoptic Bottom Trawl" = "#7570B3",
   "Hard Bottom Longline (HBLL)" = "#E69F00",
   "Sablefish Research and Assessment" = "#0072B2",
-  "Small-mesh Multispecies Bottom Trawl" = "#CC79A7",
-  "SOGERI Acoustic" = "#000000",
-  # "#D55E00",
-  "Dogfish gear comparison" = "#009E73"
+  "Small-mesh Multispecies Bottom Trawl" = "#009E73",
+  "SOGERI Acoustic" = "#CC79A7",
+  "Pacific Hake Hydroacoustic" = "#D55E00"
+  # "Dogfish gear comparison" = "#009E73"
   # "#999999"
 )
 
 bc_coast <- pacea::bc_coast
 bc_coast_bbox <- st_bbox(bc_coast)
 
-surveys <- readRDS("data-raw/2024-survey-locations.rds") |>
+surveys <- readRDS("data-raw/2025-survey-locations.rds") |>
   tidyr::drop_na(survey_series_id, latitude) |>
   left_join(survey_labels) |>
   filter(map_label %in% survey_list) |>
@@ -341,29 +353,30 @@ g <- ggplot() +
   guides(color = guide_legend(title = "Groundfish Survey Set Locations", override.aes = list(size = 3, stroke = 1)),
          shape = guide_legend(title = "Groundfish Survey Set Locations")) +
   scale_colour_manual(values = survey_cols, drop = TRUE) +
-  scale_shape_manual(values = shapes, drop = TRUE) +
+  # scale_shape_manual(values = shapes, drop = TRUE) +
   scale_x_continuous(breaks = c(-134, -130, -126, -122)) +
   scale_y_continuous(breaks = c(48, 50, 52, 54))
 
 g + geom_sf(data = survey_sf |> filter(map_label %in% survey_list[1]),
-  aes(colour = map_label, shape = map_label)) +
+  aes(colour = map_label)) +
   coord_sf(xlim = c(-134.5, -122.5), ylim = c(48, 54.5))
 ggsave(file.path(pres_dir, "survey-set-locations1.png"), width = 9, height = 7)
 
 g + geom_sf(data = survey_sf |>
   filter(map_label %in% survey_list[1:2]),
-  aes(colour = map_label, shape = map_label)) +
+  aes(colour = map_label)) +
   coord_sf(xlim = c(-134.5, -122.5), ylim = c(48, 54.5))
 ggsave(file.path(pres_dir, "survey-set-locations2.png"), width = 9, height = 7)
 
 g + geom_sf(data = survey_sf |>
   filter(map_label %in% survey_list[1:3]),
-  aes(colour = map_label, shape = map_label)) +
+  aes(colour = map_label)) +
   coord_sf(xlim = c(-134.5, -122.5), ylim = c(48, 54.5))
 ggsave(file.path(pres_dir, "survey-set-locations3.png"), width = 9, height = 7)
 
 g + geom_sf(data = survey_sf |>
   filter(map_label %in% survey_list),
-  aes(colour = map_label, shape = map_label)) +
+  aes(colour = map_label)) +
   coord_sf(xlim = c(-134.5, -122.5), ylim = c(48, 54.5))
+  # theme(legend.position = c(0.2, 0.3), legend.text = element_text(size = 9.5), legend.title = element_text(size = 9.5))
 ggsave(file.path(pres_dir, "survey-set-locations4.png"), width = 9, height = 7)

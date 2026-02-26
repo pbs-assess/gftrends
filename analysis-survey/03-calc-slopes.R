@@ -54,7 +54,7 @@ slopes <- all_indices %>%
   group_by(species, region) %>%
   group_split() %>%
   purrr::map_dfr(function(.x) {
-    .x <- dplyr::filter(.x, year >= 2010)
+    .x <- dplyr::filter(.x, year >= 2005)
     m <- lm(log(est) ~ year, data = .x)
     data.frame(slope = coef(m)[2], species = .x$species[1], region = .x$region[1])
   })

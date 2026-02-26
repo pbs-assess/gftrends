@@ -8,8 +8,18 @@ d <- mutate(d, facet_label = paste(panel_title1, panel_title2, sep = "\n"))
 
 # make fit - remove english sole?
 
+# lu <- d |> arrange(max_geo_mean, min_geo_mean, facet_label) |>
+#   group_by(species) |>
+#   mutate(last_assess_year = max(year[!is.na(log_blrp)], na.rm = TRUE)) |>
+#
+#
+#   select(stock_clean) |>
+#   distinct() |>
+#   mutate(year_order = 1:n())
+
 gg <- d %>%
-  filter(species != "English Sole") |>
+  left_join(lu) |>
+  # filter(species != "English Sole") |>
   ggplot() +
   geom_ribbon(data = d |> drop_na(log_blrp),
     aes(year, ymin = q0.05_blrp / mean_blrp, ymax = q0.95_blrp / mean_blrp,
